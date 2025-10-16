@@ -376,5 +376,32 @@
     "autoReply": true,
     "autoDownload": false,
     "removeLinkKeywords": false
+  },
+  "6671597069754837933": {
+    "nameGroup": "✨🎨USAGI TOWN🐧✨",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": true,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": false,
+    "autoDownload": false,
+    "removeLinkKeywords": false,
+    "blockForward": false
   }
 }

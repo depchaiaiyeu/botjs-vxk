@@ -958,8 +958,8 @@
         {
           "UserName": "Take Care For Groups",
           "UID": "227886665729461010",
-          "Rank": 6539,
-          "messageCountToday": 1,
+          "Rank": 6543,
+          "messageCountToday": 5,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -972,8 +972,8 @@
         {
           "UserName": "Tài Tấn",
           "UID": "9186197335392085312",
-          "Rank": 233,
-          "messageCountToday": 1,
+          "Rank": 234,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -1049,9 +1049,9 @@
         {
           "UserName": "ヅtrần Ân Ânヅ",
           "UID": "3770122344910096233",
-          "Rank": 34,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-14"
+          "Rank": 35,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-16"
         },
         {
           "UserName": "Nguyễn Phi Hoàng",
@@ -1672,8 +1672,8 @@
         {
           "UserName": "Thành Lộc",
           "UID": "5834628589586827715",
-          "Rank": 23,
-          "messageCountToday": 21,
+          "Rank": 24,
+          "messageCountToday": 22,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -5600,6 +5600,13 @@
           "Rank": 7,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-13"
+        },
+        {
+          "UserName": "Nguyễn Thị Ninh",
+          "UID": "3208588400987425468",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-16"
         }
       ],
       "nameGroup": "Tiện Ích 🛡"
