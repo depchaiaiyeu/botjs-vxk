@@ -1,0 +1,223 @@
+{
+  "badWords": [
+    "ngu",
+    "dốt",
+    "dot",
+    "đần",
+    "cặc",
+    "kặc",
+    "kac",
+    "lồn",
+    "lon",
+    "loz",
+    "óc",
+    "oc",
+    "fuck",
+    "fuk",
+    "fck",
+    "buồi",
+    "buoi",
+    "đít",
+    "đit",
+    "dit",
+    "đụ má",
+    "đụ mẹ",
+    "đù má",
+    "đù mẹ",
+    "du me",
+    "du ma",
+    "mẹ mày",
+    "má mày",
+    "me may",
+    "ma may",
+    "chó má",
+    "chó mẹ",
+    "cho ma",
+    "cho me",
+    "bố mày",
+    "bo may",
+    "shit",
+    "shiet",
+    "shjt",
+    "đm",
+    "đmm",
+    "dmm",
+    "cld",
+    "clđ",
+    "cc",
+    "cặc",
+    "đb",
+    "điếm",
+    "sv",
+    "súc vật",
+    "suc vat",
+    "damn",
+    "đm",
+    "sex",
+    "segs",
+    "sech",
+    "sẽch",
+    "nứng",
+    "nung",
+    "nưng",
+    "cave",
+    "cave",
+    "cavẽ",
+    "stupid",
+    "ngu",
+    "Iồn",
+    "Ⓛồn",
+    "scam",
+    "𝙻ồ𝚗",
+    "nguu",
+    "cu",
+    "bán",
+    "lồnes",
+    "lonofes",
+    "pi",
+    "@All",
+    "giá",
+    "chứng khoán",
+    "MMO",
+    "sell",
+    "lồnn",
+    "cac",
+    "mua",
+    "địt",
+    "@callentropy"
+  ],
+  "linkRegex": "(?:https?:\\/\\/|www\\.)\\S+|(?<!\\w)[a-zA-Z0-9-]+[.,](?:com|net|org|vn|info|biz|io|xyz|me|tv|online|store|club|site|app|blog|dev|tech|cloud|game|shop|click|space|asia|fun|tokyo|xyz|website)(?:\\/\\S*)?(?!\\w)",
+  "violationsNude": {},
+  "violations": {
+    "562957250953299693": {
+      "1277357418864786055": {
+        "count": 0,
+        "words": [],
+        "name": "Hà Huy Hoàng",
+        "mediaCount": 2,
+        "stickerCount": 4
+      },
+      "983760973427063706": {
+        "count": 0,
+        "words": [],
+        "name": "Gia Bảo",
+        "mediaCount": 0,
+        "stickerCount": 3
+      },
+      "3748035587675465278": {
+        "count": 0,
+        "words": [],
+        "name": "Văn Tasm",
+        "mediaCount": 0,
+        "stickerCount": 3
+      },
+      "2244930613231954202": {
+        "count": 0,
+        "words": [],
+        "name": "𓂄𓆩 P V T 𓆪𓂁",
+        "mediaCount": 0,
+        "stickerCount": 1,
+        "lastStickerTime": 1746637904659
+      }
+    },
+    "845281808323715462": {
+      "1085682532877078316": {
+        "count": 0,
+        "words": [],
+        "name": "Anh Hào",
+        "mediaCount": 2
+      },
+      "5386799418716658428": {
+        "count": 0,
+        "words": [],
+        "name": "Hải Quân",
+        "mediaCount": 0
+      }
+    },
+    "6805041339947237197": {
+      "4557268128900059139": {
+        "count": 0,
+        "words": [],
+        "name": "Trần Hạo Nguyên",
+        "mediaCount": 2
+      },
+      "5577782992722605141": {
+        "count": 0,
+        "words": [],
+        "name": "Hoàng Huy",
+        "mediaCount": 0,
+        "stickerCount": 1,
+        "lastStickerTime": 1746976094071
+      },
+      "4860726189790013001": {
+        "count": 0,
+        "words": [],
+        "name": "Hoang Le Dung",
+        "mediaCount": 0,
+        "stickerCount": 1,
+        "lastStickerTime": 1747573921576
+      }
+    },
+    "2490943628803383980": {
+      "4557268128900059139": {
+        "count": 0,
+        "words": [],
+        "name": "Trần Hạo Nguyên",
+        "mediaCount": 0,
+        "stickerCount": 4
+      },
+      "7121995394539005419": {
+        "count": 0,
+        "words": [],
+        "name": "𓂄𓆩ム X 𓆪𓂁",
+        "mediaCount": 0,
+        "stickerCount": 4
+      },
+      "1277357418864786055": {
+        "count": 0,
+        "words": [],
+        "name": "Hà Huy Hoàng",
+        "mediaCount": 0,
+        "stickerCount": 0
+      }
+    },
+    "8582724212653587750": {
+      "5386799418716658428": {
+        "count": 0,
+        "words": [],
+        "name": "Hải Quân",
+        "mediaCount": 0,
+        "stickerCount": 2
+      }
+    },
+    "4317888589362317009": {
+      "2452814324466006327": {
+        "count": 0,
+        "words": [],
+        "name": "V Manh",
+        "mediaCount": 0,
+        "stickerCount": 1
+      }
+    }
+  },
+  "enable": false,
+  "botViolations": {
+    "5464956150740844012": {
+      "7084584280284942954": {
+        "count": 0,
+        "times": [
+          {
+            "time": 1760567970294
+          },
+          {
+            "time": 1760567977182
+          },
+          {
+            "time": 1760568013622
+          }
+        ],
+        "name": "Trung"
+      }
+    }
+  }
+}

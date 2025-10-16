@@ -1,0 +1,485 @@
+{
+  "baucua": {
+    "jackpot": "607000000",
+    "history": []
+  },
+  "chanle": {
+    "jackpot": "4700470001000570.047",
+    "history": [
+      {
+        "dice": [
+          6,
+          2,
+          3
+        ],
+        "total": 11,
+        "result": "le",
+        "timestamp": 1759816101976
+      },
+      {
+        "dice": [
+          5,
+          5,
+          6
+        ],
+        "total": 16,
+        "result": "chan",
+        "timestamp": 1759930742666
+      }
+    ]
+  },
+  "taixiu": {
+    "activeThreads": [],
+    "history": [
+      {
+        "dice": [
+          1,
+          3,
+          6
+        ],
+        "total": 10,
+        "result": "xiu",
+        "timestamp": 1760472832001
+      },
+      {
+        "dice": [
+          6,
+          2,
+          5
+        ],
+        "total": 13,
+        "result": "tai",
+        "timestamp": 1760469231011
+      },
+      {
+        "dice": [
+          5,
+          1,
+          5
+        ],
+        "total": 11,
+        "result": "tai",
+        "timestamp": 1760465630032
+      },
+      {
+        "dice": [
+          5,
+          1,
+          6
+        ],
+        "total": 12,
+        "result": "tai",
+        "timestamp": 1760462029222
+      },
+      {
+        "dice": [
+          6,
+          3,
+          5
+        ],
+        "total": 14,
+        "result": "tai",
+        "timestamp": 1760458428214
+      },
+      {
+        "dice": [
+          4,
+          6,
+          5
+        ],
+        "total": 15,
+        "result": "tai",
+        "timestamp": 1760413172014
+      },
+      {
+        "dice": [
+          2,
+          1,
+          4
+        ],
+        "total": 7,
+        "result": "xiu",
+        "timestamp": 1760409571010
+      },
+      {
+        "dice": [
+          5,
+          5,
+          6
+        ],
+        "total": 16,
+        "result": "tai",
+        "timestamp": 1760405970016
+      },
+      {
+        "dice": [
+          1,
+          3,
+          5
+        ],
+        "total": 9,
+        "result": "xiu",
+        "timestamp": 1760402369018
+      },
+      {
+        "dice": [
+          4,
+          1,
+          4
+        ],
+        "total": 9,
+        "result": "xiu",
+        "timestamp": 1760398768070
+      },
+      {
+        "dice": [
+          1,
+          3,
+          2
+        ],
+        "total": 6,
+        "result": "xiu",
+        "timestamp": 1760391523027
+      },
+      {
+        "dice": [
+          1,
+          1,
+          3
+        ],
+        "total": 5,
+        "result": "xiu",
+        "timestamp": 1760387922010
+      },
+      {
+        "dice": [
+          1,
+          3,
+          5
+        ],
+        "total": 9,
+        "result": "xiu",
+        "timestamp": 1760384321002
+      },
+      {
+        "dice": [
+          6,
+          4,
+          5
+        ],
+        "total": 15,
+        "result": "tai",
+        "timestamp": 1760380719240
+      },
+      {
+        "dice": [
+          2,
+          2,
+          3
+        ],
+        "total": 7,
+        "result": "xiu",
+        "timestamp": 1760361414878
+      },
+      {
+        "dice": [
+          1,
+          5,
+          1
+        ],
+        "total": 7,
+        "result": "xiu",
+        "timestamp": 1760350916010
+      },
+      {
+        "dice": [
+          3,
+          4,
+          3
+        ],
+        "total": 10,
+        "result": "xiu",
+        "timestamp": 1760347315028
+      },
+      {
+        "dice": [
+          2,
+          3,
+          6
+        ],
+        "total": 11,
+        "result": "tai",
+        "timestamp": 1760343714013
+      },
+      {
+        "dice": [
+          4,
+          1,
+          2
+        ],
+        "total": 7,
+        "result": "xiu",
+        "timestamp": 1760340113499
+      },
+      {
+        "dice": [
+          4,
+          2,
+          4
+        ],
+        "total": 10,
+        "result": "xiu",
+        "timestamp": 1760334762015
+      }
+    ],
+    "jackpot": "1000000",
+    "players": {}
+  },
+  "vietlott655": {
+    "activeThreads": [],
+    "jackpot": "1000000",
+    "history": [
+      {
+        "mainNumbers": [
+          2,
+          16,
+          18,
+          24,
+          28,
+          47
+        ],
+        "extraNumber": 3,
+        "timestamp": 1760472832048
+      },
+      {
+        "mainNumbers": [
+          4,
+          10,
+          21,
+          34,
+          40,
+          47
+        ],
+        "extraNumber": 30,
+        "timestamp": 1760469231059
+      },
+      {
+        "mainNumbers": [
+          4,
+          11,
+          18,
+          20,
+          21,
+          24
+        ],
+        "extraNumber": 29,
+        "timestamp": 1760465630009
+      },
+      {
+        "mainNumbers": [
+          4,
+          5,
+          18,
+          26,
+          27,
+          51
+        ],
+        "extraNumber": 10,
+        "timestamp": 1760462029367
+      },
+      {
+        "mainNumbers": [
+          12,
+          14,
+          28,
+          30,
+          34,
+          38
+        ],
+        "extraNumber": 4,
+        "timestamp": 1760458428007
+      },
+      {
+        "mainNumbers": [
+          2,
+          10,
+          11,
+          41,
+          46,
+          49
+        ],
+        "extraNumber": 22,
+        "timestamp": 1760413172001
+      },
+      {
+        "mainNumbers": [
+          13,
+          17,
+          19,
+          26,
+          30,
+          49
+        ],
+        "extraNumber": 51,
+        "timestamp": 1760409571058
+      },
+      {
+        "mainNumbers": [
+          11,
+          13,
+          20,
+          34,
+          47,
+          51
+        ],
+        "extraNumber": 40,
+        "timestamp": 1760405970002
+      },
+      {
+        "mainNumbers": [
+          9,
+          13,
+          24,
+          27,
+          30,
+          49
+        ],
+        "extraNumber": 52,
+        "timestamp": 1760402369089
+      },
+      {
+        "mainNumbers": [
+          9,
+          11,
+          15,
+          19,
+          26,
+          47
+        ],
+        "extraNumber": 6,
+        "timestamp": 1760398768005
+      },
+      {
+        "mainNumbers": [
+          1,
+          25,
+          32,
+          36,
+          43,
+          51
+        ],
+        "extraNumber": 47,
+        "timestamp": 1760391523012
+      },
+      {
+        "mainNumbers": [
+          7,
+          26,
+          27,
+          38,
+          39,
+          53
+        ],
+        "extraNumber": 42,
+        "timestamp": 1760387922061
+      },
+      {
+        "mainNumbers": [
+          14,
+          18,
+          21,
+          29,
+          42,
+          55
+        ],
+        "extraNumber": 35,
+        "timestamp": 1760384321132
+      },
+      {
+        "mainNumbers": [
+          2,
+          3,
+          8,
+          13,
+          46,
+          52
+        ],
+        "extraNumber": 33,
+        "timestamp": 1760380716014
+      },
+      {
+        "mainNumbers": [
+          2,
+          7,
+          11,
+          20,
+          23,
+          30
+        ],
+        "extraNumber": 48,
+        "timestamp": 1760361412012
+      },
+      {
+        "mainNumbers": [
+          5,
+          8,
+          15,
+          33,
+          51,
+          53
+        ],
+        "extraNumber": 38,
+        "timestamp": 1760350916056
+      },
+      {
+        "mainNumbers": [
+          16,
+          45,
+          47,
+          51,
+          53,
+          55
+        ],
+        "extraNumber": 15,
+        "timestamp": 1760347315014
+      },
+      {
+        "mainNumbers": [
+          1,
+          17,
+          21,
+          31,
+          33,
+          40
+        ],
+        "extraNumber": 55,
+        "timestamp": 1760343714060
+      },
+      {
+        "mainNumbers": [
+          4,
+          16,
+          41,
+          46,
+          47,
+          54
+        ],
+        "extraNumber": 8,
+        "timestamp": 1760340111004
+      },
+      {
+        "mainNumbers": [
+          12,
+          20,
+          29,
+          31,
+          40,
+          44
+        ],
+        "extraNumber": 41,
+        "timestamp": 1760334762001
+      }
+    ],
+    "players": {}
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "nameServer": "Chúng Ta Rồi Sẽ Hạnh Phúc",
+  "localhost": "localhost",
+  "user": "root",
+  "password": "",
+  "database": "bot-zalo-hhhbot",
+  "port": 3306,
+  "tablePlayerZalo": "players_zalo",
+  "tableAccount": "account",
+  "dailyReward": 100000000000
+}

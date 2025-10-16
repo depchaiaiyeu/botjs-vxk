@@ -1,0 +1,380 @@
+{
+  "1000136914447662556": {
+    "nameGroup": "NHÓM THU GMAIL QC FAMILY 70k/1",
+    "adminList": {
+      "6447415537719914820": "Lê Hằng",
+      "3824186568194340399": "Hoàng Ngọc Huy"
+    },
+    "muteList": {},
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "removeLinks": true,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "enableKickImage": false,
+    "enableBlockImage": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "antiStkLag": false,
+    "removeLinkKeywords": false,
+    "groupprqcSettings": false
+  },
+  "845281808323715462": {
+    "nameGroup": "NHÓM THU VOUCHER 🇻🇳",
+    "adminList": {
+      "5577782992722605141": "Hoàng Huy",
+      "6447415537719914820": "Lê Hằng"
+    },
+    "muteList": {
+      "5474494529852548036": {
+        "name": "Huy Khánh (scam)",
+        "timeMute": -1
+      }
+    },
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": true,
+    "filterBadWords": false,
+    "removeLinks": true,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "enableKickImage": false,
+    "enableBlockImage": false,
+    "whiteList": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "antiStkLag": false,
+    "removeLinkKeywords": false,
+    "groupprqcSettings": false,
+    "autoLockChat": {
+      "startHour": 23,
+      "startMinute": 0,
+      "startAction": "on",
+      "endHour": 6,
+      "endMinute": 30,
+      "endAction": "off"
+    }
+  },
+  "7094959690608411979": {
+    "nameGroup": "🤡Share kèo, chạy app, nch dzui dzẻ,…🤡",
+    "adminList": {
+      "3824186568194340399": "Hoàng Ngọc Huy",
+      "6447415537719914820": "Lê Hằng",
+      "5577782992722605141": "Hoàng Huy"
+    },
+    "muteList": {},
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": true,
+    "antiNude": false,
+    "enableKickImage": false,
+    "enableBlockImage": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "antiStkLag": false,
+    "removeLinkKeywords": true,
+    "groupprqcSettings": false
+  },
+  "6805041339947237197": {
+    "nameGroup": "Lập Trình Bất Ổn",
+    "adminList": {},
+    "muteList": {
+      "4074279241410814903": {
+        "name": "Bùi Văn Cương",
+        "timeMute": -1
+      },
+      "3847687489980678488": {
+        "name": "Trần Anh Khoa",
+        "timeMute": -1
+      },
+      "4239632098770124267": {
+        "name": "Lê Khả Hoan",
+        "timeMute": -1
+      },
+      "8315896151549019482": {
+        "name": "Phạm Thanh Bình",
+        "timeMute": -1
+      },
+      "7957263236965864016": {
+        "name": "Bùi Minh",
+        "timeMute": -1
+      },
+      "7362798301729020432": {
+        "name": "Nguyễn Minh An",
+        "timeMute": -1
+      },
+      "4814568231327564781": {
+        "name": "Hằng Vui",
+        "timeMute": -1
+      },
+      "5948362878748479409": {
+        "name": "Tuấn Kiệt Media",
+        "timeMute": -1
+      },
+      "2371892832402037719": {
+        "name": "Nguyễn Công Hải",
+        "timeMute": -1
+      },
+      "5504325368953912926": {
+        "name": "Nguyễn Đức Tam",
+        "timeMute": -1
+      }
+    },
+    "whileList": {},
+    "activeBot": true,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "enableKickImage": false,
+    "enableBlockImage": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "antiStkLag": false,
+    "removeLinkKeywords": false,
+    "groupprqcSettings": false
+  },
+  "9193956856087935402": {
+    "nameGroup": "Sống ko đớp đời như L",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": true,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "enableKickImage": false,
+    "enableBlockImage": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "antiStkLag": false,
+    "removeLinkKeywords": false,
+    "groupprqcSettings": false
+  },
+  "4699745045071009795": {
+    "nameGroup": "Zubu👽",
+    "adminList": {
+      "2577252855236527871": "Trần Quang Huy"
+    },
+    "muteList": {
+      "6691725235504439526": {
+        "name": "Tổng",
+        "timeMute": -1
+      },
+      "4007827315657033893": {
+        "name": "Vua Của Loài Chó",
+        "timeMute": -1
+      },
+      "2577252855236527871": {
+        "name": "Trưởng Tộc Chó",
+        "timeMute": -1
+      },
+      "4802332726802384542": {
+        "name": "Jerry",
+        "timeMute": -1
+      }
+    },
+    "whileList": {},
+    "activeBot": true,
+    "activeGame": true,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": true,
+    "filterBadWords": true,
+    "filterBot": true,
+    "removeLinks": true,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": true,
+    "antiNude": true,
+    "whiteList": {
+      "450249133712562180": {
+        "name": "Trung Trí"
+      }
+    },
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": true,
+    "removeLinkKeywords": false,
+    "antiUndo": true,
+    "autoDownload": true
+  },
+  "1747464985521437051": {
+    "nameGroup": "ZCA | CHATBOT　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　gwengay",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": true,
+    "removeLinkKeywords": false
+  },
+  "5464956150740844012": {
+    "nameGroup": "Multi AI Coder [ Chat ]",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": true,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": true,
+    "filterBadWords": false,
+    "filterBot": true,
+    "removeLinks": true,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": true,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": false,
+    "removeLinkKeywords": false,
+    "autoDownload": false,
+    "blockForward": true
+  },
+  "4582721331431294882": {
+    "nameGroup": "w",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": false,
+    "removeLinkKeywords": false
+  },
+  "5975420422762749911": {
+    "nameGroup": "Bot Zép Lào🩴",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": true,
+    "removeLinkKeywords": false,
+    "antiUndo": true,
+    "autoDownload": false
+  },
+  "4825567233436439756": {
+    "nameGroup": "⚜️ Infinite Coder ⚜️",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": true,
+    "autoDownload": false,
+    "removeLinkKeywords": false
+  }
+}

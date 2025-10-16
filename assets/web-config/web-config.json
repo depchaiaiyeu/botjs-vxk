@@ -1,0 +1,45 @@
+{
+  "prObjects": [
+    {
+      "ten": "Liên Hệ Hỗ Trợ",
+      "idZalo": "2896417931675947571",
+      "noiDung": "TEST",
+      "hinhAnh": [
+        ""
+      ],
+      "video": [],
+      "link": {
+        "download.jpg": ""
+      },
+      "thoiGianGui": [
+        "18:27",
+        "18:00",
+        "08:00",
+        "10:00",
+        "13:00",
+        "14:40",
+        "16:00",
+        "19:00",
+        "22:00"
+      ],
+      "customContent": {
+        "562957250953299693": {
+          "noiDung": "Xin chao",
+          "hinhAnh": [],
+          "video": []
+        },
+        "4373007278127828240": {
+          "noiDung": "",
+          "hinhAnh": [],
+          "video": []
+        }
+      }
+    }
+  ],
+  "selectedGroups": {
+    "3564475349509101386": {
+      "name": "lát"
+    }
+  },
+  "selectedFriends": {}
+}
