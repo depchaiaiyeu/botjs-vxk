@@ -181,7 +181,7 @@ export async function messagesUser(api, message) {
       let handleChat = true;
       handleChat = handleChat && !(await superCheckBox(api, message, isSelf, botIsAdminBox, isAdminBox, groupSettings));
       handleChat = handleChat && !(await antiBot(api, message, groupSettings, isAdminBox, botIsAdminBox, isSelf));
-      handleChat = handleChat && !(await autoDownload(api, message, groupSettings));
+      handleChat = handleChat && !(await autoDownload(api, message, isSelf, groupSettings));
       handleChat = handleChat && !(await antiSpam(api, message, groupInfo, isAdminBox, groupSettings, botIsAdminBox, isSelf));
       handleChat = handleChat && !(await antiMedia(api, message, groupSettings, isAdminBox, botIsAdminBox, isSelf));
       handleChat = handleChat && !(await antiSticker(api, message, groupSettings, isAdminBox, botIsAdminBox, isSelf));
