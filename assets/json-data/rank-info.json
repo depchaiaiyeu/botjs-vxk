@@ -7284,7 +7284,7 @@
           "UserName": "Hphucc",
           "UID": "9030808754540072808",
           "Rank": 30,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-15"
         },
         {
@@ -7368,7 +7368,7 @@
           "UserName": "Trung",
           "UID": "7084584280284942954",
           "Rank": 6,
-          "messageCountToday": 4,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-15"
         },
         {
@@ -7417,7 +7417,7 @@
           "UserName": "Nguyễn Quang Huy",
           "UID": "8581465980330180908",
           "Rank": 25,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-15"
         },
         {
@@ -7550,8 +7550,15 @@
           "UserName": "Long",
           "UID": "5740068248289085075",
           "Rank": 13,
-          "messageCountToday": 13,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-15"
+        },
+        {
+          "UserName": "Onew",
+          "UID": "3386338295604654533",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-16"
         }
       ],
       "nameGroup": "Multi AI Coder [ Chat ]"
