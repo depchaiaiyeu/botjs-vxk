@@ -1,15 +1,17 @@
 import schedule from "node-schedule";
 import {
-  sendMessageComplete,
   sendMessageCompleteRequest,
   sendMessageFromSQL,
+  sendMessageResultRequest,
   sendMessageWarningRequest,
-} from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
-import { getGlobalPrefix } from "../../service-hahuyhoang/service.js";
-import { getDataAllGroup } from "../../service-hahuyhoang/info-service/group-info.js";
-import { getUserInfoData } from "../../service-hahuyhoang/info-service/user-info.js";
+} from "../../service-dqt/chat-zalo/chat-style/chat-style.js";
+import { getGlobalPrefix } from "../../service-dqt/service.js";
+import { getDataAllGroup } from "../../service-dqt/info-service/group-info.js";
+import { getUserInfoData } from "../../service-dqt/info-service/user-info.js";
 import { removeMention } from "../../utils/format-util.js";
 import { handleCommand } from "../command.js";
+import { getBotId } from "../../index.js";
+import { MessageType } from "../../api-zalo/index.js";
 
 const requestJoinGroupMap = new Map();
 const waitingActionGroupMap = new Map();
@@ -30,71 +32,95 @@ schedule.scheduleJob("*/5 * * * * *", () => {
   }
 });
 
+function extractZaloGroupLink(url) {
+  if (!url) return null;
+  const match = url.match(/(https?:\/\/)?zalo\.me\/g\/[^\s]+/);
+  return match ? match[0] : null;
+}
+
 export async function handleJoinGroup(api, message) {
   const prefix = getGlobalPrefix();
   const content = removeMention(message);
-  const commandParts = content.split(" ");
-  let linkJoin = commandParts[1];
-  if (!linkJoin) {
-    const quote = message.data.quote;
-    if (quote) {
-      const quoteMsg = quote.msg || "";
-      let quoteAttach = quote.attach || {};
-      if (quoteMsg.includes("zalo.me/g/")) {
-        linkJoin = quoteMsg.match(/https?:\/\/zalo\.me\/g\/[A-Za-z0-9]+/g)?.[0];
-      } else {
-        let attaches = Array.isArray(quoteAttach) ? quoteAttach : [quoteAttach];
-        for (let att of attaches) {
-          if (att && att.href && att.href.includes("zalo.me/g/")) {
-            linkJoin = att.href.match(/https?:\/\/zalo\.me\/g\/[A-Za-z0-9]+/g)?.[0];
-            break;
-          }
-        }
-      }
+
+  let linkJoin = null;
+
+  if (message.data.quote) {
+    if (message.data.quote.msg) {
+      linkJoin = extractZaloGroupLink(message.data.quote.msg);
+    }
+    if (!linkJoin && message.data.quote.attach && message.data.quote.attach.href) {
+      linkJoin = extractZaloGroupLink(message.data.quote.attach.href);
     }
   }
+
+  if (!linkJoin) {
+    const commandParts = content.split(" ");
+    linkJoin = commandParts[1];
+  }
+
   if (!linkJoin) {
     await sendMessageFromSQL(
       api,
       message,
       {
         success: false,
-        message: `Cú pháp tham gia nhóm thông qua link hoặc reply tin nhắn có link:\n${prefix}join [link]`,
+        message: `Cú pháp tham gia nhóm thông qua link:\n${prefix}join [link] hoặc reply vào tin nhắn có link nhóm cần tham gia`,
       },
       false,
       30000
     );
     return;
   }
-  let groupInfo = null;
-  try {
-    groupInfo = await api.getGroupInfoByLink(linkJoin);
-  } catch {
+
+  if (!linkJoin.includes("zalo.me/g/")) {
     await sendMessageFromSQL(
       api,
       message,
       {
         success: false,
-        message: `Link này không tồn tại nhóm/cộng đồng nào!`,
+        message: `Link phải có định dạng zalo.me/g/`,
+      },
+      false,
+      30000
+    );
+    return;
+  }
+
+  let groupInfo = null;
+  try {
+    groupInfo = await api.getGroupInfoByLink(linkJoin);
+  } catch (error) {
+    await sendMessageFromSQL(
+      api,
+      message,
+      {
+        success: false,
+        message: `Link này đếch tồn tại nhóm/cộng đồng nào!`,
       },
       true,
       30000
     );
     return;
   }
+
   if (!groupInfo) return;
+
   const typeGroup = groupInfo.type === 2 ? "Cộng đồng" : "Nhóm";
+
   const msgResponse = await sendMessageCompleteRequest(
     api,
     message,
     {
       caption:
-        `Tên ${typeGroup}: ${groupInfo.name}\nMô tả: ${groupInfo.desc || "Không có mô tả"}\nTổng số thành viên: ${groupInfo.totalMember}` +
+        `Tên ${typeGroup}: ${groupInfo.name}\nMô tả: ${groupInfo.desc || "Không có mô tả"
+        }\nTổng số thành viên: ${groupInfo.totalMember}` +
         `\n\nXác nhận tham gia ${typeGroup} bằng cách thả reaction like hoặc heart!`,
     },
     waitingActionJoinGroup
   );
+
   const msgId = msgResponse.message.msgId.toString();
+
   requestJoinGroupMap.set(msgId, {
     message,
     timestamp: Date.now(),
@@ -109,10 +135,13 @@ export async function handleReactionConfirmJoinGroup(api, reaction) {
   if (!data) return false;
   const senderId = reaction.data.uidFrom;
   if (senderId !== data.message.data.uidFrom) return false;
+
   const rType = reaction.data.content.rType;
   if (rType !== 3 && rType !== 5) return false;
+
   const message = data.message;
   requestJoinGroupMap.delete(msgId);
+
   try {
     await api.joinGroup(data.linkJoin);
     await sendMessageFromSQL(
@@ -161,21 +190,18 @@ export async function handleReactionConfirmJoinGroup(api, reaction) {
 }
 
 export async function handleLeaveGroup(api, message) {
+  const idBot = getBotId();
+  const senderId = message.data.uidFrom;
   const threadId = message.threadId;
-  await sendMessageComplete(
-    api,
-    message,
-    {
-      caption: `Bai Mấy Em, Ta Đi Đây.`,
-    },
-    5000
-  );
+  if (senderId === idBot) return;
+  await sendMessageResultRequest(api, MessageType.GroupMessage, threadId, "Good Lucky!", true, 30000);
   await api.leaveGroup(threadId);
 }
 
 export async function handleShowGroupsList(api, message, aliasCommand) {
   const prefix = getGlobalPrefix();
   const content = removeMention(message);
+
   const command = content.replace(`${prefix}${aliasCommand}`, "").trim();
   try {
     const groups = await getDataAllGroup(api);
@@ -193,36 +219,57 @@ export async function handleShowGroupsList(api, message, aliasCommand) {
         message,
         {
           success: false,
-          message: `Không tìm thấy nhóm nào có tên chứa "${command}"!`,
+          message: `Đếch tìm thấy nhóm nào có tên chứa "${command}"!`,
         },
         false,
         30000
       );
       return;
     }
-    let contentMessage =
-      `Reply tin nhắn này với số index và "->" + cú pháp ` +
-      `liên quan đến hành động mà sếp muốn tôi thực hiện:\n`;
-    for (const [index, group] of filteredGroups.entries()) {
-      const owner = await getUserInfoData(api, group.creatorId);
-      contentMessage +=
-        `${index + 1}. ${group.name} (${group.totalMember} thành viên)\n` +
-        ` - Trưởng nhóm: ${owner.name}\n\n`;
+
+    const CHUNK_SIZE = 30;
+    const chunks = [];
+    
+    for (let i = 0; i < filteredGroups.length; i += CHUNK_SIZE) {
+      const chunk = filteredGroups.slice(i, i + CHUNK_SIZE);
+      chunks.push(chunk);
     }
-    const msgResponse = await sendMessageCompleteRequest(
-      api,
-      message,
-      {
-        caption: contentMessage,
-      },
-      timeOutWaitingActionGroup
-    );
-    const msgId = msgResponse.message.msgId.toString();
-    waitingActionGroupMap.set(msgId, {
-      message,
-      timestamp: Date.now(),
-      groups: filteredGroups,
-    });
+
+    for (const [chunkIndex, groupChunk] of chunks.entries()) {
+      let contentMessage = chunkIndex === 0 ? 
+        `Danh sách nhóm:\n\n` :
+        `(Tiếp theo)\n\n`;
+
+      for (const [index, group] of groupChunk.entries()) {
+        const owner = await getUserInfoData(api, group.creatorId);
+        const actualIndex = chunkIndex * CHUNK_SIZE + index + 1;
+        contentMessage +=
+          `${actualIndex}. ${group.name} (${group.totalMember} thành viên)\n` +
+          ` - Trưởng nhóm: ${owner.name}\n\n`;
+      }
+
+      if (chunkIndex === chunks.length - 1) {
+        contentMessage += `Reply tin nhắn này với số index và "->" + cú pháp liên quan đến hành động mà Đại Ca muốn tôi thực hiện cho danh sách bên trên!`;
+      }
+
+      const msgResponse = await sendMessageCompleteRequest(
+        api,
+        message,
+        {
+          caption: contentMessage,
+        },
+        timeOutWaitingActionGroup
+      );
+
+      if (chunkIndex === chunks.length - 1) {
+        const msgId = msgResponse.message.msgId.toString();
+        waitingActionGroupMap.set(msgId, {
+          message,
+          timestamp: Date.now(),
+          groups: filteredGroups,
+        });
+      }
+    }
   } catch (error) {
     console.error(error);
   }
@@ -246,16 +293,18 @@ export async function handleActionGroupReply(
   try {
     if (!message.data.quote || !message.data.quote.globalMsgId || !content)
       return false;
+
     const quotedMsgId = message.data.quote.globalMsgId.toString();
     if (!waitingActionGroupMap.has(quotedMsgId)) return false;
     const dataReply = waitingActionGroupMap.get(quotedMsgId);
     if (dataReply.message.data.uidFrom !== senderId) return false;
+
     const commandParts = content.split("->");
     if (commandParts.length !== 2) return false;
     const index = parseInt(commandParts[0]);
     if (isNaN(index)) {
       const object = {
-        caption: `Lựa chọn không hợp lệ. Vui lòng chọn một số từ danh sách.`,
+        caption: `Lựa chọn Không hợp lệ. Vui lòng chọn một số từ danh sách.`,
       };
       await sendMessageWarningRequest(api, message, object, 30000);
       return true;
@@ -264,13 +313,14 @@ export async function handleActionGroupReply(
     if (action && !action.startsWith(prefix)) {
       return false;
     }
+
     if (index < 1 || index > dataReply.groups.length) {
       await sendMessageFromSQL(
         api,
         message,
         {
           success: false,
-          message: `Số index không hợp lệ!`,
+          message: `Số index Không hợp lệ!`,
         },
         false,
         30000
@@ -316,7 +366,7 @@ export async function handleActionGroupReply(
           };
           await sendMessageFromSQL(api, message, result, true, 60000);
         }
-        break;
+        break
     }
     return true;
   } catch (error) {
