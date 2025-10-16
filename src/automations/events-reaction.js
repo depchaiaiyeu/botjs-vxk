@@ -5,7 +5,8 @@ export async function reactionEvents(api, reaction) {
   if (await handleReactionConfirmJoinGroup(api, reaction)) return;
   const message = {
     threadId: reaction.threadId,
-    type: reaction.type
+    type: reaction.type,
+    uid
   };
   if (await handleTikTokReaction(api, reaction, message)) return;
 }
