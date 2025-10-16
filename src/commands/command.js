@@ -67,7 +67,6 @@ import {
   handleUnbanCommand,
 } from "../service-hahuyhoang/game-service/index.js";
 import { handleAntiLinkCommand } from "../service-hahuyhoang/anti-service/anti-link.js";
-import { handleMyBotCommand } from "../service-hahuyhoang/tien-ich/mybot.js";
 import { getCommandConfig, isAdmin } from "../index.js";
 import {
   sendMessageFromSQL,
@@ -1352,8 +1351,6 @@ export async function handleCommand(
                 break;
               case "whitlistlink":
                 await handleWhitelistCommand (api, message, aliasCommand );
-              case "mybot":
-                await handleMyBotCommand (api, message, aliasCommand );
                 break;
               case "object":
                 await logReply (api, message);
