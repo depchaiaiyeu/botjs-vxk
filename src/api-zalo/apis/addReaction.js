@@ -46,7 +46,7 @@ export function addReactionFactory(api) {
           message: JSON.stringify({
             rMsg,
             rIcon: text,
-            rType: 2000,
+            rType,
             source: 6,
           }),
           clientId: Date.now(),
