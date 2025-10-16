@@ -958,8 +958,8 @@
         {
           "UserName": "Take Care For Groups",
           "UID": "227886665729461010",
-          "Rank": 6543,
-          "messageCountToday": 5,
+          "Rank": 6546,
+          "messageCountToday": 8,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -9420,6 +9420,18 @@
         }
       ],
       "nameGroup": "YÊU VIỆT NAM ❤"
+    },
+    "6671597069754837933": {
+      "users": [
+        {
+          "UserName": "Jin An",
+          "UID": "4708461619259602796",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-16"
+        }
+      ],
+      "nameGroup": "✨🎨USAGI TOWN🐧✨"
     }
   }
 }
