@@ -2224,17 +2224,6 @@
       "active": true
     },
     {
-      "name": "mybot",
-      "description": "Tạo các bot con",
-      "syntax": "{p}mybot",
-      "permission": "adminLevelHigh",
-      "countdown": 5,
-      "icon": "🤖",
-      "type": 5,
-      "author": "Vũ Xuân Kiên",
-      "active": true
-    },
-    {
       "name": "cpubenchmark",
       "description": "Xem thông tin và test hiệu năng CPU",
       "syntax": "{p}cpubenchmark",
@@ -2255,7 +2244,7 @@
       "permission": "all",
       "countdown": 30,
       "icon": "💽",
-      "type": 5,
+      "type": 1,
       "author": "Vũ Xuân Kiên",
       "active": true
     },
@@ -2312,7 +2301,7 @@
       "syntax": "{p}autodownload",
       "permission": "adminLevelHigh",
       "countdown": 5,
-      "icon": "💽",
+      "icon": "📸",
       "type": 5,
       "author": "Vũ Xuân Kiên",
       "active": true
