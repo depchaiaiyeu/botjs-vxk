@@ -87,7 +87,14 @@
     "@callentropy"
   ],
   "linkRegex": "(?:https?:\\/\\/|www\\.)\\S+|(?<!\\w)[a-zA-Z0-9-]+[.,](?:com|net|org|vn|info|biz|io|xyz|me|tv|online|store|club|site|app|blog|dev|tech|cloud|game|shop|click|space|asia|fun|tokyo|xyz|website)(?:\\/\\S*)?(?!\\w)",
-  "violationsNude": {},
+  "violationsNude": {
+    "755788346107565638": {
+      "count": 1,
+      "lastViolation": 1760635634662,
+      "senderName": "Cherry",
+      "threadId": "4699745045071009795"
+    }
+  },
   "violations": {
     "562957250953299693": {
       "1277357418864786055": {
