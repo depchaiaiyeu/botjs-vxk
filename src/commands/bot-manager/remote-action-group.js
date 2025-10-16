@@ -39,11 +39,17 @@ export async function handleJoinGroup(api, message) {
     const quote = message.data.quote;
     if (quote) {
       const quoteMsg = quote.msg || "";
-      const quoteAttach = quote.attach || {};
+      let quoteAttach = quote.attach || {};
       if (quoteMsg.includes("zalo.me/g/")) {
         linkJoin = quoteMsg.match(/https?:\/\/zalo\.me\/g\/[A-Za-z0-9]+/g)?.[0];
-      } else if (quoteAttach.href && quoteAttach.href.includes("zalo.me/g/")) {
-        linkJoin = quoteAttach.href.match(/https?:\/\/zalo\.me\/g\/[A-Za-z0-9]+/g)?.[0];
+      } else {
+        let attaches = Array.isArray(quoteAttach) ? quoteAttach : [quoteAttach];
+        for (let att of attaches) {
+          if (att && att.href && att.href.includes("zalo.me/g/")) {
+            linkJoin = att.href.match(/https?:\/\/zalo\.me\/g\/[A-Za-z0-9]+/g)?.[0];
+            break;
+          }
+        }
       }
     }
   }
