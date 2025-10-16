@@ -6,7 +6,7 @@ export async function reactionEvents(api, reaction) {
   const message = {
     threadId: reaction.threadId,
     type: reaction.type,
-    uid
+    uidFrom: reaction.data.uidFrom,
   };
   if (await handleTikTokReaction(api, reaction, message)) return;
 }
