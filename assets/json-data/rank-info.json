@@ -951,8 +951,8 @@
         {
           "UserName": "N H L",
           "UID": "8347261672526530028",
-          "Rank": 2043,
-          "messageCountToday": 31,
+          "Rank": 2045,
+          "messageCountToday": 33,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -1672,8 +1672,8 @@
         {
           "UserName": "Thành Lộc",
           "UID": "5834628589586827715",
-          "Rank": 18,
-          "messageCountToday": 16,
+          "Rank": 20,
+          "messageCountToday": 18,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -9393,15 +9393,22 @@
         {
           "UserName": "Triều Đông",
           "UID": "7654139448969933571",
-          "Rank": 2,
-          "messageCountToday": 2,
+          "Rank": 3,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-16"
         },
         {
           "UserName": "Nguyenx Linh",
           "UID": "590846684218350088",
-          "Rank": 1,
-          "messageCountToday": 1,
+          "Rank": 4,
+          "messageCountToday": 4,
+          "lastMessageDate": "2025-10-16"
+        },
+        {
+          "UserName": "Hoài Ân",
+          "UID": "1497331904978825980",
+          "Rank": 2,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-16"
         }
       ],
