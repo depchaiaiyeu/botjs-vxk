@@ -951,15 +951,15 @@
         {
           "UserName": "N H L",
           "UID": "8347261672526530028",
-          "Rank": 2012,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-14"
+          "Rank": 2016,
+          "messageCountToday": 4,
+          "lastMessageDate": "2025-10-16"
         },
         {
           "UserName": "Take Care For Groups",
           "UID": "227886665729461010",
           "Rank": 6538,
-          "messageCountToday": 7,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-15"
         },
         {
@@ -994,7 +994,7 @@
           "UserName": "N D Q",
           "UID": "5440985416542136505",
           "Rank": 262,
-          "messageCountToday": 3,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-15"
         },
         {
@@ -9373,6 +9373,25 @@
         }
       ],
       "nameGroup": "NRO"
+    },
+    "8370031836626107667": {
+      "users": [
+        {
+          "UserName": "Thành Nhân",
+          "UID": "3875953011135749873",
+          "Rank": 2,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-16"
+        },
+        {
+          "UserName": "Triều Đông",
+          "UID": "7654139448969933571",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-16"
+        }
+      ],
+      "nameGroup": "YÊU VIỆT NAM ❤"
     }
   }
 }
