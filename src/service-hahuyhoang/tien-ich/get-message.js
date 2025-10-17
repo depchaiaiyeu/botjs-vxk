@@ -1,5 +1,4 @@
 import { sendMessageFromSQL, sendMessageFailed, sendMessageQuery } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
-import { getClientMessageType } from "../../api-zalo/utils.js";
 
 export async function handleGetMessageCommand(api, message) {
   try {
@@ -12,26 +11,9 @@ export async function handleGetMessageCommand(api, message) {
     const senderId = quote.ownerId || quote.senderId || "Không rõ";
     const senderName = quote.fromD || "Không rõ";
     const cliMsgId = quote.cliMsgId || "Không rõ";
+    const cliMsgType = quote.cliMsgType || "Không rõ";
     const ttl = quote.ttl || 0;
     const msgContent = quote.msg || "";
-    const msgType = quote.msgType || "webchat";
-
-    const typeDisplayMap = {
-      1: "Tin nhắn",
-      31: "Tin nhắn thoại",
-      32: "Ảnh",
-      36: "Sticker",
-      37: "Vẽ tay", 
-      38: "Link preview",
-      43: "Vị trí",
-      44: "Video",
-      46: "File",
-      49: "Gif"
-    };
-
-    const typeCode = getClientMessageType(msgType);
-    const msgTypeDisplay = typeDisplayMap[typeCode] || "Không rõ loại";
-
     let attachInfo = "Không có đính kèm";
 
     if (quote.attach && quote.attach !== "") {
@@ -56,7 +38,7 @@ export async function handleGetMessageCommand(api, message) {
 Người gửi: ${senderName}
 ID Người Gửi: ${senderId}
 cliMsgId: ${cliMsgId}
-Loại tin nhắn: ${msgTypeDisplay}
+cliMsgType: ${cliMsgType}
 Time to live: ${ttl}
 Msg: ${msgContent}
 Đính kèm: ${attachInfo}`;
