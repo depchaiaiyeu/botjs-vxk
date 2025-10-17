@@ -73,71 +73,28 @@ export async function handleGetUID(api, message) {
 
 export async function handleEval(api, message) {
   try {
-    const content = removeMention(message);
-    const prefix = getGlobalPrefix();
-    const senderName = message.data?.dName || "Người dùng";
-    const senderId = message.data?.uidFrom;
-    const threadId = message.threadId;
-    const codeToEval = content.replace(new RegExp(`^${prefix}eval\\s*`, 'i'), '').trim();
-    if (!codeToEval) {
-      await sendMessageFromSQL(
-        api,
-        message,
-        {
-          success: false,
-          message: `Vui lòng nhập code cần thực thi!`
-        },
-        false,
-        30000
-      );
+    const prefix = await getGlobalPrefix();
+    const content = message.data?.content?.trim();
+    if (!content || !content.startsWith(`${prefix}eval`)) {
+      await sendMessageQuery(api, message, `Vui lòng sử dụng ${prefix}eval [code]`);
       return;
     }
-    const evalContext = {
-      api,
-      message,
-      senderName,
-      senderId,
-      threadId
-    };
-    let result;
+    const code = content.replace(new RegExp(`^\\${prefix}eval\\s+`), "");
+    const senderId = message.data?.uidFrom;
+    const threadId = message.threadId;
+    let output;
     try {
-      result = await (async function() {
-        const contextKeys = Object.keys(evalContext);
-        const contextValues = Object.values(evalContext);
-        const AsyncFunction = async function(){}.constructor;
-        const fn = new AsyncFunction(...contextKeys, codeToEval);
-        return await fn(...contextValues);
-      })();
-    } catch (error) {
-      result = await (async function() {
-        const contextKeys = Object.keys(evalContext);
-        const contextValues = Object.values(evalContext);
-        const AsyncFunction = async function(){}.constructor;
-        const fn = new AsyncFunction(...contextKeys, `return (${codeToEval})`);
-        return await fn(...contextValues);
-      })();
+      output = await eval(`(async () => { ${code} })()`);
+    } catch (err) {
+      output = err.message || String(err);
     }
-    await sendMessageFromSQL(
-      api,
-      message,
-      {
-        success: true,
-        message: `✅ Thực thi thành công!\n${result !== undefined ? `Kết quả: ${JSON.stringify(result, null, 2)}` : ''}`
-      },
-      false,
-      60000
-    );
+    const result =
+      typeof output === "object"
+        ? JSON.stringify(output, null, 2)
+        : String(output);
+    await sendMessageFromSQL(api, message, { message: result, success: true }, true, 1800000);
   } catch (error) {
-    await sendMessageFromSQL(
-      api,
-      message,
-      {
-        success: false,
-        message: `❌ Lỗi:\n${error.message}`
-      },
-      false,
-      60000
-    );
+    await sendMessageFailed(api, message, `Đã xảy ra lỗi khi xử lý: ${error.message || error}`);
   }
 }
 
