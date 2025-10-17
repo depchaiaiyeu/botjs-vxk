@@ -373,9 +373,10 @@
     "autoLockChat": {},
     "antiMedia": false,
     "antiSticker": false,
-    "autoReply": true,
+    "autoReply": false,
     "autoDownload": false,
-    "removeLinkKeywords": false
+    "removeLinkKeywords": false,
+    "blockForward": false
   },
   "6671597069754837933": {
     "nameGroup": "✨🎨USAGI TOWN🐧✨",
