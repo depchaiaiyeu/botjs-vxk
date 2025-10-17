@@ -3762,9 +3762,9 @@
         {
           "UserName": "Thu Hương",
           "UID": "8483070556819959170",
-          "Rank": 2,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-13"
+          "Rank": 3,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
         },
         {
           "UserName": "Ng Nhật Linh",
@@ -9255,7 +9255,7 @@
           "UserName": "Tuấn Ank",
           "UID": "4239760228928261613",
           "Rank": 13,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -9318,7 +9318,7 @@
           "UserName": "Nguyễn Thanh Toàn",
           "UID": "6021268925144579508",
           "Rank": 3,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-16"
         },
         {
@@ -9418,6 +9418,13 @@
           "Rank": 1,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-14"
+        },
+        {
+          "UserName": "Thu Hương",
+          "UID": "8483070556819959170",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
         }
       ],
       "nameGroup": "Những Kẻ Ăn Bug Thay Cơm"
