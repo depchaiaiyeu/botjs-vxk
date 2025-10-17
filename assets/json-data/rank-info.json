@@ -1665,8 +1665,8 @@
         {
           "UserName": "Vantam",
           "UID": "7793042347894516509",
-          "Rank": 26,
-          "messageCountToday": 8,
+          "Rank": 27,
+          "messageCountToday": 9,
           "lastMessageDate": "2025-10-17"
         },
         {
@@ -7607,6 +7607,13 @@
           "UID": "3386338295604654533",
           "Rank": 8,
           "messageCountToday": 4,
+          "lastMessageDate": "2025-10-17"
+        },
+        {
+          "UserName": "Ngô Minh Quân",
+          "UID": "4685676121406318141",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-17"
         }
       ],
