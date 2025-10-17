@@ -4,7 +4,7 @@
     "history": []
   },
   "chanle": {
-    "jackpot": "4702875048002605.1040047",
+    "jackpot": "4703345335507405.36451510047",
     "history": [
       {
         "dice": [
@@ -45,6 +45,16 @@
         "total": 8,
         "result": "chan",
         "timestamp": 1760677316661
+      },
+      {
+        "dice": [
+          2,
+          6,
+          5
+        ],
+        "total": 13,
+        "result": "le",
+        "timestamp": 1760677940867
       }
     ]
   },
