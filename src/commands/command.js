@@ -1,5 +1,5 @@
-import { handleStkmemeCommand } from "../service-hahuyhoang/chat-zalo/chat-special/send-sticker/stkmeme-utils.js";
 import { handleCheckDomainCommand } from "./utilities-command/check-domain.js";
+import { handleStkmemeCommand } from "../service-hahuyhoang/chat-zalo/chat-special/send-sticker/stkmeme-utils.js";
 
 import { writeGroupSettings } from "../utils/io-json.js";
 import { handleMuteList, handleMuteUser, handleUnmuteUser } from "../service-hahuyhoang/anti-service/mute-user.js";
@@ -129,7 +129,6 @@ import { handleMusicCommand } from "../service-hahuyhoang/api-crawl/music/soundc
 import { handleAntiNudeCommand } from "../service-hahuyhoang/anti-service/anti-nude/anti-nude.js";
 import { handleSettingGroupCommand } from "./bot-manager/group-manage.js";
 import { handleTopChartZingMp3, handleZingMp3Command } from "../service-hahuyhoang/api-crawl/music/zingmp3.js";
-import { handleMemeCommand } from "../service-hahuyhoang/api-crawl/image/meme.js";
 import { handleVietlott655Command } from "../service-hahuyhoang/game-service/vietlott/vietlott655.js";
 import { startGame } from "../service-hahuyhoang/game-service/mini-game/index.js";
 import { handleYoutubeCommand } from "../service-hahuyhoang/api-crawl/youtube/youtube-service.js";
@@ -154,21 +153,17 @@ import { processEditAudioCommand, processEditVideoCommand } from "../service-hah
 import { handleLienQuanCommand } from "../service-hahuyhoang/servises/LQM-General.js";
 import { handleLOLCommand } from "../service-hahuyhoang/servises/LOL.General.js";
 
-import { logReply } from "../service-hahuyhoang/tien-ich/logReplyData.js";
-import { handleImageAnalysis } from "../service-hahuyhoang/AI-Genmini/Analysis-Image.js";
-import { handleImageGeneration } from "../service-hahuyhoang/AI-Genmini/Create-Image.js";
+import { handleGetMessageCommand } from "../service-hahuyhoang/tien-ich/get-message.js";
+import { handleImageAnalytics } from "../service-hahuyhoang/ai-genmini/analytics-image.js";
+import { handleImageGeneration } from "../service-hahuyhoang/ai-genmini/create-image.js,";
 import {handleAutoLockChatCommand } from "../commands/bot-manager/group-autolock.js";
 import { handleToggleGroupEventNotify } from "../service-hahuyhoang/servises/SettingGroup.js";
 import { handleWelcomeCommand } from "../service-hahuyhoang/servises/send-msg-code.js";
 import { handleBlockUIDByCommand } from "../service-hahuyhoang/servises/block-user-join.js"
 import { handleCheckHostCommand } from "../service-hahuyhoang/servises/check-host.js";
 
-import { handleAntiMediaCommand } from "../service-hahuyhoang/anti-service/anti-media.js";
 import { handleAntiStickerCommand } from "../service-hahuyhoang/anti-service/anti-sticker.js";
 import { handleHH3DCommand } from "../service-hahuyhoang/api-crawl/video/yanhh3d-phim3d.js";
-import { handleAntiLinkKeywordCommand } from "../service-hahuyhoang/anti-service/anti-keyword-link.js";
-import { handleSubNhanhChillCommand } from "../service-hahuyhoang/api-crawl/video/subnhanhchill.net.js";
-
 
 const lastCommandUsage = {};
 
@@ -568,9 +563,6 @@ export async function handleCommandPrivate(api, message) {
           case "soundcloud":
             await handleMusicCommand(api, message, aliasCommand);
             return 0;
-          case "meme":
-            await handleMemeCommand(api, message, aliasCommand);
-            return 0;
           case "zingmp3":
             await handleZingMp3Command(api, message, aliasCommand);
             return 0;
@@ -729,7 +721,9 @@ export async function handleCommandPrivate(api, message) {
               case "checkhost":
                 await handleCheckHostCommand (api, message, aliasCommand);
                 return 0;
-
+              case "checkdomain":
+                await handleCheckDomainCommand (api, message);
+                return 0;
               case "hoathinh3dtrungquoc":
                 await handleHH3DCommand (api, message, aliasCommand);
                 return 0;
@@ -1352,14 +1346,14 @@ export async function handleCommand(
               case "whitlistlink":
                 await handleWhitelistCommand (api, message, aliasCommand );
                 break;
-              case "object":
-                await logReply (api, message);
+              case "getmessage":
+                await handleGetMessageCommand (api, message);
                 break;
               case "call":
                 await spamCallInGroup (api, message, aliasCommand);
                 break;
               case "genmini":
-                await handleImageAnalysis (api, message, aliasCommand);
+                await handleImageAnalytics (api, message, aliasCommand);
                 break;
               case "createimageai":
                 await handleImageGeneration (api, message, aliasCommand);
@@ -1372,9 +1366,6 @@ export async function handleCommand(
                 break;
               case "settingsgroup":
                 await handleToggleGroupEventNotify (api, message, aliasCommand);
-                break;
-              case "checkhost":
-                await handleCheckHostCommand (api, message, aliasCommand);
                 break;
               case "checkhost":
                 await handleCheckHostCommand (api, message, aliasCommand);
