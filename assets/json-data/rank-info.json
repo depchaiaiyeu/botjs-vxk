@@ -958,8 +958,8 @@
         {
           "UserName": "Take Care For Groups",
           "UID": "227886665729461010",
-          "Rank": 6751,
-          "messageCountToday": 144,
+          "Rank": 6752,
+          "messageCountToday": 145,
           "lastMessageDate": "2025-10-17"
         },
         {
@@ -1168,9 +1168,9 @@
         {
           "UserName": "Phạm Tấn Giàu",
           "UID": "1739239007185164824",
-          "Rank": 9,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-09"
+          "Rank": 10,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
         },
         {
           "UserName": "Huy Nguyễn",
@@ -6064,9 +6064,9 @@
         {
           "UserName": "Nguyen Cao Minhᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠ",
           "UID": "8271561092887501297",
-          "Rank": 2,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-10"
+          "Rank": 3,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
         },
         {
           "UserName": "Tiến",
@@ -9706,15 +9706,15 @@
         {
           "UserName": "Nhat An",
           "UID": "5494351236019917316",
-          "Rank": 120,
-          "messageCountToday": 120,
+          "Rank": 122,
+          "messageCountToday": 122,
           "lastMessageDate": "2025-10-17"
         },
         {
           "UserName": "Naruメ",
           "UID": "6472592091088710632",
-          "Rank": 95,
-          "messageCountToday": 95,
+          "Rank": 96,
+          "messageCountToday": 96,
           "lastMessageDate": "2025-10-17"
         },
         {
@@ -9736,6 +9736,20 @@
           "UID": "4668506524134172914",
           "Rank": 26,
           "messageCountToday": 26,
+          "lastMessageDate": "2025-10-17"
+        },
+        {
+          "UserName": "Minh Tâm",
+          "UID": "8189634722134767516",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
+        },
+        {
+          "UserName": "Khánh An",
+          "UID": "2348260783053100973",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-17"
         }
       ],
