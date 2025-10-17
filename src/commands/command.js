@@ -156,8 +156,6 @@ import { handleLOLCommand } from "../service-hahuyhoang/servises/LOL.General.js"
 import { handleGetMessageCommand } from "../service-hahuyhoang/tien-ich/get-message.js";
 import { handleImageAnalytics } from "../service-hahuyhoang/ai-genmini/analytics-image.js";
 import { handleImageGeneration } from "../service-hahuyhoang/ai-genmini/create-image.js,";
-import {handleAutoLockChatCommand } from "../commands/bot-manager/group-autolock.js";
-import { handleToggleGroupEventNotify } from "../service-hahuyhoang/servises/SettingGroup.js";
 import { handleWelcomeCommand } from "../service-hahuyhoang/servises/send-msg-code.js";
 import { handleBlockUIDByCommand } from "../service-hahuyhoang/servises/block-user-join.js"
 import { handleCheckHostCommand } from "../service-hahuyhoang/servises/check-host.js";
@@ -694,11 +692,8 @@ export async function handleCommandPrivate(api, message) {
             case "videocut":
               await processEditVideoCommand (api, message, aliasCommand);
               return 0;
-            case "whitlistlink":
-              await handleWhitelistCommand (api, message, aliasCommand );
-              return 0;
-            case "object":
-              await logReply (api, message);
+            case "getmessage":
+              await handleGetMessageCommand (api, message);
               return 0;
             case "call":
               await spamCallInGroup (api, message, aliasCommand);
@@ -727,9 +722,6 @@ export async function handleCommandPrivate(api, message) {
               case "hoathinh3dtrungquoc":
                 await handleHH3DCommand (api, message, aliasCommand);
                 return 0;
-            case "subnhanhchill":
-              await handleSubNhanhChillCommand (api, message, aliasCommand);
-              return 0;
         }
       } else {
         await sendMessageInsufficientAuthority(api, message, "Tương tác lệnh trong tin nhắn riêng tư đã bị vô hiệu hóa!");
@@ -851,8 +843,8 @@ export async function handleCommand(
         await handleGetUID(api, message);
         break;
       case "go":
-          await spamMessagesInGroup(api, message, aliasCommand);
-          break;
+        await spamMessagesInGroup(api, message, aliasCommand);
+        break;
       case "join":
         await handleJoinGroup(api, message);
         break;
@@ -957,10 +949,6 @@ export async function handleCommand(
 
       case "antisticker":
         isChangeSetting = await handleAntiStickerCommand (api, message, groupSettings, aliasCommand);
-        break;
-
-      case "antilinkkeyword":
-        isChangeSetting = await handleAntiLinkKeywordCommand (api, message, aliasCommand, groupSettings)
         break;
 
       case "keygold":
@@ -1246,7 +1234,7 @@ export async function handleCommand(
                 break;
 
               case "status":
-                  await handleCustomCanvasCommand(api, message);
+                await handleCustomCanvasCommand(api, message);
                 break;
 
               case "data":
@@ -1343,9 +1331,6 @@ export async function handleCommand(
               case "videocut":
                   await processEditVideoCommand (api, message, aliasCommand);
                 break;
-              case "whitlistlink":
-                await handleWhitelistCommand (api, message, aliasCommand );
-                break;
               case "getmessage":
                 await handleGetMessageCommand (api, message);
                 break;
@@ -1364,9 +1349,6 @@ export async function handleCommand(
               case "lienminhhuyenthoai":
                 await handleLOLCommand (api, message, aliasCommand);
                 break;
-              case "settingsgroup":
-                await handleToggleGroupEventNotify (api, message, aliasCommand);
-                break;
               case "checkhost":
                 await handleCheckHostCommand (api, message, aliasCommand);
                 break;
@@ -1378,9 +1360,6 @@ export async function handleCommand(
                 break;
               case "clipphot":
                 await handleClipphotCommand(api, message, aliasCommand);
-                break;
-              case "subnhanhchill":
-                await handleSubNhanhChillCommand (api, message, aliasCommand);
                 break;
             }
           } else {
