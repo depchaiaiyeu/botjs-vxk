@@ -42,7 +42,7 @@ Msg: ${msgContent}
 Đính kèm: ${attachInfo}`;
 
     if (attachInfo === "Không có đính kèm") {
-      await sendMessageQuery(api, message, { caption: logMessage }, 1800000);
+      await sendMessageFromSQL(api, message, { caption: logMessage }, 1800000);
     } else {
       await sendMessageFromSQL(api, message, { caption: logMessage }, 1800000);
     }
