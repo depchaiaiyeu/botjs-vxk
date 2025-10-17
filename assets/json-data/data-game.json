@@ -8,16 +8,6 @@
     "history": [
       {
         "dice": [
-          1,
-          4,
-          4
-        ],
-        "total": 9,
-        "result": "le",
-        "timestamp": 1760678594811
-      },
-      {
-        "dice": [
           6,
           2,
           5
@@ -205,6 +195,16 @@
         "total": 9,
         "result": "le",
         "timestamp": 1760679239349
+      },
+      {
+        "dice": [
+          5,
+          4,
+          1
+        ],
+        "total": 10,
+        "result": "chan",
+        "timestamp": 1760679255888
       }
     ]
   },
