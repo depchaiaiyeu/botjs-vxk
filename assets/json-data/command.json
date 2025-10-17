@@ -1972,9 +1972,9 @@
       ]
     },
     {
-      "name": "object",
+      "name": "getmessage",
       "description": "Lấy thông tin chi tiết về tin nhắn/media",
-      "syntax": "{p}object",
+      "syntax": "{p}getmessage <reply object>",
       "permission": "all",
       "countdown": 5,
       "icon": "✅",
@@ -2002,7 +2002,7 @@
     {
       "name": "genmini",
       "description": "Phân tích Hình ảnh, hỏi đáp từ genmini",
-      "syntax": "{p}genminiv1",
+      "syntax": "{p}genmini",
       "permission": "all",
       "countdown": 10,
       "icon": "✅",
@@ -2072,20 +2072,6 @@
       ]
     },
     {
-      "name": "whitlistlink",
-      "description": "Thêm link vào danh sách trắng",
-      "syntax": "{p}whitlistlink add/remove/list",
-      "permission": "adminLevelHigh",
-      "countdown": 30,
-      "icon": "✅",
-      "type": 1,
-      "author": "Vũ Xuân Kiên",
-      "active": true,
-      "alias": [
-        "linkwl"
-      ]
-    },
-    {
       "name": "groupautolock",
       "description": "Tự động bật tắt chat cho nhóm",
       "syntax": "{p}groupautolock",
@@ -2100,20 +2086,6 @@
       ]
     },
     {
-      "name": "settingsgroup",
-      "description": "Bật / Tắt Thông Báo Sự Kiện Nhóm",
-      "syntax": "{p}settingsgroup",
-      "permission": "adminLevelHigh",
-      "countdown": 60,
-      "icon": "✅",
-      "type": 1,
-      "author": "Vũ Xuân Kiên",
-      "active": true,
-      "alias": [
-        "stgr"
-      ]
-    },
-    {
       "name": "checkhost",
       "description": "Kiểm tra thông tin địa chỉ IP hoặc Domain",
       "syntax": "{p}checkhost",
@@ -2125,20 +2097,6 @@
       "active": true,
       "alias": [
         "hosti4"
-      ]
-    },
-    {
-      "name": "antimedia",
-      "description": "Chặn media gửi đi từ người dùng",
-      "syntax": "{p}antimedia",
-      "permission": "adminLevelHigh",
-      "countdown": 60,
-      "icon": "✅",
-      "type": 1,
-      "author": "Vũ Xuân Kiên",
-      "active": true,
-      "alias": [
-        "atmda"
       ]
     },
     {
@@ -2168,20 +2126,6 @@
       "alias": [
         "hh3d",
         "donghua"
-      ]
-    },
-    {
-      "name": "antilinkkeyword",
-      "description": "Chặn link theo từ khóa link chỉ định",
-      "syntax": "{p}antilinkkeyword",
-      "permission": "adminLevelHigh",
-      "countdown": 60,
-      "icon": "✅",
-      "type": 1,
-      "author": "Vũ Xuân Kiên",
-      "active": true,
-      "alias": [
-        "atlbw"
       ]
     },
     {
@@ -2247,20 +2191,6 @@
       "type": 1,
       "author": "Vũ Xuân Kiên",
       "active": true
-    },
-    {
-      "name": "subnhanhchill",
-      "description": "Xem phim tại nền tảng https://subnhanhchill.net",
-      "syntax": "{p}subnhanhchill",
-      "permission": "all",
-      "countdown": 60,
-      "icon": "✅",
-      "type": 1,
-      "author": "Vũ Xuân Kiên",
-      "active": true,
-      "alias": [
-        "phim"
-      ]
     },
     {
       "name": "autoreply",
