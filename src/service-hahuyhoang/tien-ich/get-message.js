@@ -7,7 +7,7 @@ export async function handleGetMessageCommand(api, message) {
       await sendMessageFailed(api, message, "Không có dữ liệu REPLY hoặc chưa reply tin nhắn cần lấy dữ liệu");
       return;
     }
-    const senderNameOrigin = message.data.fromD;
+    const senderNameOrigin = message.data.fromD || "[ Thông Tin Tin Nhắn ]";
     const senderId = quote.ownerId || quote.senderId || "Không rõ";
     const senderName = quote.fromD || "Không rõ";
     const cliMsgId = quote.cliMsgId || "Không rõ";
