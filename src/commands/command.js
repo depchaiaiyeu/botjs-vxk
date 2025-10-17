@@ -155,7 +155,7 @@ import { handleLOLCommand } from "../service-hahuyhoang/servises/LOL.General.js"
 
 import { handleGetMessageCommand } from "../service-hahuyhoang/tien-ich/get-message.js";
 import { handleImageAnalytics } from "../service-hahuyhoang/ai-genmini/analytics-image.js";
-import { handleImageGeneration } from "../service-hahuyhoang/ai-genmini/create-image.js,";
+import { handleImageGeneration } from "../service-hahuyhoang/ai-genmini/create-image.js";
 import { handleWelcomeCommand } from "../service-hahuyhoang/servises/send-msg-code.js";
 import { handleBlockUIDByCommand } from "../service-hahuyhoang/servises/block-user-join.js"
 import { handleCheckHostCommand } from "../service-hahuyhoang/servises/check-host.js";
