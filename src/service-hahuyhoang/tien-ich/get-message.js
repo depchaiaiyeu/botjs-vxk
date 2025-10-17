@@ -1,4 +1,4 @@
-import { sendMessageFromSQL, sendMessageFailed, sendMessageQuery } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
+import { sendMessageFromSQL, sendMessageFailed, sendMessageComplete } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
 
 export async function handleGetMessageCommand(api, message) {
   try {
@@ -7,7 +7,7 @@ export async function handleGetMessageCommand(api, message) {
       await sendMessageFailed(api, message, "Không có dữ liệu REPLY hoặc chưa reply tin nhắn cần lấy dữ liệu");
       return;
     }
-    const senderNameOrigin = message.data.fromD || "[ Thông Tin Tin Nhắn ]";
+
     const senderId = quote.ownerId || quote.senderId || "Không rõ";
     const senderName = quote.fromD || "Không rõ";
     const cliMsgId = quote.cliMsgId || "Không rõ";
@@ -16,7 +16,7 @@ export async function handleGetMessageCommand(api, message) {
     const msgContent = quote.msg || "";
     let attachInfo = "Không có đính kèm";
 
-    if (quote.attach) {
+    if (quote.attach && quote.attach !== "") {
       try {
         let attachData = quote.attach;
         if (typeof attachData === 'string') {
@@ -31,7 +31,7 @@ export async function handleGetMessageCommand(api, message) {
       }
     }
 
-    const logMessage = `[ ${senderNameOrigin} ]
+    const logMessage = `[ Thông Tin Tin Nhắn ]
 
 Người gửi: ${senderName}
 ID Người Gửi: ${senderId}
@@ -42,12 +42,12 @@ Msg: ${msgContent}
 Đính kèm: ${attachInfo}`;
 
     if (attachInfo === "Không có đính kèm") {
-      await sendMessageFromSQL(api, message, { caption: logMessage }, 1800000);
+      await sendMessageQuery(api, message, logMessage, 1800000);
     } else {
-      await sendMessageFromSQL(api, message, { caption: logMessage }, 1800000);
+      await sendMessageFromSQL(api, message, { message: logMessage, success: true }, true, 1800000);
     }
   } catch (error) {
-    const errorMessage = `Đã xảy ra lỗi khi gửi log dữ liệu: ${error.message}`;
-    await sendMessageFailed(api, message, errorMessage);
+    console.error("Error in handleGetMessageCommand:", error);
+    await sendMessageFailed(api, message, `Đã xảy ra lỗi khi xử lý: ${error.message || error}`);
   }
 }
