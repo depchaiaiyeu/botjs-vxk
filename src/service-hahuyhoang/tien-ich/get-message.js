@@ -1,10 +1,10 @@
-import { sendMessageFromSQL, sendMessageFailed, sendMessageComplete } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
+import { sendMessageFromSQL, sendMessageFailed, sendMessageQuery } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
 
 export async function handleGetMessageCommand(api, message) {
   try {
     const quote = message.data?.quote || message.reply;
     if (!quote) {
-      await sendMessageFailed(api, message, "Không có dữ liệu REPLY hoặc chưa reply tin nhắn cần lấy dữ liệu");
+      await sendMessageFailed(api, message, "Reply tin nhắn cần lấy dữ liệu! 🤔");
       return;
     }
 
@@ -19,10 +19,12 @@ export async function handleGetMessageCommand(api, message) {
     if (quote.attach && quote.attach !== "") {
       try {
         let attachData = quote.attach;
-        if (typeof attachData === 'string') {
+        if (typeof attachData === "string") {
           attachData = JSON.parse(attachData);
-          if (attachData.params && typeof attachData.params === 'string') {
-            attachData.params = JSON.parse(attachData.params.replace(/\\\\/g, '\\').replace(/\\\//g, '/'));
+          if (attachData.params && typeof attachData.params === "string") {
+            attachData.params = JSON.parse(
+              attachData.params.replace(/\\\\/g, "\\").replace(/\\\//g, "/")
+            );
           }
         }
         attachInfo = JSON.stringify(attachData, null, 2);
@@ -41,11 +43,7 @@ Time to live: ${ttl}
 Msg: ${msgContent}
 Đính kèm: ${attachInfo}`;
 
-    if (attachInfo === "Không có đính kèm") {
-      await sendMessageQuery(api, message, logMessage, 1800000);
-    } else {
-      await sendMessageFromSQL(api, message, { message: logMessage, success: true }, true, 1800000);
-    }
+    await sendMessageFromSQL(api, message, { message: logMessage, success: true }, true, 1800000);
   } catch (error) {
     console.error("Error in handleGetMessageCommand:", error);
     await sendMessageFailed(api, message, `Đã xảy ra lỗi khi xử lý: ${error.message || error}`);
