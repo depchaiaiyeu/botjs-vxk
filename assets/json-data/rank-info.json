@@ -9464,36 +9464,43 @@
           "UserName": "Thành Nhân",
           "UID": "3875953011135749873",
           "Rank": 9,
-          "messageCountToday": 9,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-16"
         },
         {
           "UserName": "Triều Đông",
           "UID": "7654139448969933571",
           "Rank": 6,
-          "messageCountToday": 6,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-16"
         },
         {
           "UserName": "Nguyenx Linh",
           "UID": "590846684218350088",
           "Rank": 4,
-          "messageCountToday": 4,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-16"
         },
         {
           "UserName": "Hoài Ân",
           "UID": "1497331904978825980",
           "Rank": 2,
-          "messageCountToday": 2,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-16"
         },
         {
           "UserName": "我喜欢快乐",
           "UID": "8739349149579890803",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-16"
+        },
+        {
+          "UserName": "Anh Thư",
+          "UID": "5575967186942643546",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
         }
       ],
       "nameGroup": "YÊU VIỆT NAM ❤"
