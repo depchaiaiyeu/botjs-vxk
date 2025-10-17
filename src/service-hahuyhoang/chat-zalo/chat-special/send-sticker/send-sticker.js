@@ -8,8 +8,19 @@ import { MessageType } from "../../../../api-zalo/index.js";
 import { tempDir } from "../../../../utils/io-json.js";
 import { removeMention } from "../../../../utils/format-util.js";
 import { isAdmin } from "../../../../index.js";
+import { appContext } from "../../../../api-zalo/context.js";
 import { removeBackground } from "./remove-background.js";
 import { sendMessageComplete, sendMessageProcessingRequest, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js";
+
+async function getRedirectedUrl(url) {
+  try {
+    const response = await axios.head(url, { maxRedirects: 5, validateStatus: () => true });
+    return response.request.res.responseUrl || response.config.url;
+  } catch (error) {
+    console.error("Lỗi khi lấy redirect URL:", error);
+    return url;
+  }
+}
 
 export async function isValidMediaUrl(url) {
   try {
@@ -78,36 +89,80 @@ async function convertJxlToPng(inputPath, outputPath) {
   }
 }
 
-export async function processAndSendSticker(api, message, mediaUrl, params) {
+async function convertImageToPng(inputPath, outputPath) {
+  try {
+    await sharp(inputPath)
+      .png()
+      .toFile(outputPath);
+    
+    if (!fs.existsSync(outputPath)) {
+      throw new Error("File PNG không được tạo");
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Lỗi convert sang PNG:", error);
+    return false;
+  }
+}
+
+export async function processAndSendSticker(api, message, mediaUrl, params, isVideo, isXoaPhong) {
   const threadId = message.threadId;
-  let pathSticker = path.join(tempDir, `sticker_${Date.now()}.templink`);
+  let pathMedia = path.join(tempDir, `sticker_${Date.now()}.templink`);
 
   try {
-    let ext = await checkExstentionFileRemote(mediaUrl);
-    pathSticker = path.join(tempDir, `sticker_${Date.now()}.${ext}`);
+    const redirectUrl = await getRedirectedUrl(mediaUrl);
+    const ext = await checkExstentionFileRemote(redirectUrl);
     
-    await downloadFileFake(mediaUrl, pathSticker);
+    if (!ext) {
+      throw new Error("Không thể xác định định dạng file");
+    }
+    
+    pathMedia = path.join(tempDir, `sticker_${Date.now()}.${ext}`);
+    await downloadFileFake(redirectUrl, pathMedia);
 
-    if (ext === "jxl") {
-      const convertedPath = path.join(tempDir, `sticker_${Date.now()}.jpg`);
-      const convertSuccess = await convertJxlToPng(pathSticker, convertedPath);
-      
-      if (!convertSuccess) {
-        throw new Error("Không thể chuyển định dạng .jxl sang .jpg sau khi thử tất cả phương pháp");
+    let finalPath = pathMedia;
+    
+    if (!isVideo && ext !== "png") {
+      if (ext === "jxl") {
+        const convertedPath = path.join(tempDir, `sticker_${Date.now()}.png`);
+        const convertSuccess = await convertJxlToPng(pathMedia, convertedPath);
+        
+        if (!convertSuccess) {
+          throw new Error("Không thể chuyển định dạng .jxl sang .png");
+        }
+        
+        await deleteFile(pathMedia);
+        pathMedia = convertedPath;
+        finalPath = convertedPath;
+      } else {
+        const convertedPath = path.join(tempDir, `sticker_${Date.now()}.png`);
+        const convertSuccess = await convertImageToPng(pathMedia, convertedPath);
+        
+        if (!convertSuccess) {
+          throw new Error("Không thể convert sang .png");
+        }
+        
+        await deleteFile(pathMedia);
+        pathMedia = convertedPath;
+        finalPath = convertedPath;
       }
-      
-      await deleteFile(pathSticker);
-      pathSticker = convertedPath;
-      ext = "jpg";
     }
 
-    const finalUrl = mediaUrl + "?createdBy=Vu-Xuan-Kien-Service.BOT";
+    const linkUploadZalo = await api.uploadAttachment(
+      [finalPath],
+      threadId,
+      appContext.send2meId,
+      isVideo ? MessageType.DirectMessage : MessageType.DirectMessage
+    );
+
+    const uploadedUrl = linkUploadZalo[0].fileUrl + "?createdBy=Vu-Xuan-Kien-Service.BOT" || linkUploadZalo[0].normalUrl + "?createdBy=Vu-Xuan-Kien-Service.BOT";
 
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true);
     await api.sendCustomSticker(
       message,
-      finalUrl,
-      finalUrl,
+      uploadedUrl,
+      uploadedUrl,
       params.width,
       params.height
     );
@@ -117,7 +172,7 @@ export async function processAndSendSticker(api, message, mediaUrl, params) {
     console.error("Lỗi khi xử lý sticker:", error);
     throw error;
   } finally {
-    await deleteFile(pathSticker);
+    await deleteFile(pathMedia);
   }
 }
 
@@ -152,10 +207,11 @@ export async function handleStickerCommand(api, message) {
     }
 
     const decodedUrl = decodeURIComponent(mediaUrl.replace(/\\\//g, "/"));
-    const mediaCheck = await isValidMediaUrl(decodedUrl);
+    const redirectUrl = await getRedirectedUrl(decodedUrl);
+    const mediaCheck = await isValidMediaUrl(redirectUrl);
 
     if (!mediaCheck.isValid) {
-      await sendMessageWarning(api, message, `${senderName}, URL không hợp lệ hoặc không phải là ảnh, GIF hoặc video được hỗ trợ!\nLink: ${decodedUrl}`, true);
+      await sendMessageWarning(api, message, `${senderName}, URL không hợp lệ hoặc không phải là ảnh, GIF hoặc video được hỗ trợ!\nLink: ${redirectUrl}`, true);
       return;
     }
 
@@ -176,15 +232,15 @@ export async function handleStickerCommand(api, message) {
     await sendMessageProcessingRequest(api, message, { caption: `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!` }, 6000);
 
     if (isXoaPhong) {
-      const imageData = await removeBackground(decodedUrl);
+      const imageData = await removeBackground(redirectUrl);
       if (!imageData) {
         await sendMessageFailed(api, message, `${senderName}, Mọe xóa phông lỗi hoặc hết cụ mịa ròi.`, true);
         return;
       }
       fs.writeFileSync(tempPath, imageData);
-      await processAndSendSticker(api, message, tempPath, params);
+      await processAndSendSticker(api, message, tempPath, params, isVideo, isXoaPhong);
     } else {
-      await processAndSendSticker(api, message, decodedUrl, params);
+      await processAndSendSticker(api, message, redirectUrl, params, isVideo, isXoaPhong);
     }
   } catch (error) {
     console.error("Lỗi khi xử lý lệnh sticker:", error);
