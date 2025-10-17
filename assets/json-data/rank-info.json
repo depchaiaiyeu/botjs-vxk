@@ -9608,8 +9608,8 @@
         {
           "UserName": "Sờ Pade",
           "UID": "2353749190364588945",
-          "Rank": 3,
-          "messageCountToday": 2,
+          "Rank": 4,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-17"
         },
         {
@@ -9664,6 +9664,13 @@
         {
           "UserName": "Naruメ",
           "UID": "6472592091088710632",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
+        },
+        {
+          "UserName": "Qm",
+          "UID": "3897058103276225070",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-17"
