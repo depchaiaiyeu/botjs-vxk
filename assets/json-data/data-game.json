@@ -4,28 +4,8 @@
     "history": []
   },
   "chanle": {
-    "jackpot": "4712751236471115.25668212334095852920047",
+    "jackpot": "4714837182545502.7587746123324479543158953860047",
     "history": [
-      {
-        "dice": [
-          6,
-          2,
-          3
-        ],
-        "total": 11,
-        "result": "le",
-        "timestamp": 1759816101976
-      },
-      {
-        "dice": [
-          5,
-          5,
-          6
-        ],
-        "total": 16,
-        "result": "chan",
-        "timestamp": 1759930742666
-      },
       {
         "dice": [
           1,
@@ -175,6 +155,56 @@
         "total": 11,
         "result": "le",
         "timestamp": 1760678121167
+      },
+      {
+        "dice": [
+          3,
+          2,
+          5
+        ],
+        "total": 10,
+        "result": "chan",
+        "timestamp": 1760678130981
+      },
+      {
+        "dice": [
+          6,
+          1,
+          2
+        ],
+        "total": 9,
+        "result": "le",
+        "timestamp": 1760678131087
+      },
+      {
+        "dice": [
+          5,
+          4,
+          4
+        ],
+        "total": 13,
+        "result": "le",
+        "timestamp": 1760678135569
+      },
+      {
+        "dice": [
+          5,
+          5,
+          3
+        ],
+        "total": 13,
+        "result": "le",
+        "timestamp": 1760678146337
+      },
+      {
+        "dice": [
+          4,
+          3,
+          4
+        ],
+        "total": 11,
+        "result": "le",
+        "timestamp": 1760678156208
       }
     ]
   },
