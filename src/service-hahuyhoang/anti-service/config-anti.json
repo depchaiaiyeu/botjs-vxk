@@ -208,5 +208,17 @@
     }
   },
   "enable": false,
-  "botViolations": {}
+  "botViolations": {
+    "5464956150740844012": {
+      "3386338295604654533": {
+        "count": 1,
+        "times": [
+          {
+            "time": 1760675336121
+          }
+        ],
+        "name": "Onew"
+      }
+    }
+  }
 }
