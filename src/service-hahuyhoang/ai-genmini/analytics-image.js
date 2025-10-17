@@ -21,7 +21,7 @@ const SUPPORTED_AUDIO_EXTENSIONS = [
   "mp3", "wav", "aiff", "aac", "ogg", "flac"
 ];
 
-export async function handleImageAnalysis(api, message, aliasCommand) {
+export async function handleImageAnalytics(api, message, aliasCommand) {
   const prefix = getGlobalPrefix();
   const content = removeMention(message).replace(`${prefix}${aliasCommand}`, '').trim();
   const quote = message.data?.quote;
