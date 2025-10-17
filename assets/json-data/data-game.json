@@ -4,58 +4,8 @@
     "history": []
   },
   "chanle": {
-    "jackpot": "4714837182545502.7587746123324479543158953860047",
+    "jackpot": "4715780197130383.684781394842660567231238108240854800047",
     "history": [
-      {
-        "dice": [
-          1,
-          1,
-          1
-        ],
-        "total": 3,
-        "result": "le",
-        "timestamp": 1760677292865
-      },
-      {
-        "dice": [
-          2,
-          5,
-          1
-        ],
-        "total": 8,
-        "result": "chan",
-        "timestamp": 1760677316661
-      },
-      {
-        "dice": [
-          2,
-          6,
-          5
-        ],
-        "total": 13,
-        "result": "le",
-        "timestamp": 1760677940867
-      },
-      {
-        "dice": [
-          6,
-          4,
-          5
-        ],
-        "total": 15,
-        "result": "le",
-        "timestamp": 1760678031410
-      },
-      {
-        "dice": [
-          5,
-          2,
-          1
-        ],
-        "total": 8,
-        "result": "chan",
-        "timestamp": 1760678034615
-      },
       {
         "dice": [
           1,
@@ -205,6 +155,56 @@
         "total": 11,
         "result": "le",
         "timestamp": 1760678156208
+      },
+      {
+        "dice": [
+          1,
+          4,
+          2
+        ],
+        "total": 7,
+        "result": "le",
+        "timestamp": 1760678167894
+      },
+      {
+        "dice": [
+          2,
+          6,
+          5
+        ],
+        "total": 13,
+        "result": "le",
+        "timestamp": 1760678172799
+      },
+      {
+        "dice": [
+          1,
+          6,
+          3
+        ],
+        "total": 10,
+        "result": "chan",
+        "timestamp": 1760678176913
+      },
+      {
+        "dice": [
+          5,
+          5,
+          3
+        ],
+        "total": 13,
+        "result": "le",
+        "timestamp": 1760678186664
+      },
+      {
+        "dice": [
+          1,
+          6,
+          4
+        ],
+        "total": 11,
+        "result": "le",
+        "timestamp": 1760678187645
       }
     ]
   },
