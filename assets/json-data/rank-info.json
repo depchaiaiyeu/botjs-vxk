@@ -1735,8 +1735,8 @@
         {
           "UserName": "Tôi Là Người Trung Quốc",
           "UID": "6624026740686870486",
-          "Rank": 1,
-          "messageCountToday": 1,
+          "Rank": 4,
+          "messageCountToday": 4,
           "lastMessageDate": "2025-10-17"
         }
       ],
@@ -9654,6 +9654,18 @@
         }
       ],
       "nameGroup": "Multi AI Coder [ CHAT BOT ZALO ]"
+    },
+    "3871710201719517056": {
+      "users": [
+        {
+          "UserName": "Phạm Tuyết",
+          "UID": "786310750288610002",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-17"
+        }
+      ],
+      "nameGroup": "Lớp 7/1 2025- 2026"
     }
   }
 }
