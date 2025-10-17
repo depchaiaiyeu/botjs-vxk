@@ -9547,8 +9547,8 @@
         {
           "UserName": "Anh Thư",
           "UID": "5575967186942643546",
-          "Rank": 1,
-          "messageCountToday": 1,
+          "Rank": 2,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-17"
         },
         {
@@ -9575,6 +9575,13 @@
         {
           "UserName": "Trần Hà Ánh Duyên",
           "UID": "7544228429230062473",
+          "Rank": 2,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-17"
+        },
+        {
+          "UserName": "Tô Thiên Phúc",
+          "UID": "719050816996381377",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-17"
