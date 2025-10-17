@@ -384,7 +384,7 @@
     "muteList": {},
     "whileList": {},
     "activeBot": true,
-    "activeGame": false,
+    "activeGame": true,
     "welcomeGroup": false,
     "byeGroup": false,
     "antiSpam": false,
