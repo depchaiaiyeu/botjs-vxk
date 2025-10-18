@@ -22,11 +22,7 @@ export async function getVideoRedirectUrl(url) {
   }
 }
 
-function createRoundedCornersFilter(radius) {
-  return `format=rgba,split[main][border];[border]scale=iw:ih,boxblur=luma_radius=${radius}:luma_power=0[blur];[main][blur]alphamerge=format=auto`
-}
-
-export async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, cornerRadius = 5) {
+export async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType) {
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
@@ -39,11 +35,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       videoPath = path.join(tempDir, `sticker_video_${Date.now()}.mp4`)
       webpPath = path.join(tempDir, `sticker_webp_${Date.now()}.webp`)
       await downloadFileFake(redirectUrl, videoPath)
-      
-      const videoFilter = `format=rgba,pad=ceil(iw/2)*2:ceil(ih/2)*2,split[main][corners];[corners]boxblur=luma_radius=${cornerRadius}[blur];[main][blur]alphamerge`
-      
-      execSync(`ffmpeg -y -i "${videoPath}" -vf "${videoFilter}" -c:v libwebp -q:v 80 -loop 0 "${webpPath}"`, { stdio: 'pipe' })
-      
+      execSync(`ffmpeg -y -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
@@ -66,11 +58,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
       convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
       await downloadFileFake(downloadUrl, imagePath)
-      
-      const imageFilter = `format=rgba,split[main][corners];[corners]boxblur=luma_radius=${cornerRadius}[blur];[main][blur]alphamerge`
-      
-      execSync(`ffmpeg -y -i "${imagePath}" -vf "${imageFilter}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
-      
+      execSync(`ffmpeg -y -i "${imagePath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
@@ -114,18 +102,6 @@ export async function handleStickerCommand(api, message) {
   }
   
   try {
-    let cornerRadius = 5
-    const commandText = message.data.text || ""
-    const radiusMatch = commandText.match(/r(\d+)/i)
-    if (radiusMatch) {
-      const parsedRadius = parseInt(radiusMatch[1])
-      if (parsedRadius >= 10 && parsedRadius <= 40) {
-        cornerRadius = parsedRadius
-      } else if (parsedRadius > 0) {
-        cornerRadius = Math.min(Math.max(parsedRadius, 10), 40)
-      }
-    }
-    
     const attachData = JSON.parse(attach)
     const mediaUrl = attachData.hdUrl || attachData.href
     if (!mediaUrl) {
@@ -146,7 +122,7 @@ export async function handleStickerCommand(api, message) {
     const height = params.height || 512
     
     await sendMessageWarning(api, message, `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`, true)
-    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, cornerRadius)
+    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
     console.error("Lỗi khi xử lý lệnh sticker:", error)
