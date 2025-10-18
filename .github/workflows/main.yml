@@ -1,10 +1,8 @@
 name: Run BOT-JS
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 */6 * * *"
-
 jobs:
   run-bot:
     runs-on: windows-latest
@@ -14,28 +12,22 @@ jobs:
     env:
       TZ: Asia/Ho_Chi_Minh
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
-      - name: Install ffmpeg
-        run: choco install ffmpeg -y
+      - name: Install ffmpeg with libjxl
+        run: choco install ffmpeg --params="/InstallationPath:C:\ffmpeg" -y
         shell: powershell
-
       - name: Verify ffmpeg
         run: ffmpeg -version
         shell: powershell
-
       - name: Install dependencies
         run: npm install
         shell: powershell
-
       - name: Run bot
         run: node src/index.js
         shell: powershell
