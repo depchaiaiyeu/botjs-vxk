@@ -10,6 +10,17 @@ import { removeMention } from "../../utils/format-util.js";
 import { getAntiState } from "./index.js";
 import { scanQRCode } from "../tien-ich/qr-scan.js";
 import { areAllLinksWhitelisted } from "./white-list-link.js";
+import { SUPPORTED_PLATFORMS } from "../../api-crawl/api-hahuyhoangbot/auto-download.js";
+
+const getAutoDownloadPatterns = () => {
+  const patterns = [];
+  SUPPORTED_PLATFORMS.forEach(platform => {
+    patterns.push(...platform.patterns);
+  });
+  return patterns;
+};
+
+const AUTODOWNLOAD_PLATFORMS = getAutoDownloadPatterns();
 
 async function loadLinkRegex() {
   try {
@@ -27,14 +38,24 @@ async function loadLinkRegex() {
 
 const linkRegex = await loadLinkRegex();
 
-let linkSendCount = {}; // Đếm số link đã gửi của mỗi người dùng
-let linkSendTime = {}; // Thời gian gửi link của mỗi người dùng
+let linkSendCount = {};
+let linkSendTime = {};
 
 function checkLink(content) {
   if (!linkRegex) return false;
   linkRegex.lastIndex = 0;
   return linkRegex.test(content);
 }
+
+function isAutoDownloadPlatform(url) {
+  const lowerUrl = url.toLowerCase();
+  return AUTODOWNLOAD_PLATFORMS.some(platform => lowerUrl.includes(platform));
+}
+
+function filterAutoDownloadLinks(links) {
+  return links.filter(link => isAutoDownloadPlatform(link));
+}
+
 export async function antiLink(
   api,
   message,
@@ -97,6 +118,7 @@ export async function handleAntiLinkCommand(api, message, groupSettings, isAdmin
 
   return true;
 }
+
 async function handleLinkMessage(
   api,
   message,
@@ -106,7 +128,6 @@ async function handleLinkMessage(
   senderId,
   senderName
 ) {
- // console.log("📥 DEBUG:\n", JSON.stringify(message, null, 2));
   let content = message.data.content;
   content = content.title ? content.title : content;
 
@@ -120,6 +141,8 @@ async function handleLinkMessage(
   const isUserWhiteList = isInWhiteList(groupSettings, threadId, senderId);
   if (isUserWhiteList) return isDeleteLink;
 
+  const autoDownloadEnabled = groupSettings[threadId]?.autoDownload;
+
   if (!isDeleteLink && isRecommendedMessage) {
     const contentObj = message.data.content;
     const linkText = [contentObj?.title, contentObj?.href, contentObj?.description]
@@ -129,15 +152,28 @@ async function handleLinkMessage(
     if (checkLink(linkText)) {
       const matches = linkText.match(linkRegex);
       if (matches && matches.length > 0) {
-        const isWhitelisted = await areAllLinksWhitelisted(matches, threadId);
-        if (!isWhitelisted) {
-          await api.deleteMessage(message, false).catch(console.error);
-          isDeleteLink = true;
+        if (autoDownloadEnabled) {
+          const autoDownloadLinks = filterAutoDownloadLinks(matches);
+          const otherLinks = matches.filter(link => !isAutoDownloadPlatform(link));
+          
+          if (otherLinks.length > 0) {
+            const isWhitelisted = await areAllLinksWhitelisted(otherLinks, threadId);
+            if (!isWhitelisted) {
+              await api.deleteMessage(message, false).catch(console.error);
+              isDeleteLink = true;
+            }
+          }
+        } else {
+          const isWhitelisted = await areAllLinksWhitelisted(matches, threadId);
+          if (!isWhitelisted) {
+            await api.deleteMessage(message, false).catch(console.error);
+            isDeleteLink = true;
+          }
         }
       }
     }
   }
-  // Xử lý QR từ ảnh
+
   if (!isDeleteLink && isImage) {
     const linkImage = message.data?.content?.href;
     if (linkImage) {
@@ -145,20 +181,47 @@ async function handleLinkMessage(
       const qrLink = result?.data?.content;
       if (result?.success && checkLink(qrLink)) {
         const matches = qrLink.match(linkRegex);
-        if (matches && !(await areAllLinksWhitelisted(matches, threadId))) {
-          await api.deleteMessage(message, false).catch(console.error);
-          isDeleteLink = true;
+        if (matches) {
+          if (autoDownloadEnabled) {
+            const otherLinks = matches.filter(link => !isAutoDownloadPlatform(link));
+            if (otherLinks.length > 0) {
+              const isWhitelisted = await areAllLinksWhitelisted(otherLinks, threadId);
+              if (!isWhitelisted) {
+                await api.deleteMessage(message, false).catch(console.error);
+                isDeleteLink = true;
+              }
+            }
+          } else {
+            const isWhitelisted = await areAllLinksWhitelisted(matches, threadId);
+            if (!isWhitelisted) {
+              await api.deleteMessage(message, false).catch(console.error);
+              isDeleteLink = true;
+            }
+          }
         }
       }
     }
   }
 
-  // Xử lý text thường
   if (!isDeleteLink && isPlainText && checkLink(content)) {
     const matches = content.match(linkRegex);
-    if (matches && !(await areAllLinksWhitelisted(matches, threadId))) {
-      await api.deleteMessage(message, false).catch(console.error);
-      isDeleteLink = true;
+    if (matches) {
+      if (autoDownloadEnabled) {
+        const otherLinks = matches.filter(link => !isAutoDownloadPlatform(link));
+        if (otherLinks.length > 0) {
+          const isWhitelisted = await areAllLinksWhitelisted(otherLinks, threadId);
+          if (!isWhitelisted) {
+            await api.deleteMessage(message, false).catch(console.error);
+            isDeleteLink = true;
+          }
+        }
+      } else {
+        const isWhitelisted = await areAllLinksWhitelisted(matches, threadId);
+        if (!isWhitelisted) {
+          await api.deleteMessage(message, false).catch(console.error);
+          isDeleteLink = true;
+        }
+      }
     }
   }
 
@@ -168,10 +231,21 @@ async function handleLinkMessage(
     if (checkLink(href)) {
       const matches = href.match(linkRegex);
       if (matches && matches.length > 0) {
-        const isWhitelisted = await areAllLinksWhitelisted(matches, threadId);
-        if (!isWhitelisted) {
-          await api.deleteMessage(message, false).catch(console.error);
-          isDeleteLink = true;
+        if (autoDownloadEnabled) {
+          const otherLinks = matches.filter(link => !isAutoDownloadPlatform(link));
+          if (otherLinks.length > 0) {
+            const isWhitelisted = await areAllLinksWhitelisted(otherLinks, threadId);
+            if (!isWhitelisted) {
+              await api.deleteMessage(message, false).catch(console.error);
+              isDeleteLink = true;
+            }
+          }
+        } else {
+          const isWhitelisted = await areAllLinksWhitelisted(matches, threadId);
+          if (!isWhitelisted) {
+            await api.deleteMessage(message, false).catch(console.error);
+            isDeleteLink = true;
+          }
         }
       }
     }
@@ -286,14 +360,6 @@ async function sendWarningMessage(api, message, senderId, senderName, count) {
       },
       message.threadId,
       MessageType.GroupMessage
-    );
-    await api.sendMessage(
-      {
-        msg: `Admin đã chặn gửi link trong nhóm, link của ${senderName} bị xóa!`,
-        quote: message,
-      },
-      senderId,
-      MessageType.DirectMessage
     );
   } catch (error) {
     console.error(`Không thể gửi tin nhắn tới ${senderId}:`, error.message);
