@@ -32,7 +32,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       const webpPath = path.join(tempDir, `sticker_${Date.now()}.webp`)
       
       await downloadFileFake(redirectUrl, videoPath)
-      execSync(`ffmpeg -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}" -y`, { stdio: 'pipe' })
+      execSync(`ffmpeg -y -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
       
       const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
@@ -46,28 +46,8 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       await deleteFile(videoPath)
       await deleteFile(webpPath)
     } else {
-      const fileExt = await checkExstentionFileRemote(mediaUrl)
-      let imagePath = path.join(tempDir, `sticker_${Date.now()}.${fileExt}`)
-      
-      await downloadFileFake(mediaUrl, imagePath)
-      
-      if (fileExt === "jxl") {
-        const jpgPath = path.join(tempDir, `sticker_${Date.now()}.jpg`)
-        execSync(`ffmpeg -i "${imagePath}" "${jpgPath}" -y`, { stdio: 'pipe' })
-        await deleteFile(imagePath)
-        imagePath = jpgPath
-      }
-      
-      const imageUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
-      const imageUrl = imageUpload?.[0]?.fileUrl
-      
-      if (!imageUrl) {
-        throw new Error("Upload attachment thất bại - không nhận được URL")
-      }
-      
-      await api.sendCustomSticker(message, imageUrl + "?createdBy=VXK-Service-BOT.Webp", imageUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
-      
-      await deleteFile(imagePath)
+      const imageUrl = mediaUrl + "?createdBy=VXK-Service-BOT.Webp"
+      await api.sendCustomSticker(message, imageUrl, imageUrl, width, height)
     }
     
     return true
