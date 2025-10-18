@@ -66,7 +66,7 @@ export async function checkAndSendBusinessCard(api, senderId, senderName) {
     lastBusinessCardTime.set(senderId, currentTime);
     const idBot = getBotId();
     if (admins.length == 0 || (admins.length == 1 && admins.includes(idBot.toString()))) return false;
-    await api.sendMessage(
+    //await api.sendMessage(
       {
         msg:
           `Xin Chào ${senderName}, Tôi Là Vũ Xuân Kiên.\n` +
