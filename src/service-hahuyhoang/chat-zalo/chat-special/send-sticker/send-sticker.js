@@ -1,8 +1,7 @@
 import fs from "fs"
 import path from "path"
-import sharp from "sharp"
 import { getGlobalPrefix } from "../../../service.js"
-import { checkExstentionFileRemote, deleteFile, downloadFileFake } from "../../../../utils/util.js"
+import { deleteFile, downloadFileFake } from "../../../../utils/util.js"
 import { MessageType } from "../../../../api-zalo/index.js"
 import { tempDir } from "../../../../utils/io-json.js"
 import { appContext } from "../../../../api-zalo/context.js"
@@ -27,8 +26,6 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
-  let imagePath = null
-  let convertedWebpPath = null
   
   try {
     if (cliMsgType === 44) {
@@ -48,25 +45,23 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       
       await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.Webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
     } else {
-      imagePath = path.join(tempDir, `sticker_image_${Date.now()}.tmp`)
-      convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
-      
-      await downloadFileFake(mediaUrl, imagePath)
-      
-      try {
-        await sharp(imagePath).webp({ quality: 80 }).toFile(convertedWebpPath)
-      } catch (error) {
-        throw new Error(`Lỗi convert ảnh với sharp: ${error.message}`)
+      let imageUrl = mediaUrl
+      if (mediaUrl.includes("/jxl/")) {
+        imageUrl = mediaUrl.replace("/jxl/", "/jpg/").replace(".jxl", ".jpg")
       }
       
-      const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
-      const webpUrl = webpUpload?.[0]?.fileUrl
+      const imagePath = path.join(tempDir, `sticker_image_${Date.now()}.jpg`)
+      await downloadFileFake(imageUrl, imagePath)
       
-      if (!webpUrl) {
+      const imageUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
+      const uploadedUrl = imageUpload?.[0]?.fileUrl
+      
+      if (!uploadedUrl) {
         throw new Error("Upload image attachment thất bại")
       }
       
-      await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.Webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
+      await api.sendCustomSticker(message, uploadedUrl + "?createdBy=VXK-Service-BOT.Webp", uploadedUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
+      await deleteFile(imagePath)
     }
     
     return true
@@ -76,8 +71,6 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
   } finally {
     if (videoPath) await deleteFile(videoPath)
     if (webpPath) await deleteFile(webpPath)
-    if (imagePath) await deleteFile(imagePath)
-    if (convertedWebpPath) await deleteFile(convertedWebpPath)
   }
 }
 
