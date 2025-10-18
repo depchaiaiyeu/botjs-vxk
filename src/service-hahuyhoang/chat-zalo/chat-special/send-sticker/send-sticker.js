@@ -41,7 +41,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       if (!webpUrl) {
         throw new Error("Upload video attachment thất bại")
       }
-      await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.Webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
+      await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
     } else {
       let downloadUrl = mediaUrl
       let fileExt = "jpg"
@@ -64,7 +64,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       if (!webpUrl) {
         throw new Error("Upload image attachment thất bại")
       }
-      await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.Webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
+      await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
     }
     return true
   } catch (error) {
