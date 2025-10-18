@@ -46,8 +46,21 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       await deleteFile(videoPath)
       await deleteFile(webpPath)
     } else {
-      const imageUrl = mediaUrl + "?createdBy=VXK-Service-BOT.Webp"
-      await api.sendCustomSticker(message, imageUrl, imageUrl, width, height)
+      const fileExt = await checkExstentionFileRemote(mediaUrl)
+      const imagePath = path.join(tempDir, `sticker_${Date.now()}.${fileExt}`)
+      
+      await downloadFileFake(mediaUrl, imagePath)
+      
+      const imageUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
+      const imageUrl = imageUpload?.[0]?.fileUrl
+      
+      if (!imageUrl) {
+        throw new Error("Upload attachment thất bại - không nhận được URL")
+      }
+      
+      await api.sendCustomSticker(message, imageUrl + "?createdBy=VXK-Service-BOT.Webp", imageUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
+      
+      await deleteFile(imagePath)
     }
     
     return true
