@@ -9,6 +9,21 @@ import { removeMention } from "../../../../utils/format-util.js"
 import { isAdmin } from "../../../../index.js"
 import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
+import { execSync } from "child_process"
+
+export async function getVideoRedirectUrl(url) {
+  try {
+    const response = execSync(`curl -I "${url}"`, { encoding: 'utf8' })
+    const locationMatch = response.match(/location:\s*(.+)/i)
+    if (locationMatch) {
+      return locationMatch[1].trim()
+    }
+    return url
+  } catch (error) {
+    console.error("Lỗi khi lấy redirect URL:", error)
+    return url
+  }
+}
 
 export async function processAndSendSticker(api, message, mediaUrl, width, height) {
   const threadId = message.threadId
@@ -27,6 +42,8 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
     await deleteFile(pathSticker)
   }
 }
+
+
 
 export async function handleStickerCommand(api, message) {
   const quote = message.data?.quote
