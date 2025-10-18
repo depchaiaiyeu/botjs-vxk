@@ -9617,8 +9617,8 @@
         {
           "UserName": "Triều Đông",
           "UID": "7654139448969933571",
-          "Rank": 12,
-          "messageCountToday": 4,
+          "Rank": 13,
+          "messageCountToday": 5,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -9717,6 +9717,13 @@
           "UID": "647135969741443776",
           "Rank": 4,
           "messageCountToday": 4,
+          "lastMessageDate": "2025-10-18"
+        },
+        {
+          "UserName": "Nhi Nhí Nhảnh",
+          "UID": "7341143702257034459",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-18"
         }
       ],
