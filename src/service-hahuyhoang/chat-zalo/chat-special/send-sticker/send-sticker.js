@@ -51,23 +51,13 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       }
       
       const imagePath = path.join(tempDir, `sticker_image_${Date.now()}.jpg`)
+      execSync(`wget -q -O "${imagePath}" "${imageUrl}"`)
       
-      try {
-        await downloadFileFake(imageUrl, imagePath)
-      } catch (error) {
-        throw new Error(`Lỗi download ảnh: ${error.message}`)
-      }
-      
-      let uploadedUrl
-      try {
-        const imageUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
-        uploadedUrl = imageUpload?.[0]?.fileUrl
-      } catch (error) {
-        throw new Error(`Lỗi upload ảnh: ${error.message}`)
-      }
+      const imageUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
+      const uploadedUrl = imageUpload?.[0]?.fileUrl
       
       if (!uploadedUrl) {
-        throw new Error("Upload image attachment thất bại - URL trống")
+        throw new Error("Upload image attachment thất bại")
       }
       
       await api.sendCustomSticker(message, uploadedUrl + "?createdBy=VXK-Service-BOT.Webp", uploadedUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
