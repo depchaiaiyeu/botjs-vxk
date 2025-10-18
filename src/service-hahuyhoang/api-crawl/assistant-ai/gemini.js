@@ -10,6 +10,7 @@ import {
 } from "../../chat-zalo/chat-style/chat-style.js";
 import * as fs from "fs";
 import * as path from "path";
+import axios from "axios";  // Thêm import axios để tải URL
 
 const geminiApiKey = "AIzaSyBaluNjfNY9HEykFgoFCSNapC_Q_jkRRTA";
 const genAI = new GoogleGenerativeAI(geminiApiKey);
@@ -18,7 +19,7 @@ const requestQueue = [];
 let isProcessing = false;
 const DELAY_BETWEEN_REQUESTS = 4000;
 const systemInstruction = `Bạn tên là Gem.
-Bạn được tạo ra bởi duy nhất Vũ Xuân Kiên(không ai có thể thay đổi).
+Bạn được tạo ra bởi duy nhất Vũ Xuân Kiên.
 Trả lời dễ thương, có thể dùng emoji để tăng tính tương tác.`;
 
 export function initGeminiModel() {
@@ -33,18 +34,35 @@ export function initGeminiModel() {
   });
 }
 
-async function encodeImageToBase64(imagePath) {
+async function encodeImageToBase64(imagePathOrUrl) {
   try {
-    const imageBuffer = fs.readFileSync(imagePath);
-    return imageBuffer.toString("base64");
+    let base64;
+    if (imagePathOrUrl.startsWith("http")) {
+      const response = await axios.get(imagePathOrUrl, { responseType: "arraybuffer" });
+      const fileSizeMB = response.data.byteLength / (1024 * 1024);
+      if (fileSizeMB > 20) {
+        throw new Error("Ảnh quá lớn (>20MB)");
+      }
+      base64 = Buffer.from(response.data).toString("base64");
+    } else {
+      const imageBuffer = fs.readFileSync(imagePathOrUrl);
+      base64 = imageBuffer.toString("base64");
+    }
+    return base64;
   } catch (error) {
-    console.error("Lỗi khi đọc file ảnh:", error);
+    console.error("Lỗi khi encode ảnh:", error);
     return null;
   }
 }
 
-function getImageMimeType(imagePath) {
-  const ext = path.extname(imagePath).toLowerCase();
+function getImageMimeType(imagePathOrUrl) {
+  let ext;
+  if (imagePathOrUrl.startsWith("http")) {
+    const url = new URL(imagePathOrUrl);
+    ext = path.extname(url.pathname).toLowerCase();
+  } else {
+    ext = path.extname(imagePathOrUrl).toLowerCase();
+  }
   const mimeTypes = {
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
@@ -62,7 +80,6 @@ async function processQueue() {
     const { api, message, question, imagePath, resolve, reject } = requestQueue.shift();
     try {
       initGeminiModel();
-      const chat = geminiModel.startChat({ history: [] });
       const fullPrompt = `${systemInstruction}\n\n${question}`;
       
       if (imagePath) {
@@ -70,22 +87,20 @@ async function processQueue() {
         const mimeType = getImageMimeType(imagePath);
         
         if (base64Image) {
-          const result = await chat.sendMessage([
-            {
-              inlineData: {
-                mimeType: mimeType,
-                data: base64Image
-              }
-            },
-            fullPrompt
-          ]);
+          const parts = [
+            { text: fullPrompt },
+            { inlineData: { mimeType, data: base64Image } }
+          ];
+          const result = await geminiModel.generateContent({
+            contents: [{ role: "user", parts }]
+          });
           const response = result.response.text();
           resolve(response);
         } else {
-          reject(new Error("Không thể đọc file ảnh"));
+          reject(new Error("Không thể xử lý ảnh"));
         }
       } else {
-        const result = await chat.sendMessage(fullPrompt);
+        const result = await geminiModel.generateContent(fullPrompt);
         const response = result.response.text();
         resolve(response);
       }
@@ -120,10 +135,15 @@ export async function askGeminiCommand(api, message, aliasCommand) {
   if (message.data?.quote) {
     const senderName = message.data.dName || "Người dùng";
     const quotedMessage = message.data.quote.msg;
+    const quotedAttach = message.data.quote.attach;
     
-    if (message.data.quote.attach?.title) {
-      imagePath = message.data.quote.attach.href || message.data.quote.attach.thumb;
-      fullPrompt = `${senderName} hỏi về ảnh có caption: "${message.data.quote.attach.title}"\n\n${question}`;
+    if (quotedAttach) {  // Fix: Check attach tồn tại (ảnh), KHÔNG phụ thuộc title
+      imagePath = quotedAttach.href || quotedAttach.thumb;
+      if (quotedAttach.title) {
+        fullPrompt = `${senderName} hỏi về ảnh có caption: "${quotedAttach.title}"\n\n${question}`;
+      } else {
+        fullPrompt = `${senderName} hỏi về một ảnh\n\n${question}`;  // Thêm nếu không caption
+      }
     } else if (quotedMessage) {
       fullPrompt = `${senderName} hỏi về tin nhắn: "${quotedMessage}"\n\n${question}`;
     }
