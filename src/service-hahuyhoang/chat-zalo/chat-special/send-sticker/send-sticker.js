@@ -1,4 +1,3 @@
-import axios from "axios"
 import fs from "fs"
 import path from "path"
 import { getGlobalPrefix } from "../../../service.js"
@@ -25,26 +24,42 @@ export async function getVideoRedirectUrl(url) {
 
 export async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType) {
   const threadId = message.threadId
-  let finalUrl = mediaUrl
-  
-  if (cliMsgType === 44) {
-    finalUrl = await getVideoRedirectUrl(mediaUrl)
-  }
-  
-  const ext = cliMsgType === 44 ? "mp4" : "jpg"
-  let pathSticker = path.join(tempDir, `sticker_${Date.now()}.${ext}`)
   
   try {
-    await downloadFileFake(finalUrl, pathSticker)
-    const linkUploadZalo = await api.uploadAttachment([pathSticker], threadId, appContext.send2meId, MessageType.DirectMessage)
-    const uploadedUrl = linkUploadZalo[0].fileUrl + "?createdBy=VXK-Service-BOT.Webp"
-    await api.sendCustomSticker(message, uploadedUrl, uploadedUrl, width, height)
+    if (cliMsgType === 44) {
+      const redirectUrl = await getVideoRedirectUrl(mediaUrl)
+      const videoPath = path.join(tempDir, `sticker_${Date.now()}.mp4`)
+      const webpPath = path.join(tempDir, `sticker_${Date.now()}.webp`)
+      
+      await downloadFileFake(redirectUrl, videoPath)
+      execSync(`ffmpeg -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}"`)
+      
+      const staticUpload = await api.uploadAttachment([videoPath], threadId, appContext.send2meId, MessageType.DirectMessage)
+      const staticUrl = staticUpload[0].fileUrl
+      
+      const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
+      const webpUrl = webpUpload[0].fileUrl
+      
+      await api.sendCustomSticker(message, staticUrl, webpUrl, width, height)
+      
+      await deleteFile(videoPath)
+      await deleteFile(webpPath)
+    } else {
+      const imagePath = path.join(tempDir, `sticker_${Date.now()}.jpg`)
+      await downloadFileFake(mediaUrl, imagePath)
+      
+      const imageUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
+      const imageUrl = imageUpload[0].fileUrl
+      
+      await api.sendCustomSticker(message, imageUrl, imageUrl, width, height)
+      
+      await deleteFile(imagePath)
+    }
+    
     return true
   } catch (error) {
     console.error("Lỗi khi xử lý sticker:", error)
     throw error
-  } finally {
-    await deleteFile(pathSticker)
   }
 }
 
