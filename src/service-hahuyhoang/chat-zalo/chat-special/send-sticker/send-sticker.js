@@ -17,12 +17,11 @@ export async function getVideoRedirectUrl(url) {
     }
     return url
   } catch (error) {
-    console.error("Lỗi khi lấy redirect URL:", error)
     return url
   }
 }
 
-export async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType) {
+export async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, radius = 5) {
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
@@ -35,7 +34,11 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       videoPath = path.join(tempDir, `sticker_video_${Date.now()}.mp4`)
       webpPath = path.join(tempDir, `sticker_webp_${Date.now()}.webp`)
       await downloadFileFake(redirectUrl, videoPath)
-      execSync(`ffmpeg -y -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
+      let vfFilter = `-c:v libwebp -q:v 80`
+      if (radius > 0) {
+        vfFilter = `-vf "scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,format=yuva420p,geq=lum='p(X,Y)':a='if(gt(abs(W/2-X),W/2-${radius})*gt(abs(H/2-Y),H/2-${radius}),255,if(lte(hypot(${radius}-(W/2-abs(W/2-X))),${radius}-(H/2-abs(H/2-Y))),${radius}),255,0))'" ${vfFilter}`
+      }
+      execSync(`ffmpeg -y -i "${videoPath}" ${vfFilter} "${webpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
@@ -58,7 +61,11 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
       convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
       await downloadFileFake(downloadUrl, imagePath)
-      execSync(`ffmpeg -y -i "${imagePath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
+      let vfFilter = `-c:v libwebp -q:v 80`
+      if (radius > 0) {
+        vfFilter = `-vf "scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,format=yuva420p,geq=lum='p(X,Y)':a='if(gt(abs(W/2-X),W/2-${radius})*gt(abs(H/2-Y),H/2-${radius}),255,if(lte(hypot(${radius}-(W/2-abs(W/2-X))),${radius}-(H/2-abs(H/2-Y))),${radius}),255,0))'" ${vfFilter}`
+      }
+      execSync(`ffmpeg -y -i "${imagePath}" ${vfFilter} "${convertedWebpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
@@ -68,7 +75,6 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
     }
     return true
   } catch (error) {
-    console.error("Lỗi khi xử lý sticker:", error)
     throw error
   } finally {
     if (videoPath) await deleteFile(videoPath)
@@ -83,6 +89,7 @@ export async function handleStickerCommand(api, message) {
   const senderName = message.data.dName
   const threadId = message.threadId
   const prefix = getGlobalPrefix()
+  const body = message.body
   
   if (!quote) {
     await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker.`, true)
@@ -99,6 +106,17 @@ export async function handleStickerCommand(api, message) {
   if (!attach) {
     await sendMessageWarning(api, message, `${senderName}, Không có đính kèm nào trong nội dung reply của bạn.`, true)
     return
+  }
+  
+  let radius = 5
+  const commandPart = body.slice(prefix.length).trim()
+  const match = commandPart.match(/sticker\s+r(\d+)/i)
+  if (match) {
+    radius = parseInt(match[1], 10)
+    if (radius < 10 || radius > 50) {
+      await sendMessageWarning(api, message, `${senderName}, Bán kính bo góc phải từ 10 đến 50!`, true)
+      return
+    }
   }
   
   try {
@@ -121,11 +139,14 @@ export async function handleStickerCommand(api, message) {
     const width = params.width || 512
     const height = params.height || 512
     
-    await sendMessageWarning(api, message, `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`, true)
-    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType)
+    let statusMsg = `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`
+    if (radius > 5) {
+      statusMsg += ` Bo góc sticker: ${radius}%`
+    }
+    await sendMessageWarning(api, message, statusMsg, true)
+    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, radius)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
-    console.error("Lỗi khi xử lý lệnh sticker:", error)
     await sendMessageFailed(api, message, `${senderName}, Lỗi khi xử lý lệnh sticker: ${error.message}`, true)
   }
 }
