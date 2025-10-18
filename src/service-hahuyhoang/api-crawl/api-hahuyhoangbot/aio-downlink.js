@@ -1,5 +1,3 @@
-// aio-downlink.js
-
 import axios from "axios";
 import path from "path";
 import { getGlobalPrefix } from "../../service.js";
@@ -8,7 +6,6 @@ import {
 } from "../../chat-zalo/chat-style/chat-style.js";
 import { downloadFile, deleteFile } from "../../../utils/util.js";
 import { capitalizeEachWord, removeMention } from "../../../utils/format-util.js";
-import { getCachedMedia, setCacheData } from "../../../utils/link-platform-cache.js";
 import { clearImagePath } from "../../../utils/canvas/index.js";
 import { tempDir } from "../../../utils/io-json.js";
 
@@ -125,7 +122,6 @@ export async function processAndSendMedia(api, message, mediaData) {
   const {
     selectedMedia,
     mediaType,
-    uniqueId,
     duration,
     title,
     author,
@@ -143,21 +139,13 @@ export async function processAndSendMedia(api, message, mediaData) {
     return await sendMessageWarningRequest(api, message, object, 30000);
   }
 
-  const cachedMedia = await getCachedMedia(mediaType, uniqueId, quality, title);
-  let videoUrl;
-
-  if (cachedMedia) {
-    videoUrl = cachedMedia.fileUrl;
-  } else {
-    videoUrl = await categoryDownload(api, message, mediaType, uniqueId, selectedMedia, quality);
-    if (!videoUrl) {
-      const object = {
-        caption: `Không tải được dữ liệu...`,
-      };
-      await sendMessageWarningRequest(api, message, object, 30000);
-      return;
-    }
-    setCacheData(mediaType, uniqueId, { fileUrl: videoUrl, title: title, duration }, quality);
+  const videoUrl = await categoryDownload(api, message, mediaType, selectedMedia, quality);
+  if (!videoUrl) {
+    const object = {
+      caption: `Không tải được dữ liệu...`,
+    };
+    await sendMessageWarningRequest(api, message, object, 30000);
+    return;
   }
   
   if (typeFile === "video") {
@@ -206,7 +194,7 @@ export async function handleDownloadCommand(api, message, aliasCommand) {
     }
     
     const dataLink = [];
-    let uniqueId = dataDownload.id || query.split("/").pop() || dataDownload.title.replace(/[^a-zA-Z0-9]/g, "_");
+    let uniqueId = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
     dataDownload.medias.forEach((item) => {
       if (item.type.toLowerCase() !== "audio") {
@@ -238,7 +226,7 @@ export async function handleDownloadCommand(api, message, aliasCommand) {
     if (onlyImages) {
       if (dataLink.length === 1) {
         const media = dataLink[0];
-        const uniqueFileName = `${uniqueId}_${Date.now()}_${Math.random().toString(36).substring(7)}.${media.extension}`;
+        const uniqueFileName = `${uniqueId}_${Math.random().toString(36).substring(7)}.${media.extension}`;
         const filePath = path.resolve(tempDir, uniqueFileName);
         await downloadFile(media.url, filePath);
 
@@ -259,7 +247,7 @@ export async function handleDownloadCommand(api, message, aliasCommand) {
         const attachmentPaths = [];
     
         for (const media of dataLink) {
-          const uniqueFileName = `${uniqueId}_${Date.now()}_${Math.random().toString(36).substring(7)}.${media.extension}`;
+          const uniqueFileName = `${uniqueId}_${Math.random().toString(36).substring(7)}.${media.extension}`;
           const filePath = path.resolve(tempDir, uniqueFileName);
           await downloadFile(media.url, filePath);
           attachmentPaths.push(filePath);
@@ -320,10 +308,10 @@ export async function handleDownloadCommand(api, message, aliasCommand) {
   }
 }
 
-export async function categoryDownload(api, message, platform, uniqueId, selectedMedia, quality) {
+export async function categoryDownload(api, message, platform, selectedMedia, quality) {
   let tempFilePath;
   try {
-    tempFilePath = path.join(tempDir, `${platform}_${Date.now()}.${selectedMedia.extension}`);
+    tempFilePath = path.join(tempDir, `${platform}_${Date.now()}_${Math.random().toString(36).substring(7)}.${selectedMedia.extension}`);
     await downloadFile(selectedMedia.url, tempFilePath);
     const uploadResult = await api.uploadAttachment([tempFilePath], message.threadId, message.type);
     const videoUrl = uploadResult[0].fileUrl;
