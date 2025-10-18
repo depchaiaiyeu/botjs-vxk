@@ -961,7 +961,7 @@ export async function handleSendTaskCommand(api, message, groupSettings) {
 }
 
 export async function handleGetLinkInQuote(api, message) {
-  const quote = message.data.quote;
+  const quote = message.data.quote
   if (!quote || !quote.attach) {
     await sendMessageFromSQL(
       api,
@@ -972,12 +972,11 @@ export async function handleGetLinkInQuote(api, message) {
       },
       false,
       30000
-    );
-    return;
+    )
+    return
   }
-
   try {
-    const attachData = JSON.parse(quote.attach);
+    const attachData = JSON.parse(quote.attach)
     
     if (!attachData.href) {
       await sendMessageFromSQL(
@@ -989,20 +988,25 @@ export async function handleGetLinkInQuote(api, message) {
         },
         false,
         30000
-      );
-      return;
+      )
+      return
     }
-
+    
+    let link = attachData.href
+    if (link.includes("/jxl/") && link.includes(".jxl")) {
+      link = link.replace("/jxl/", "/jpg/").replace(".jxl", ".jpg")
+    }
+    
     await sendMessageFromSQL(
       api,
       message,
       {
         success: true,
-        message: `Link: ${attachData.href}`,
+        message: `Link: ${link}`,
       },
       false,
       180000
-    );
+    )
   } catch (error) {
     await sendMessageFromSQL(
       api,
@@ -1013,7 +1017,7 @@ export async function handleGetLinkInQuote(api, message) {
       },
       false,
       30000
-    );
+    )
   }
 }
 
@@ -1553,8 +1557,6 @@ export async function handleBlockedMembers(api, message) {
     console.log("[ZALO DEBUG] getBlockedGroupMembers response:", JSON.stringify(response, null, 2));
   
     const blockedMembers = response?.blocked_members || [];
-    // 👉 Log thêm số lượng người bị chặn
-    console.log(`[ZALO DEBUG] Tổng số người bị chặn: ${blockedMembers.length}`);
     if (blockedMembers.length === 0) {
       await api.sendMessage(
         {
