@@ -1,5 +1,6 @@
 import fs from "fs"
 import path from "path"
+import sharp from "sharp"
 import { getGlobalPrefix } from "../../../service.js"
 import { checkExstentionFileRemote, deleteFile, downloadFileFake } from "../../../../utils/util.js"
 import { MessageType } from "../../../../api-zalo/index.js"
@@ -52,7 +53,16 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
       
       await downloadFileFake(mediaUrl, imagePath)
-      execSync(`ffmpeg -y -i "${imagePath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
+      
+      try {
+        if (fileExt === "jxl") {
+          execSync(`magick convert "${imagePath}" "${convertedWebpPath}"`, { stdio: 'pipe' })
+        } else {
+          execSync(`ffmpeg -y -i "${imagePath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
+        }
+      } catch (error) {
+        throw new Error(`Lỗi convert ảnh: ${error.message}`)
+      }
       
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
