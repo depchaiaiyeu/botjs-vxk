@@ -22,8 +22,8 @@ export async function getVideoRedirectUrl(url) {
   }
 }
 
-function createRoundedCornerFilter(radius, width, height) {
-  return `scale=${width}:${height},split[main][corners];[corners]scale=10:10,boxblur=1:1[c];[main][c]overlay=0:0:shortest=1[tl];[tl][c]overlay=W-w:0:shortest=1[tr];[tr][c]overlay=0:H-h:shortest=1[bl];[bl][c]overlay=W-w:H-h:shortest=1[out];[out]pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,drawbox=x=0:y=0:w=${width}:h=${height}:t=0:c=transparent,format=rgba,split[s0][s1];[s0]scale=10:10[c1];[c1]pad=${radius}*2:${radius}*2,negate[mask];[s1][mask]alphamerge`
+function createRoundedCornersFilter(radius) {
+  return `format=rgba,split[main][border];[border]scale=iw:ih,boxblur=luma_radius=${radius}:luma_power=0[blur];[main][blur]alphamerge=format=auto`
 }
 
 export async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, cornerRadius = 5) {
@@ -40,9 +40,9 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       webpPath = path.join(tempDir, `sticker_webp_${Date.now()}.webp`)
       await downloadFileFake(redirectUrl, videoPath)
       
-      const roundFilter = `scale=${width}:${height},format=rgba,setpts=PTS-STARTPTS,fps=10[v1];[v1]boxblur=luma_radius=${cornerRadius}:luma_power=1[blurred];color=white:s=${width}x${height}:d=1[bg];[bg]drawbox=x=0:y=0:w=${cornerRadius}:h=${cornerRadius}:c=black:t=fill:replace=1[c1];[c1]drawbox=x=${width-cornerRadius}:y=0:w=${cornerRadius}:h=${cornerRadius}:c=black:t=fill:replace=1[c2];[c2]drawbox=x=0:y=${height-cornerRadius}:w=${cornerRadius}:h=${cornerRadius}:c=black:t=fill:replace=1[c3];[c3]drawbox=x=${width-cornerRadius}:y=${height-cornerRadius}:w=${cornerRadius}:h=${cornerRadius}:c=black:t=fill:replace=1[mask];[v1][mask]alphamerge[out]`
+      const videoFilter = `format=rgba,pad=ceil(iw/2)*2:ceil(ih/2)*2,split[main][corners];[corners]boxblur=luma_radius=${cornerRadius}[blur];[main][blur]alphamerge`
       
-      execSync(`ffmpeg -y -i "${videoPath}" -vf "scale=${width}:${height},format=rgba,fps=10" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
+      execSync(`ffmpeg -y -i "${videoPath}" -vf "${videoFilter}" -c:v libwebp -q:v 80 -loop 0 "${webpPath}"`, { stdio: 'pipe' })
       
       const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
@@ -67,9 +67,9 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
       await downloadFileFake(downloadUrl, imagePath)
       
-      const roundedImageFilter = `scale=${width}:${height},format=rgba,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,split[img][mask];[mask]scale=${width}:${height},format=gray,negate[inverted];[img][inverted]alphamerge,drawbox=x=0:y=0:w=${cornerRadius}:h=${cornerRadius}:c=white:t=fill[c1];[c1]drawbox=x=${width-cornerRadius}:y=0:w=${cornerRadius}:h=${cornerRadius}:c=white:t=fill[c2];[c2]drawbox=x=0:y=${height-cornerRadius}:w=${cornerRadius}:h=${cornerRadius}:c=white:t=fill[c3];[c3]drawbox=x=${width-cornerRadius}:y=${height-cornerRadius}:w=${cornerRadius}:h=${cornerRadius}:c=white:t=fill`
+      const imageFilter = `format=rgba,split[main][corners];[corners]boxblur=luma_radius=${cornerRadius}[blur];[main][blur]alphamerge`
       
-      execSync(`ffmpeg -y -i "${imagePath}" -vf "scale=${width}:${height},format=rgba" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
+      execSync(`ffmpeg -y -i "${imagePath}" -vf "${imageFilter}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
       
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
