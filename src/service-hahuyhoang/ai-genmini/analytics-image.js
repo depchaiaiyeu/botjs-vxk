@@ -4,8 +4,8 @@ import path from "path";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import {
   sendMessageFailed,
-  sendMessageWarningRequest,
-  sendMessageCompleteRequest
+  sendMessageWarning,
+  sendMessageComplete
 } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
 import { getGlobalPrefix } from "../../service-hahuyhoang/service.js";
 import { removeMention } from "../../utils/format-util.js";
@@ -14,12 +14,6 @@ import { checkExstentionFileRemote } from "../../utils/util.js";
 const genAI = new GoogleGenerativeAI("AIzaSyBKNInWVa8kKm9G0e9Kz7_VxQkgpFY6gDs");
 
 const SUPPORTED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "jxl"];
-const SUPPORTED_VIDEO_EXTENSIONS = [
-  "mp4", "mpeg", "mov", "avi", "x-flv", "mpg", "webm", "wmv", "3gpp"
-];
-const SUPPORTED_AUDIO_EXTENSIONS = [
-  "mp3", "wav", "aiff", "aac", "ogg", "flac"
-];
 
 export async function handleImageAnalytics(api, message, aliasCommand) {
   const prefix = getGlobalPrefix();
@@ -27,8 +21,8 @@ export async function handleImageAnalytics(api, message, aliasCommand) {
   const quote = message.data?.quote;
 
   if (!content && !quote) {
-    return sendMessageWarningRequest(api, message, {
-      caption: `Vui lòng nhập câu hỏi hoặc reply vào tin nhắn có hình ảnh / video / âm thanh để phân tích.\nVí dụ:\n${prefix}${aliasCommand} Đây là gì?`,
+    return sendMessageWarning(api, message, {
+      caption: `Vui lòng nhập câu hỏi hoặc reply vào tin nhắn có hình ảnh để phân tích.\nVí dụ:\n${prefix}${aliasCommand} Đây là gì?`,
     }, 30000);
   }
 
@@ -40,7 +34,7 @@ export async function handleImageAnalytics(api, message, aliasCommand) {
     const userInput = content || quoteText;
     if (userInput) {
       if (userInput.length > 10000) {
-        return sendMessageWarningRequest(api, message, {
+        return sendMessageWarning(api, message, {
           caption: "Nội dung quá dài, vui lòng rút gọn lại!",
         }, 30000);
       }
@@ -52,7 +46,7 @@ export async function handleImageAnalytics(api, message, aliasCommand) {
 
     if (quote?.attach) {
       const attachData = JSON.parse(quote.attach);
-      const fileUrl =
+      let fileUrl =
         attachData.hdUrl ||
         attachData.href ||
         attachData.oriUrl ||
@@ -60,29 +54,26 @@ export async function handleImageAnalytics(api, message, aliasCommand) {
         attachData.thumbUrl;
 
       if (fileUrl) {
-        const extension = await checkExstentionFileRemote(fileUrl);
+        let extension = await checkExstentionFileRemote(fileUrl);
+        if (extension === "jxl") {
+          fileUrl = fileUrl.replace("/jxl/", "/jpg/").replace(".jxl", ".jpg");
+          extension = "jpg";
+        }
         const isImage = SUPPORTED_IMAGE_EXTENSIONS.includes(extension);
-        const isVideo = SUPPORTED_VIDEO_EXTENSIONS.includes(extension);
-        const isAudio = SUPPORTED_AUDIO_EXTENSIONS.includes(extension);
 
-        if (!isImage && !isVideo && !isAudio) {
-          return sendMessageWarningRequest(api, message, {
-            caption: `🚫 File không hỗ trợ. Chỉ hỗ trợ hình ảnh (.jpg, .png...), video (.mp4, .webm...) và âm thanh (.mp3, .wav...) dưới 20MB.`,
+        if (!isImage) {
+          return sendMessageWarning(api, message, {
+            caption: `File không hỗ trợ. Chỉ hỗ trợ hình ảnh (.jpg, .png..., .jxl) dưới 20MB.`,
           }, 30000);
         }
 
-        if (isVideo || isAudio) modelName = "gemini-2.0-flash";
-        mimeType = isImage
-          ? "image/png"
-          : isVideo
-            ? "video/mp4"
-            : "audio/" + extension;
+        mimeType = extension === "jpg" || extension === "jxl" ? "image/jpeg" : `image/${extension}`;
 
         const response = await axios.get(fileUrl, { responseType: "arraybuffer" });
         const fileSizeMB = response.data.byteLength / (1024 * 1024);
         if (fileSizeMB > 20) {
-          return sendMessageWarningRequest(api, message, {
-            caption: `🚫 File quá lớn (${fileSizeMB.toFixed(2)} MB). Vui lòng gửi file dưới 20MB.`,
+          return sendMessageWarning(api, message, {
+            caption: `File quá lớn (${fileSizeMB.toFixed(2)} MB). Vui lòng gửi file dưới 20MB.`,
           }, 30000);
         }
 
@@ -114,7 +105,7 @@ export async function handleImageAnalytics(api, message, aliasCommand) {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        console.log(`▶ Gọi Gemini attempt ${attempt}...`);
+        console.log(`Gọi Gemini attempt ${attempt}...`);
         const result = await model.generateContent({
           contents: [{ role: "user", parts }],
         });
@@ -122,7 +113,7 @@ export async function handleImageAnalytics(api, message, aliasCommand) {
         replyText = result.response.text();
         break;
       } catch (err) {
-        console.warn(`🚫 Thử lần ${attempt} thất bại:`, err.message);
+        console.warn(`Thử lần ${attempt} thất bại:`, err.message);
         if (attempt === maxRetries) {
           throw err; 
         }
@@ -130,9 +121,9 @@ export async function handleImageAnalytics(api, message, aliasCommand) {
       }
     }
 
-    return await sendMessageCompleteRequest(api, message, { caption: replyText }, 3000000);
+    return await sendMessageComplete(api, message, { caption: replyText }, 3000000);
   } catch (err) {
-    console.error("🚫 Lỗi xử lý Gemini:", err.message);
+    console.error("Lỗi xử lý Gemini:", err.message);
     return sendMessageFailed(api, message, "API Quá tải vui lòng thử lại sau...");
   }
 }
