@@ -61,6 +61,7 @@ export function sendCustomStickerFactory(api) {
         }),
       }),
       contentId: Date.now(),
+      pStickerType: 1,
       thumb_height: width,
       thumb_width: height,
       webp: JSON.stringify({
