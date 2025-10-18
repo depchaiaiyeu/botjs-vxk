@@ -10,7 +10,6 @@ import {
 } from "../../chat-zalo/chat-style/chat-style.js";
 import * as fs from "fs";
 import * as path from "path";
-import axios from "axios";  // Thêm import axios để tải URL
 
 const geminiApiKey = "AIzaSyBaluNjfNY9HEykFgoFCSNapC_Q_jkRRTA";
 const genAI = new GoogleGenerativeAI(geminiApiKey);
@@ -20,7 +19,6 @@ let isProcessing = false;
 const DELAY_BETWEEN_REQUESTS = 4000;
 const systemInstruction = `Bạn tên là Gem.
 Bạn được tạo ra bởi duy nhất Vũ Xuân Kiên.
-Nếu tên người hỏi là người tạo ra bạn thì phải trả lời lễ phép, xưng em-anh, còn với người khác thì tôi-bạn.
 Trả lời dễ thương, có thể dùng emoji để tăng tính tương tác.`;
 
 export function initGeminiModel() {
@@ -35,76 +33,17 @@ export function initGeminiModel() {
   });
 }
 
-async function encodeImageToBase64(imagePathOrUrl) {
-  try {
-    let base64;
-    if (imagePathOrUrl.startsWith("http")) {
-      const response = await axios.get(imagePathOrUrl, { responseType: "arraybuffer" });
-      const fileSizeMB = response.data.byteLength / (1024 * 1024);
-      if (fileSizeMB > 20) {
-        throw new Error("Ảnh quá lớn (>20MB)");
-      }
-      base64 = Buffer.from(response.data).toString("base64");
-    } else {
-      const imageBuffer = fs.readFileSync(imagePathOrUrl);
-      base64 = imageBuffer.toString("base64");
-    }
-    return base64;
-  } catch (error) {
-    console.error("Lỗi khi encode ảnh:", error);
-    return null;
-  }
-}
-
-function getImageMimeType(imagePathOrUrl) {
-  let ext;
-  if (imagePathOrUrl.startsWith("http")) {
-    const url = new URL(imagePathOrUrl);
-    ext = path.extname(url.pathname).toLowerCase();
-  } else {
-    ext = path.extname(imagePathOrUrl).toLowerCase();
-  }
-  const mimeTypes = {
-    ".jpg": "image/jpeg",
-    ".jpeg": "image/jpeg",
-    ".png": "image/png",
-    ".gif": "image/gif",
-    ".webp": "image/webp"
-  };
-  return mimeTypes[ext] || "image/jpeg";
-}
-
 async function processQueue() {
   if (isProcessing || requestQueue.length === 0) return;
   isProcessing = true;
   while (requestQueue.length > 0) {
-    const { api, message, question, imagePath, resolve, reject } = requestQueue.shift();
+    const { api, message, question, resolve, reject } = requestQueue.shift();
     try {
       initGeminiModel();
       const fullPrompt = `${systemInstruction}\n\n${question}`;
-      
-      if (imagePath) {
-        const base64Image = await encodeImageToBase64(imagePath);
-        const mimeType = getImageMimeType(imagePath);
-        
-        if (base64Image) {
-          const parts = [
-            { text: fullPrompt },
-            { inlineData: { mimeType, data: base64Image } }
-          ];
-          const result = await geminiModel.generateContent({
-            contents: [{ role: "user", parts }]
-          });
-          const response = result.response.text();
-          resolve(response);
-        } else {
-          reject(new Error("Không thể xử lý ảnh"));
-        }
-      } else {
-        const result = await geminiModel.generateContent(fullPrompt);
-        const response = result.response.text();
-        resolve(response);
-      }
+      const result = await geminiModel.generateContent(fullPrompt);
+      const response = result.response.text();
+      resolve(response);
     } catch (error) {
       reject(error);
     }
@@ -113,9 +52,9 @@ async function processQueue() {
   isProcessing = false;
 }
 
-export async function callGeminiAPI(api, message, question, imagePath = null) {
+export async function callGeminiAPI(api, message, question) {
   return new Promise((resolve, reject) => {
-    requestQueue.push({ api, message, question, imagePath, resolve, reject });
+    requestQueue.push({ api, message, question, resolve, reject });
     processQueue();
   });
 }
@@ -131,27 +70,21 @@ export async function askGeminiCommand(api, message, aliasCommand) {
   }
 
   let fullPrompt = question;
-  let imagePath = null;
 
   if (message.data?.quote) {
     const senderName = message.data.dName || "Người dùng";
     const quotedMessage = message.data.quote.msg;
     const quotedAttach = message.data.quote.attach;
     
-    if (quotedAttach) {  // Fix: Check attach tồn tại (ảnh), KHÔNG phụ thuộc title
-      imagePath = quotedAttach.href || quotedAttach.thumb;
-      if (quotedAttach.title) {
-        fullPrompt = `${senderName} hỏi về ảnh có caption: "${quotedAttach.title}"\n\n${question}`;
-      } else {
-        fullPrompt = `${senderName} hỏi về một ảnh\n\n${question}`;  // Thêm nếu không caption
-      }
+    if (quotedAttach?.title) {
+      fullPrompt = `${senderName} hỏi về ảnh có caption: "${quotedAttach.title}"\n\n${question}`;
     } else if (quotedMessage) {
       fullPrompt = `${senderName} hỏi về tin nhắn: "${quotedMessage}"\n\n${question}`;
     }
   }
 
   try {
-    let replyText = await callGeminiAPI(api, message, fullPrompt, imagePath);
+    let replyText = await callGeminiAPI(api, message, fullPrompt);
     if (!replyText) replyText = "Xin lỗi, hiện tại tôi không thể trả lời câu hỏi này. 🙏";
     await sendMessageStateQuote(api, message, replyText, true, 1800000, false);
   } catch (error) {
