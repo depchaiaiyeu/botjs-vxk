@@ -34,7 +34,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       videoPath = path.join(tempDir, `sticker_video_${Date.now()}.mp4`)
       webpPath = path.join(tempDir, `sticker_webp_${Date.now()}.webp`)
       
-      await downloadFileFake(redirectUrl, videoPath)
+      execSync(`curl -o "${videoPath}" "${redirectUrl}"`)
       execSync(`ffmpeg -y -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
       
       const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
@@ -44,7 +44,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
         throw new Error("Upload video attachment thất bại")
       }
       
-      await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.Webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
+      await api.sendCustomSticker(message, webpUrl, webpUrl, width, height)
     } else {
       let downloadUrl = mediaUrl
       
@@ -53,7 +53,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       }
       
       imagePath = path.join(tempDir, `sticker_image_${Date.now()}.jpg`)
-      await downloadFileFake(downloadUrl, imagePath)
+      execSync(`curl -o "${imagePath}" "${downloadUrl}"`)
       
       const imgUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const imgUrl = imgUpload?.[0]?.fileUrl
