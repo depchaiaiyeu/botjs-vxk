@@ -951,8 +951,8 @@
         {
           "UserName": "N H L",
           "UID": "8347261672526530028",
-          "Rank": 2325,
-          "messageCountToday": 9,
+          "Rank": 2326,
+          "messageCountToday": 10,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -993,8 +993,8 @@
         {
           "UserName": "N D Q",
           "UID": "5440985416542136505",
-          "Rank": 283,
-          "messageCountToday": 7,
+          "Rank": 286,
+          "messageCountToday": 10,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -1745,6 +1745,13 @@
           "Rank": 3,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-17"
+        },
+        {
+          "UserName": "Trường Vũ",
+          "UID": "5364703382029555784",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-18"
         }
       ],
       "nameGroup": "⚜️ Infinite Coder ⚜️"
@@ -4393,11 +4400,11 @@
           "lastMessageDate": "2025-10-09"
         },
         {
-          "UserName": "Trần Quang Huy",
+          "UserName": "Ng Quang Huy",
           "UID": "2577252855236527871",
-          "Rank": 311,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-13"
+          "Rank": 314,
+          "messageCountToday": 3,
+          "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Vua Của Loài Chó",
@@ -5277,15 +5284,15 @@
         {
           "UserName": "Tran Luc Nhi",
           "UID": "7101046885639063728",
-          "Rank": 2,
-          "messageCountToday": 2,
+          "Rank": 8,
+          "messageCountToday": 8,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Ng Quang Huy",
           "UID": "1786106636354990322",
-          "Rank": 5,
-          "messageCountToday": 5,
+          "Rank": 6,
+          "messageCountToday": 6,
           "lastMessageDate": "2025-10-18"
         }
       ],

@@ -218,6 +218,10 @@
       "4802332726802384542": {
         "name": "Jerry",
         "timeMute": -1
+      },
+      "7101046885639063728": {
+        "name": "Tran Luc Nhi",
+        "timeMute": -1
       }
     },
     "whileList": {},
@@ -245,7 +249,8 @@
     "autoReply": true,
     "removeLinkKeywords": false,
     "antiUndo": true,
-    "autoDownload": true
+    "autoDownload": true,
+    "blockForward": false
   },
   "1747464985521437051": {
     "nameGroup": "ZCA | CHATBOT　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　gwengay",
