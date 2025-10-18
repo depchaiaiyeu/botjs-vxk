@@ -2,11 +2,9 @@ import axios from "axios"
 import fs from "fs"
 import path from "path"
 import { getGlobalPrefix } from "../../../service.js"
-import { checkExstentionFileRemote, deleteFile, downloadFileFake } from "../../../../utils/util.js"
+import { deleteFile, downloadFileFake } from "../../../../utils/util.js"
 import { MessageType } from "../../../../api-zalo/index.js"
 import { tempDir } from "../../../../utils/io-json.js"
-import { removeMention } from "../../../../utils/format-util.js"
-import { isAdmin } from "../../../../index.js"
 import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
 import { execSync } from "child_process"
@@ -25,15 +23,22 @@ export async function getVideoRedirectUrl(url) {
   }
 }
 
-export async function processAndSendSticker(api, message, mediaUrl, width, height) {
+export async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType) {
   const threadId = message.threadId
-  let pathSticker = path.join(tempDir, `sticker_${Date.now()}.tmp`)
+  let finalUrl = mediaUrl
+  
+  if (cliMsgType === 44) {
+    finalUrl = await getVideoRedirectUrl(mediaUrl)
+  }
+  
+  const ext = cliMsgType === 44 ? "mp4" : "jpg"
+  let pathSticker = path.join(tempDir, `sticker_${Date.now()}.${ext}`)
   
   try {
-    await downloadFileFake(mediaUrl, pathSticker)
+    await downloadFileFake(finalUrl, pathSticker)
     const linkUploadZalo = await api.uploadAttachment([pathSticker], threadId, appContext.send2meId, MessageType.DirectMessage)
-    const finalUrl = linkUploadZalo[0].fileUrl + "?createdBy=VXK-Service-BOT.Webp"
-    await api.sendCustomSticker(message, finalUrl, finalUrl, width, height)
+    const uploadedUrl = linkUploadZalo[0].fileUrl + "?createdBy=VXK-Service-BOT.Webp"
+    await api.sendCustomSticker(message, uploadedUrl, uploadedUrl, width, height)
     return true
   } catch (error) {
     console.error("Lỗi khi xử lý sticker:", error)
@@ -43,12 +48,9 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
   }
 }
 
-
-
 export async function handleStickerCommand(api, message) {
   const quote = message.data?.quote
   const senderName = message.data.dName
-  const senderId = message.data.uidFrom
   const threadId = message.threadId
   const prefix = getGlobalPrefix()
   
@@ -80,12 +82,17 @@ export async function handleStickerCommand(api, message) {
     const decodedUrl = decodeURIComponent(mediaUrl.replace(/\\\//g, "/"))
     
     const params = attachData.params || {}
+    const duration = params.duration || 0
+    if (cliMsgType === 44 && duration > 5000) {
+      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 5 giây!`, true)
+      return
+    }
     
     const width = params.width || 512
     const height = params.height || 512
     
     await sendMessageWarning(api, message, `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`, true)
-    await processAndSendSticker(api, message, decodedUrl, width, height)
+    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
     console.error("Lỗi khi xử lý lệnh sticker:", error)
