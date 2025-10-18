@@ -1,7 +1,7 @@
 import fs from "fs"
 import path from "path"
 import { getGlobalPrefix } from "../../../service.js"
-import { deleteFile, downloadFileFake } from "../../../../utils/util.js"
+import { checkExstentionFileRemote, deleteFile, downloadFileFake } from "../../../../utils/util.js"
 import { MessageType } from "../../../../api-zalo/index.js"
 import { tempDir } from "../../../../utils/io-json.js"
 import { appContext } from "../../../../api-zalo/context.js"
@@ -26,6 +26,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
+  let imagePath = null
   
   try {
     if (cliMsgType === 44) {
@@ -45,23 +46,23 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       
       await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.Webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
     } else {
-      let imageUrl = mediaUrl
+      let downloadUrl = mediaUrl
+      
       if (mediaUrl.includes("/jxl/")) {
-        imageUrl = mediaUrl.replace("/jxl/", "/jpg/").replace(".jxl", ".jpg")
+        downloadUrl = mediaUrl.replace(/\/jxl\//, "/jpg/").replace(/\.jxl$/, ".jpg")
       }
       
-      const imagePath = path.join(tempDir, `sticker_image_${Date.now()}.jpg`)
-      execSync(`wget -q -O "${imagePath}" "${imageUrl}"`)
+      imagePath = path.join(tempDir, `sticker_image_${Date.now()}.jpg`)
+      await downloadFileFake(downloadUrl, imagePath)
       
-      const imageUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
-      const uploadedUrl = imageUpload?.[0]?.fileUrl
+      const imgUpload = await api.uploadAttachment([imagePath], threadId, appContext.send2meId, MessageType.DirectMessage)
+      const imgUrl = imgUpload?.[0]?.fileUrl
       
-      if (!uploadedUrl) {
+      if (!imgUrl) {
         throw new Error("Upload image attachment thất bại")
       }
       
-      await api.sendCustomSticker(message, uploadedUrl + "?createdBy=VXK-Service-BOT.Webp", uploadedUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
-      await deleteFile(imagePath)
+      await api.sendCustomSticker(message, imgUrl, imgUrl, width, height)
     }
     
     return true
@@ -71,6 +72,7 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
   } finally {
     if (videoPath) await deleteFile(videoPath)
     if (webpPath) await deleteFile(webpPath)
+    if (imagePath) await deleteFile(imagePath)
   }
 }
 
