@@ -48,20 +48,15 @@ export async function processAndSendSticker(api, message, mediaUrl, width, heigh
       
       await api.sendCustomSticker(message, webpUrl + "?createdBy=VXK-Service-BOT.Webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
     } else {
-      const fileExt = await checkExstentionFileRemote(mediaUrl)
-      imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
+      imagePath = path.join(tempDir, `sticker_image_${Date.now()}.tmp`)
       convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
       
       await downloadFileFake(mediaUrl, imagePath)
       
       try {
-        if (fileExt === "jxl") {
-          execSync(`magick convert "${imagePath}" "${convertedWebpPath}"`, { stdio: 'pipe' })
-        } else {
-          execSync(`ffmpeg -y -i "${imagePath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
-        }
+        await sharp(imagePath).webp({ quality: 80 }).toFile(convertedWebpPath)
       } catch (error) {
-        throw new Error(`Lỗi convert ảnh: ${error.message}`)
+        throw new Error(`Lỗi convert ảnh với sharp: ${error.message}`)
       }
       
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
