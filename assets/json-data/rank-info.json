@@ -958,9 +958,9 @@
         {
           "UserName": "Take Care For Groups",
           "UID": "227886665729461010",
-          "Rank": 6773,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-17"
+          "Rank": 6775,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Văn",
@@ -993,8 +993,8 @@
         {
           "UserName": "N D Q",
           "UID": "5440985416542136505",
-          "Rank": 279,
-          "messageCountToday": 3,
+          "Rank": 280,
+          "messageCountToday": 4,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -4031,9 +4031,9 @@
         {
           "UserName": "Trann Nhien",
           "UID": "8038361009454121910",
-          "Rank": 279,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-14"
+          "Rank": 281,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Doris",
@@ -9841,6 +9841,25 @@
         }
       ],
       "nameGroup": "Lớp 7/1 2025- 2026"
+    },
+    "3826391219716378145": {
+      "users": [
+        {
+          "UserName": "L T Thành",
+          "UID": "4715083147283353428",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-18"
+        },
+        {
+          "UserName": "Phan Thị Kim Hà",
+          "UID": "2836768016003635301",
+          "Rank": 3,
+          "messageCountToday": 3,
+          "lastMessageDate": "2025-10-18"
+        }
+      ],
+      "nameGroup": "Onew Likes🗿"
     }
   }
 }
