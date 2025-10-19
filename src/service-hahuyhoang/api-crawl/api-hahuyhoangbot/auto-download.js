@@ -8,6 +8,7 @@ import { downloadFile } from "../../../utils/util.js";
 import { clearImagePath } from "../../../utils/canvas/index.js";
 import { tempDir } from "../../../utils/io-json.js";
 import { admins } from "../../../index.js";
+import { getGlobalPrefix } from "../../../service.js";
 
 export const SUPPORTED_PLATFORMS = [
   { name: 'tiktok', patterns: ['tiktok.com', 'vt.tiktok.com', 'vm.tiktok.com'] },
@@ -47,6 +48,12 @@ function extractLinks(content) {
   const matches = content.match(urlRegex) || [];
   
   return matches.filter(url => detectPlatform(url) !== null);
+}
+
+function hasPrefix(content) {
+  const prefix = getGlobalPrefix();
+  if (typeof content !== 'string') return false;
+  return content.trim().startsWith(prefix);
 }
 
 export async function handleAutoDownloadCommand(api, message, groupSettings) {
@@ -99,6 +106,10 @@ export async function autoDownload(api, message, isSelf, groupSettings) {
   }
 
   if (!textContent || typeof textContent !== 'string') {
+    return false;
+  }
+
+  if (hasPrefix(textContent)) {
     return false;
   }
   
