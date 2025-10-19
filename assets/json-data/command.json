@@ -2245,8 +2245,9 @@
       "icon": "🚫",
       "type": 5,
       "author": "Vũ Xuân Kiên",
-      "active": true
+      "active": true,
     },
+    {
       "name": "checkdomain",
       "description": "Kiểm tra thông tin địa về domain, nameserver và nhiều hơn thế nữa",
       "syntax": "{p}checkdomain <domain>",
@@ -2257,7 +2258,7 @@
       "author": "Vũ Xuân Kiên",
       "active": true,
       "alias": [
-        "hosti4"
+        "cdm"
       ]
     }
   ]
