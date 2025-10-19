@@ -2267,7 +2267,7 @@
       "description": "Decode các params của Zalo",
       "syntax": "{p}decode <params>",
       "permission": "adminLevelHigh",
-      "countdown": 5,
+      "countdown": 1,
       "icon": "▶",
       "type": 5,
       "author": "Vũ Xuân Kiên",
