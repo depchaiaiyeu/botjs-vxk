@@ -6,6 +6,8 @@ import { handleBlock, handleKick } from "./bot-manager/group-manage.js";
 import { handleActiveBotUser, handleActiveGameUser, managerData } from "./bot-manager/active-bot.js";
 import { helpCommand, adminCommand, gameInfoCommand } from "./instructions/help.js";
 
+import { handleEncodeParamsCommand } from "./utilities-command/decode-params.js"
+
 import { askGPTCommand } from "../service-hahuyhoang/api-crawl/content/gpt.js";
 import { askGeminiCommand } from "../service-hahuyhoang/api-crawl/assistant-ai/gemini.js";
 import { weatherCommand } from "../service-hahuyhoang/api-crawl/content/weather.js";
@@ -430,6 +432,9 @@ export async function handleCommandPrivate(api, message) {
           return 0;
         case "join":
           await handleJoinGroup(api, message);
+          return 0;
+        case "decode":
+          await handleEncodeParamsCommand(api, message);
           return 0;
         case "listgroups":
           await handleShowGroupsList(api, message, aliasCommand);
