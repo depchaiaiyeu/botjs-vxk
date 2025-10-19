@@ -2245,7 +2245,7 @@
       "icon": "🚫",
       "type": 5,
       "author": "Vũ Xuân Kiên",
-      "active": true,
+      "active": true
     },
     {
       "name": "checkdomain",
@@ -2259,7 +2259,7 @@
       "active": true,
       "alias": [
         "cdm"
-      ],
+      ]
     }
   ]
 }
