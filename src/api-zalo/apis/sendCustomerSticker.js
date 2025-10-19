@@ -44,7 +44,8 @@ export function sendCustomStickerFactory(api) {
 
     const params = {
       clientId: Date.now(),
-      title: "sticker creator by vu xuan kien service bot, check cai coin card",
+      title: "sticker creator vu xuan kien service bot",
+      description: "check cai coin card, dis me may"
       oriUrl: staticImgUrl,
       thumbUrl: staticImgUrl,
       hdUrl: staticImgUrl,
@@ -61,7 +62,6 @@ export function sendCustomStickerFactory(api) {
         }),
       }),
       contentId: Date.now(),
-      pStickerType: 1,
       thumb_height: width,
       thumb_width: height,
       webp: JSON.stringify({
