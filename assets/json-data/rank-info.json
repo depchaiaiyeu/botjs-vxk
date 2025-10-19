@@ -10260,8 +10260,8 @@
         {
           "UserName": "Onew",
           "UID": "3386338295604654533",
-          "Rank": 21,
-          "messageCountToday": 21,
+          "Rank": 22,
+          "messageCountToday": 22,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -10302,6 +10302,13 @@
         {
           "UserName": "Mỹ Tiên",
           "UID": "3789820558801784227",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Gia Nguyen",
+          "UID": "5914577443254183727",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-19"
