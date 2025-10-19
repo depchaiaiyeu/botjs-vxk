@@ -11,16 +11,12 @@ import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
 import { execSync } from "child_process"
 
-function escapeFFmpegPath(filePath) {
-  let escapedPath = filePath.replace(/\\/g, "/")
-  if (escapedPath.match(/^[a-zA-Z]:/)) {
-    escapedPath = "/" + escapedPath[0].toLowerCase() + escapedPath.substring(1)
-  }
-  return escapedPath.replace(/'/g, "'\\''")
-}
-
 function getRedirectUrl(url) {
   return new Promise((resolve, reject) => {
+    if (!url.startsWith("http")) {
+      resolve(url)
+      return
+    }
     const protocol = url.startsWith("https") ? https : http
     protocol.get(url, { method: "HEAD" }, (res) => {
       if (res.headers.location) {
@@ -43,12 +39,6 @@ async function removeBackgroundImgly(imagePath) {
   }
 }
 
-function applyRoundedCorners(inputPath, outputPath, radius) {
-  const filterComplex = `format=yuva420p,geq=lum='p(X,Y)':a='if(gt(abs(W/2-X),W/2-${radius})*gt(abs(H/2-Y),H/2-${radius}),if(lte(hypot(${radius}-(W/2-abs(W/2-X)),${radius}-(H/2-abs(H/2-Y))),${radius}),255,0),255)'`
-  
-  execSync(`ffmpeg -y -i "${inputPath}" -filter_complex "${filterComplex}" "${outputPath}"`, { stdio: 'pipe' })
-}
-
 async function getVideoRedirectUrl(url) {
   try {
     const response = await getRedirectUrl(url)
@@ -59,21 +49,28 @@ async function getVideoRedirectUrl(url) {
   }
 }
 
-async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, removeBackground = false, radius = 5) {
+function isLocalPath(url) {
+  return /^[a-z]:[\/\\]/i.test(url)
+}
+
+async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, removeBackground = false, radiusRatio = 5) {
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
   let imagePath = null
   let convertedWebpPath = null
   let bgRemovedPath = null
-  let roundedPath = null
 
   try {
     if (cliMsgType === 44) {
       const redirectUrl = await getVideoRedirectUrl(mediaUrl)
       videoPath = path.join(tempDir, `sticker_video_${Date.now()}.mp4`)
       webpPath = path.join(tempDir, `sticker_webp_${Date.now()}.webp`)
-      await downloadFileFake(redirectUrl, videoPath)
+      if (isLocalPath(redirectUrl)) {
+        fs.copyFileSync(redirectUrl, videoPath)
+      } else {
+        await downloadFileFake(redirectUrl, videoPath)
+      }
       execSync(`ffmpeg -y -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
@@ -96,7 +93,11 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
       }
       imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
       convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
-      await downloadFileFake(downloadUrl, imagePath)
+      if (isLocalPath(downloadUrl)) {
+        fs.copyFileSync(downloadUrl, imagePath)
+      } else {
+        await downloadFileFake(downloadUrl, imagePath)
+      }
 
       let processPath = imagePath
       if (removeBackground) {
@@ -106,13 +107,13 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
         processPath = bgRemovedPath
       }
 
-      if (radius > 0) {
-        roundedPath = path.join(tempDir, `sticker_rounded_${Date.now()}.png`)
-        applyRoundedCorners(processPath, roundedPath, radius)
-        processPath = roundedPath
+      const r = Math.floor(Math.min(width, height) * (radiusRatio / 100))
+      let vfFilter = ""
+      if (r > 0 && cliMsgType !== 44) {
+        vfFilter = `-vf "format=rgba,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='a(X,Y)*((gt(X,${r})*lt(X,W-${r})*gt(Y,${r})*lt(Y,H-${r})) + (lt((X-${r})*(X-${r})+(Y-${r})*(Y-${r}),${r}*${r})*lt(X,${r})*lt(Y,${r})) + (lt((X-(W-${r}))*(X-(W-${r}))+(Y-${r})*(Y-${r}),${r}*${r})*gt(X,W-${r})*lt(Y,${r})) + (lt((X-${r})*(X-${r})+(Y-(H-${r}))*(Y-(H-${r})),${r}*${r})*lt(X,${r})*gt(Y,H-${r})) + (lt((X-(W-${r}))*(X-(W-${r}))+(Y-(H-${r}))*(Y-(H-${r})),${r}*${r})*gt(X,W-${r})*gt(Y,H-${r})))'"`
       }
 
-      execSync(`ffmpeg -y -i "${processPath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
+      execSync(`ffmpeg -y -i "${processPath}" ${vfFilter} -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
@@ -130,7 +131,6 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
     if (imagePath) await deleteFile(imagePath)
     if (convertedWebpPath) await deleteFile(convertedWebpPath)
     if (bgRemovedPath) await deleteFile(bgRemovedPath)
-    if (roundedPath) await deleteFile(roundedPath)
   }
 }
 
@@ -143,17 +143,16 @@ export async function handleStickerCommand(api, message) {
   const args = msgContent.split(/\s+/)
 
   const removeBackgroundImg = args.includes("xp")
-  
-  let radius = 5
-  for (const arg of args) {
-    if (arg.startsWith("r") && !isNaN(parseInt(arg.substring(1)))) {
-      radius = parseInt(arg.substring(1))
+  let radiusRatio = 5
+  for (let arg of args) {
+    if (arg.startsWith("r")) {
+      radiusRatio = parseInt(arg.slice(1), 10) || 5
       break
     }
   }
 
   if (!quote) {
-    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${removeBackgroundImg ? " xp" : ""}.`, true)
+    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${removeBackgroundImg ? " xp" : ""}${radiusRatio !== 5 ? ` r${radiusRatio}` : ""}.`, true)
     return
   }
 
@@ -189,13 +188,9 @@ export async function handleStickerCommand(api, message) {
     const width = params.width || 512
     const height = params.height || 512
 
-    let statusMsg = `Đang tạo sticker cho ${senderName}`
-    if (removeBackgroundImg) statusMsg += ", xóa phông"
-    if (radius > 0) statusMsg += `, bo tròn ${radius}px`
-    statusMsg += ", vui lòng chờ một chút!"
-    
+    const statusMsg = removeBackgroundImg ? `Đang xóa phông và tạo sticker cho ${senderName}, vui lòng chờ một chút!` : `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
-    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, removeBackgroundImg, radius)
+    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, removeBackgroundImg, radiusRatio)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
     console.error("Lỗi khi xử lý lệnh sticker:", error)
