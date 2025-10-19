@@ -9465,7 +9465,7 @@
           "UserName": "Hoàng Hào",
           "UID": "138790651221970390",
           "Rank": 6,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -9493,7 +9493,7 @@
           "UserName": "Toxic",
           "UID": "6387879024110411677",
           "Rank": 21,
-          "messageCountToday": 2,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -9534,9 +9534,9 @@
         {
           "UserName": "Văn Định",
           "UID": "9019710325137354775",
-          "Rank": 4,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-12"
+          "Rank": 5,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
         },
         {
           "UserName": "Nguyễn Thanh Toàn",
@@ -9647,7 +9647,7 @@
           "UserName": "Thu Hương",
           "UID": "8483070556819959170",
           "Rank": 3,
-          "messageCountToday": 2,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -9668,14 +9668,14 @@
           "UserName": "C-u-o-n-g",
           "UID": "942687646152161582",
           "Rank": 3,
-          "messageCountToday": 3,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Người dùng",
           "UID": "2552756089691385686",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         }
       ],
@@ -10155,8 +10155,8 @@
         {
           "UserName": "Phan Thị Kim Hà",
           "UID": "2836768016003635301",
-          "Rank": 12,
-          "messageCountToday": 3,
+          "Rank": 15,
+          "messageCountToday": 6,
           "lastMessageDate": "2025-10-19"
         },
         {
