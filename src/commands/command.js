@@ -1,6 +1,4 @@
 import { handleCheckDomainCommand } from "./utilities-command/check-domain.js";
-import { handleStkmemeCommand } from "../service-hahuyhoang/chat-zalo/chat-special/send-sticker/stkmeme-utils.js";
-
 import { writeGroupSettings } from "../utils/io-json.js";
 import { handleMuteList, handleMuteUser, handleUnmuteUser } from "../service-hahuyhoang/anti-service/mute-user.js";
 import { handleWelcomeBye, handleApprove } from "./bot-manager/welcome-bye.js";
@@ -545,9 +543,6 @@ export async function handleCommandPrivate(api, message) {
 
           case "sticker":
             await handleStickerCommand(api, message);
-            return 0;
-          case "meme":
-            await handleStkmemeCommand(api, message);
             return 0;
           case "voice":
             await handleVoiceCommand(api, message, aliasCommand);
