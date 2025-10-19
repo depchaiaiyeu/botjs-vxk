@@ -4675,9 +4675,9 @@
         {
           "UserName": "Thỏme ̂o ̂trăng",
           "UID": "5034699048594078437",
-          "Rank": 4,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-14"
+          "Rank": 5,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
         },
         {
           "UserName": "Văn Lộc",
@@ -10403,6 +10403,13 @@
           "UID": "2796929950288779243",
           "Rank": 1,
           "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Doris",
+          "UID": "571281485669141462",
+          "Rank": 2,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-19"
         }
       ],
