@@ -198,28 +198,6 @@
         "mediaCount": 0,
         "stickerCount": 1
       }
-    },
-    "4699745045071009795": {
-      "6782773072614202906": {
-        "count": 1,
-        "words": [
-          {
-            "word": "shit",
-            "time": 1760850836529
-          }
-        ],
-        "name": "Nguyễn Minh Khôi"
-      },
-      "2011995125119063767": {
-        "count": 1,
-        "words": [
-          {
-            "word": "dit",
-            "time": 1760850841826
-          }
-        ],
-        "name": "Nb"
-      }
     }
   },
   "enable": false,
