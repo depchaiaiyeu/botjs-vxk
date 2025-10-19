@@ -409,5 +409,37 @@
     "autoDownload": false,
     "removeLinkKeywords": false,
     "blockForward": false
+  },
+  "8366090764159880993": {
+    "nameGroup": "Cô Ni hiệu trưởng trường Võ Thị Sáu",
+    "adminList": {},
+    "muteList": {
+      "6278381252421752602": {
+        "name": "Ni",
+        "timeMute": -1
+      }
+    },
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": false,
+    "autoDownload": false,
+    "removeLinkKeywords": false,
+    "blockForward": false
   }
 }
