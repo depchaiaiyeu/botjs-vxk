@@ -9660,7 +9660,7 @@
           "UserName": "Triều Đông",
           "UID": "7654139448969933571",
           "Rank": 13,
-          "messageCountToday": 5,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -9744,43 +9744,50 @@
           "UserName": "Phạm Hoàng Hải",
           "UID": "5990436222192783385",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Quốc Khang",
           "UID": "9035312453904269144",
           "Rank": 4,
-          "messageCountToday": 4,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Quang Khải",
           "UID": "647135969741443776",
           "Rank": 4,
-          "messageCountToday": 4,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Nhi Nhí Nhảnh",
           "UID": "7341143702257034459",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Qwq Sữa Đậu Cte",
           "UID": "4489717151037788533",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Anhlacongsannamvung",
           "UID": "4980515903759006245",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
+        },
+        {
+          "UserName": "Lê Thị Quỳnh",
+          "UID": "1870268288428412111",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
         }
       ],
       "nameGroup": "YÊU VIỆT NAM ❤"
@@ -10201,6 +10208,18 @@
         }
       ],
       "nameGroup": "𝑩𝒐𝒙 𝑪𝒉𝒆𝒂𝒕𝒔 𝑯𝒂𝒄𝒌 𝑭𝒓𝒆𝒆𝑭𝒊𝒓𝒆"
+    },
+    "8366090764159880993": {
+      "users": [
+        {
+          "UserName": "Thao Uyen",
+          "UID": "932687907600735434",
+          "Rank": 2,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-19"
+        }
+      ],
+      "nameGroup": "Cô Ni hiệu trưởng trường Võ Thị Sáu"
     }
   }
 }
