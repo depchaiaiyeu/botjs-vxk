@@ -1,4 +1,4 @@
-name: Run BOT-JS
+name: Run BOTJS-VXK
 
 on:
   workflow_dispatch:
