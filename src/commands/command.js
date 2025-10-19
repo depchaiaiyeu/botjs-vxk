@@ -433,9 +433,6 @@ export async function handleCommandPrivate(api, message) {
         case "join":
           await handleJoinGroup(api, message);
           return 0;
-        case "decode":
-          await handleEncodeParamsCommand(api, message);
-          return 0;
         case "listgroups":
           await handleShowGroupsList(api, message, aliasCommand);
           return 0;
@@ -719,6 +716,9 @@ export async function handleCommandPrivate(api, message) {
               case "checkdomain":
                 await handleCheckDomainCommand (api, message);
                 return 0;
+              case "decode":
+                await handleEncodeParamsCommand(api, message);
+                return 0;                
               case "hoathinh3dtrungquoc":
                 await handleHH3DCommand (api, message, aliasCommand);
                 return 0;
