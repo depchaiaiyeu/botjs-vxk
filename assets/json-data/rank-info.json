@@ -10190,8 +10190,15 @@
         {
           "UserName": "Onew",
           "UID": "3386338295604654533",
-          "Rank": 5,
-          "messageCountToday": 5,
+          "Rank": 7,
+          "messageCountToday": 7,
+          "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Nguyễn Anh Hào",
+          "UID": "8606765937881868106",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-19"
         }
       ],
