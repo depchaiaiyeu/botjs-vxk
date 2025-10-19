@@ -3386,9 +3386,9 @@
         {
           "UserName": "Hồ Sỹ Bắc",
           "UID": "6802617025421727836",
-          "Rank": 8,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-18"
+          "Rank": 9,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
         },
         {
           "UserName": "Thanh Hiền",
@@ -10481,8 +10481,15 @@
         {
           "UserName": "Rain",
           "UID": "1122260348766420392",
-          "Rank": 6,
-          "messageCountToday": 6,
+          "Rank": 8,
+          "messageCountToday": 8,
+          "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Hồ Sỹ Bắc",
+          "UID": "6802617025421727836",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-19"
         }
       ],
