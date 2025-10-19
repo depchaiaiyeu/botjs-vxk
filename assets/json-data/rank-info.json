@@ -1154,8 +1154,8 @@
         {
           "UserName": "Mai Quoc Trieu",
           "UID": "7251491771286693785",
-          "Rank": 704,
-          "messageCountToday": 1,
+          "Rank": 705,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -10288,6 +10288,18 @@
         }
       ],
       "nameGroup": "Năm nay 2025 nhe🙂"
+    },
+    "2568466586060351390": {
+      "users": [
+        {
+          "UserName": "Đặng Tuấn Anhh",
+          "UID": "5049619633743737896",
+          "Rank": 2,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-19"
+        }
+      ],
+      "nameGroup": "Trần Văn Hoàng - Box Share Tool"
     }
   }
 }
