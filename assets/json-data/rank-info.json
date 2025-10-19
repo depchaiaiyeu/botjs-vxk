@@ -6928,14 +6928,14 @@
           "UserName": "Lữ Huyền Nhi",
           "UID": "607598759060047701",
           "Rank": 5,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Linh W Witt",
           "UID": "2716137648060265866",
           "Rank": 33,
-          "messageCountToday": 9,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -6984,7 +6984,7 @@
           "UserName": "Thanh Hiền",
           "UID": "7679898405913108399",
           "Rank": 4,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -7047,21 +7047,21 @@
           "UserName": "Thiên Ngọc",
           "UID": "9196605977515605659",
           "Rank": 18,
-          "messageCountToday": 10,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Lê Minh Tâm",
           "UID": "8961012939333846624",
           "Rank": 2,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Minh Tú",
           "UID": "3085991445847546088",
           "Rank": 8,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
@@ -7091,6 +7091,13 @@
           "Rank": 4,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-13"
+        },
+        {
+          "UserName": "Triệu Thịnh",
+          "UID": "3120218143259821942",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
         }
       ],
       "nameGroup": "Động Cappo"
@@ -10424,6 +10431,13 @@
           "UID": "571281485669141462",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Mạnh",
+          "UID": "8066926690115419592",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-19"
         }
       ],
