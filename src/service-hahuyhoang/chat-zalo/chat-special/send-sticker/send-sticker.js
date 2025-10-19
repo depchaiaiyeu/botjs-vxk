@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 import https from "https"
 import http from "http"
+import { removeBackground } from "@imgly/background-removal-node"
 import { getGlobalPrefix } from "../../../service.js"
 import { deleteFile, downloadFileFake } from "../../../../utils/util.js"
 import { MessageType } from "../../../../api-zalo/index.js"
@@ -9,9 +10,6 @@ import { tempDir } from "../../../../utils/io-json.js"
 import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
 import { execSync } from "child_process"
-
-const PIXIAN_API_KEY = "pxakgb6mdp3qqjg"
-const PIXIAN_API_SECRET = "k229erm83053ec8potlhbqqec0b53sk57cmrn32mrr1m8jddml6d"
 
 function getRedirectUrl(url) {
   return new Promise((resolve, reject) => {
@@ -26,45 +24,15 @@ function getRedirectUrl(url) {
   })
 }
 
-function removeBackgroundPixian(imagePath) {
-  return new Promise((resolve, reject) => {
-    const fileStream = fs.createReadStream(imagePath)
-    const boundary = "----WebKitFormBoundary" + Math.random().toString(36).substr(2, 16)
-    const bodyParts = []
-
-    const footer = `\r\n--${boundary}--\r\n`
-    const header = `--${boundary}\r\nContent-Disposition: form-data; name="image"; filename="${path.basename(imagePath)}"\r\nContent-Type: application/octet-stream\r\n\r\n`
-
-    const req = https.request({
-      hostname: "api.pixian.ai",
-      path: "/api/v2/remove-background",
-      method: "POST",
-      auth: `${PIXIAN_API_KEY}:${PIXIAN_API_SECRET}`,
-      headers: {
-        "Content-Type": `multipart/form-data; boundary=${boundary}`
-      }
-    }, (res) => {
-      let data = Buffer.alloc(0)
-      res.on("data", chunk => data = Buffer.concat([data, chunk]))
-      res.on("end", () => {
-        if (res.statusCode === 200) {
-          resolve(data)
-        } else {
-          reject(new Error(`Pixian API error: ${res.statusCode}`))
-        }
-      })
-    })
-
-    req.on("error", reject)
-    req.write(header)
-
-    fileStream.on("data", chunk => req.write(chunk))
-    fileStream.on("end", () => {
-      req.write(footer)
-      req.end()
-    })
-    fileStream.on("error", reject)
-  })
+async function removeBackgroundImgly(imagePath) {
+  try {
+    const blob = await removeBackground(imagePath)
+    const buffer = Buffer.from(await blob.arrayBuffer())
+    return buffer
+  } catch (error) {
+    console.error("Lỗi khi xóa phông:", error)
+    throw error
+  }
 }
 
 async function getVideoRedirectUrl(url) {
@@ -118,8 +86,8 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
       let processPath = imagePath
       if (removeBackground) {
         bgRemovedPath = path.join(tempDir, `sticker_bg_removed_${Date.now()}.png`)
-        const pngData = await removeBackgroundPixian(imagePath)
-        fs.writeFileSync(bgRemovedPath, pngData)
+        const pngBuffer = await removeBackgroundImgly(imagePath)
+        fs.writeFileSync(bgRemovedPath, pngBuffer)
         processPath = bgRemovedPath
       }
 
@@ -149,12 +117,13 @@ export async function handleStickerCommand(api, message) {
   const senderName = message.data.dName
   const threadId = message.threadId
   const prefix = getGlobalPrefix()
-  const msgText = message.data?.content || ""
+  const msgContent = message.data?.content || ""
+  const args = msgContent.split(/\s+/)
 
-  const removeBackground = msgText.includes("xp")
+  const removeBackgroundImg = args.includes("xp")
 
   if (!quote) {
-    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${removeBackground ? " xp" : ""}.`, true)
+    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${removeBackgroundImg ? " xp" : ""}.`, true)
     return
   }
 
@@ -190,9 +159,9 @@ export async function handleStickerCommand(api, message) {
     const width = params.width || 512
     const height = params.height || 512
 
-    const statusMsg = removeBackground ? `Đang xóa phông và tạo sticker cho ${senderName}, vui lòng chờ một chút!` : `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`
+    const statusMsg = removeBackgroundImg ? `Đang xóa phông và tạo sticker cho ${senderName}, vui lòng chờ một chút!` : `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
-    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, removeBackground)
+    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, removeBackgroundImg)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
     console.error("Lỗi khi xử lý lệnh sticker:", error)
