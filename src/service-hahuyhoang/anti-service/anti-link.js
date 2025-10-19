@@ -10,7 +10,7 @@ import { removeMention } from "../../utils/format-util.js";
 import { getAntiState } from "./index.js";
 import { scanQRCode } from "../tien-ich/qr-scan.js";
 import { areAllLinksWhitelisted } from "./white-list-link.js";
-import { SUPPORTED_PLATFORMS } from "../../api-crawl/api-hahuyhoangbot/auto-download.js";
+import { SUPPORTED_PLATFORMS } from "../api-crawl/api-hahuyhoangbot/auto-download.js";
 
 const getAutoDownloadPatterns = () => {
   const patterns = [];
