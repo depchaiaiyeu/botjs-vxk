@@ -8,7 +8,7 @@ import { downloadFile } from "../../../utils/util.js";
 import { clearImagePath } from "../../../utils/canvas/index.js";
 import { tempDir } from "../../../utils/io-json.js";
 import { admins } from "../../../index.js";
-import { getGlobalPrefix } from "../../../service.js";
+import { getGlobalPrefix } from "../../service.js";
 
 export const SUPPORTED_PLATFORMS = [
   { name: 'tiktok', patterns: ['tiktok.com', 'vt.tiktok.com', 'vm.tiktok.com'] },
