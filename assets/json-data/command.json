@@ -2249,17 +2249,17 @@
     },
     {
       "name": "checkdomain",
-      "description": "Kiểm tra thông tin địa về domain, nameserver và nhiều hơn thế nữa",
+      "description": "Kiểm tra thông tin Domain",
       "syntax": "{p}checkdomain <domain>",
       "permission": "all",
-      "countdown": 5,
+      "countdown": 60,
       "icon": "✅",
       "type": 1,
       "author": "Vũ Xuân Kiên",
       "active": true,
       "alias": [
         "cdm"
-      ]
+      ],
     }
   ]
 }
