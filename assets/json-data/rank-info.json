@@ -4885,8 +4885,8 @@
         {
           "UserName": "Nb",
           "UID": "2011995125119063767",
-          "Rank": 64,
-          "messageCountToday": 56,
+          "Rank": 70,
+          "messageCountToday": 62,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -9865,6 +9865,13 @@
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Lqp",
+          "UID": "3983896781504257906",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-19"
         }
       ],
       "nameGroup": "YÊU VIỆT NAM ❤"
@@ -10375,8 +10382,8 @@
         {
           "UserName": "Gia Khangg",
           "UID": "1195440711979460268",
-          "Rank": 16,
-          "messageCountToday": 16,
+          "Rank": 17,
+          "messageCountToday": 17,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -10403,8 +10410,8 @@
         {
           "UserName": "Rain",
           "UID": "1122260348766420392",
-          "Rank": 2,
-          "messageCountToday": 2,
+          "Rank": 4,
+          "messageCountToday": 4,
           "lastMessageDate": "2025-10-19"
         }
       ],
@@ -10501,6 +10508,25 @@
         }
       ],
       "nameGroup": "YAHOO MESSENGER"
+    },
+    "8793944288320295217": {
+      "users": [
+        {
+          "UserName": "Ni",
+          "UID": "6278381252421752602",
+          "Rank": 3,
+          "messageCountToday": 3,
+          "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Gia Khangg",
+          "UID": "1195440711979460268",
+          "Rank": 2,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-19"
+        }
+      ],
+      "nameGroup": "Cô ni hiệu trưởng trường Võ Thị Sáu(2025-2027)"
     }
   }
 }
