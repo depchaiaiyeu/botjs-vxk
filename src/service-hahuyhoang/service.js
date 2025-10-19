@@ -28,8 +28,6 @@ import { handleLOLReply } from "./servises/LOL.General.js";
 import { startAutoLockChatScheduler } from "../commands/bot-manager/group-autolock.js";
 import { handleHH3DReply } from "./api-crawl/video/yanhh3d-phim3d.js";
 import { handleSubNhanhChillReply } from "./api-crawl/video/subnhanhchill.net.js";
-import { handleMemeReply } from "./api-crawl/image/meme.js";
-
 let globalPrefix = ".";
 
 export function getGlobalPrefix() {
@@ -84,7 +82,6 @@ export async function handleOnReplyFromUser(
 ) {
   if (await checkReplySelectionsMapData(api, message)) return true;
   if (await handleScanGroupsReply(api, message)) return true;
-  if (await handleMemeReply(api, message)) return true;
   if (await handleMusicReply(api, message)) return true;
   if (await handleZingMp3Reply(api, message)) return true;
   if (await handleYoutubeReply(api, message)) return true;
