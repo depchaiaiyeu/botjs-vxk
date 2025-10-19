@@ -1618,7 +1618,7 @@
       ]
     },
     {
-      "name": "duyeVũ Xuân Kiênan",
+      "name": "duyenphan",
       "description": "Bói Tình Yêu Theo Tên - Xem Tình Duyên Hai Người",
       "syntax": "{p}boitinhyeu",
       "permission": "all",
@@ -2246,6 +2246,19 @@
       "type": 5,
       "author": "Vũ Xuân Kiên",
       "active": true
-    }
+    },
+      "name": "checkdomain",
+      "description": "Kiểm tra thông tin địa về domain, nameserver và nhiều hơn thế nữa",
+      "syntax": "{p}checkdomain <domain>",
+      "permission": "all",
+      "countdown": 5,
+      "icon": "✅",
+      "type": 1,
+      "author": "Vũ Xuân Kiên",
+      "active": true,
+      "alias": [
+        "hosti4"
+      ]
+    },
   ]
 }
