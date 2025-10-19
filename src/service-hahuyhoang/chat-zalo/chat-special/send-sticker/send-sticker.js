@@ -149,7 +149,7 @@ export async function handleStickerCommand(api, message) {
   const senderName = message.data.dName
   const threadId = message.threadId
   const prefix = getGlobalPrefix()
-  const msgText = message.data?.content?.trim() || ""
+  const msgText = message.data?.content || ""
 
   const removeBackground = msgText.includes("xp")
 
