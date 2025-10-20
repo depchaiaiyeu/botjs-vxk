@@ -3150,8 +3150,8 @@
         {
           "UserName": "Ca Tool",
           "UID": "3496940976489387708",
-          "Rank": 21,
-          "messageCountToday": 11,
+          "Rank": 23,
+          "messageCountToday": 13,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -3159,6 +3159,13 @@
           "UID": "3249555945000883235",
           "Rank": 34,
           "messageCountToday": 34,
+          "lastMessageDate": "2025-10-20"
+        },
+        {
+          "UserName": "Lê Thảo Ngọc",
+          "UID": "7001548707650415121",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-20"
         }
       ],
