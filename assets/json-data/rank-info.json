@@ -10491,8 +10491,8 @@
         {
           "UserName": "Duc Duy",
           "UID": "4612055675228397626",
-          "Rank": 1,
-          "messageCountToday": 1,
+          "Rank": 3,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-20"
         }
       ],
@@ -10810,8 +10810,8 @@
         {
           "UserName": "Trung Trí",
           "UID": "450249133712562180",
-          "Rank": 29,
-          "messageCountToday": 29,
+          "Rank": 35,
+          "messageCountToday": 35,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -10824,6 +10824,13 @@
         {
           "UserName": "À Ố Sì Mà",
           "UID": "867667250086766385",
+          "Rank": 7,
+          "messageCountToday": 7,
+          "lastMessageDate": "2025-10-20"
+        },
+        {
+          "UserName": "Thiện Nhân",
+          "UID": "275582783461863912",
           "Rank": 2,
           "messageCountToday": 2,
           "lastMessageDate": "2025-10-20"
