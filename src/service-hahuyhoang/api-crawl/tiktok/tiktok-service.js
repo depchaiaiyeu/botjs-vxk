@@ -326,16 +326,16 @@ export async function downloadVideoTiktok(videoUrl) {
 }
 
 export async function handleTikTokReaction(api, reaction) {
+  const msgId = reaction.data.content.rMsg[0].gMsgID.toString();
+  if (!relatedVideosMap.has(msgId)) return false;
+  const relatedData = relatedVideosMap.get(msgId);
+  const senderId = reaction.data.uidFrom;
+  if (senderId !== relatedData.senderId) return false;
+  const rType = reaction.data.content.rType;
+  if (rType !== 5) return false;
+  relatedVideosMap.delete(msgId);
+  const { username, type, threadId, senderId: senderIdOriginal, senderName: senderNameOriginal } = relatedData;
   try {
-    const msgId = reaction.data.content.rMsg[0].gMsgID.toString();
-    if (!relatedVideosMap.has(msgId)) return false;
-    const relatedData = relatedVideosMap.get(msgId);
-    const senderId = reaction.data.uidFrom;
-    if (senderId !== relatedData.senderId) return false;
-    const rType = reaction.data.content.rType;
-    if (rType !== 5) return false;
-    relatedVideosMap.delete(msgId);
-    const { username, type, threadId, senderId: senderIdOriginal, senderName: senderNameOriginal } = relatedData;
 
     if (!threadId) {
       console.error("handleTikTokReaction: missing threadId for relatedData", relatedData);
