@@ -62,7 +62,7 @@ export function sendCustomStickerFactory(api) {
           pStickerType: 1,
         }),
       }),
-      contentId: contentId,
+      contentId: Date.now(),
       thumb_height: height,
       thumb_width: width,
       webp: JSON.stringify({
