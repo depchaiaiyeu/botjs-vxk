@@ -117,7 +117,7 @@ export async function handleAdminReactionDelete(api, reaction) {
         },
       };
 
-      await api.undo(undoMessage);
+      await api.undoMessage(undoMessage);
       console.log(`✅ Admin ${adminId} đã undo tin nhắn ID: ${msgId}`);
       return true;
     } else if (rType === 3) {
