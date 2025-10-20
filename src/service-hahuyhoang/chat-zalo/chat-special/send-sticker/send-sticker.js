@@ -12,7 +12,7 @@ import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../.
 import { execSync } from "child_process"
 
 function getRedirectUrl(url) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const protocol = url.startsWith("https") ? https : http
     protocol.get(url, { method: "HEAD" }, (res) => {
       if (res.headers.location) {
@@ -65,7 +65,9 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
       if (!webpUrl) {
         throw new Error("Upload video attachment thất bại")
       }
-      await api.sendCustomSticker(message, webpUrl + "?creator=VXK-Service-BOT.webp", webpUrl + "?createdBy=VXK-Service-BOT.Webp", width, height)
+      const staticUrl = webpUrl + "?creator=VXK-Service-BOT.webp"
+      const animUrl = webpUrl + "?createdBy=VXK-Service-BOT.Webp"
+      await api.sendCustomSticker(message, staticUrl, animUrl, width, height)
     } else {
       let downloadUrl = mediaUrl
       let fileExt = "jpg"
@@ -140,7 +142,13 @@ export async function handleStickerCommand(api, message) {
   }
 
   try {
-    const attachData = JSON.parse(attach)
+    let attachData
+    try {
+      attachData = typeof attach === 'string' ? JSON.parse(attach) : attach
+    } catch {
+      attachData = attach
+    }
+
     const mediaUrl = attachData.hdUrl || attachData.href
     if (!mediaUrl) {
       await sendMessageWarning(api, message, `${senderName}, Không tìm thấy URL trong đính kèm của tin nhắn bạn đã reply.`, true)
