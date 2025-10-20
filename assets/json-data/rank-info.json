@@ -9460,15 +9460,15 @@
           "UserName": "Nguyen Hoang Khai My",
           "UID": "6388713600797970578",
           "Rank": 5,
-          "messageCountToday": 3,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         },
         {
           "UserName": "Gia Huy",
           "UID": "8346840897513408494",
-          "Rank": 43,
-          "messageCountToday": 2,
-          "lastMessageDate": "2025-10-18"
+          "Rank": 46,
+          "messageCountToday": 3,
+          "lastMessageDate": "2025-10-20"
         },
         {
           "UserName": "Mr Bean",
@@ -9495,7 +9495,7 @@
           "UserName": "Hphucc",
           "UID": "9030808754540072808",
           "Rank": 4,
-          "messageCountToday": 3,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-18"
         }
       ],
@@ -10161,8 +10161,8 @@
         {
           "UserName": "Isagi Yoichi",
           "UID": "674725909990880614",
-          "Rank": 3,
-          "messageCountToday": 2,
+          "Rank": 5,
+          "messageCountToday": 4,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -10245,8 +10245,8 @@
         {
           "UserName": "Mắm",
           "UID": "7293145051174679053",
-          "Rank": 9,
-          "messageCountToday": 9,
+          "Rank": 10,
+          "messageCountToday": 10,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -10269,6 +10269,13 @@
           "Rank": 3,
           "messageCountToday": 3,
           "lastMessageDate": "2025-10-20"
+        },
+        {
+          "UserName": "Jiro",
+          "UID": "6357476002848572161",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-20"
         }
       ],
       "nameGroup": "✨🎨USAGI TOWN🐧✨"
@@ -10278,8 +10285,8 @@
         {
           "UserName": "Trung Trí",
           "UID": "450249133712562180",
-          "Rank": 32,
-          "messageCountToday": 8,
+          "Rank": 35,
+          "messageCountToday": 11,
           "lastMessageDate": "2025-10-20"
         }
       ],
