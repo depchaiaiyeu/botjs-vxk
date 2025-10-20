@@ -111,10 +111,11 @@ export async function handleAdminReactionDelete(api, reaction) {
     
     const msgId = rMsg.gMsgID.toString();
     const cliMsgId = rMsg.cMsgID?.toString();
-    const threadId = reaction.threadId || reaction.idTo;
+    const threadId = reaction.data.idTo;
     const type = rMsg.msgType;
+    const uidFrom = reaction.data.uidFrom;
 
-    console.log(`msgId: ${msgId}, cliMsgId: ${cliMsgId}, threadId: ${threadId}, type: ${type}`);
+    console.log(`msgId: ${msgId}, cliMsgId: ${cliMsgId}, threadId: ${threadId}, type: ${type}, uidFrom: ${uidFrom}`);
 
     // Tạo object để xóa tin nhắn được reaction
     const msgToDelete = {
@@ -123,7 +124,7 @@ export async function handleAdminReactionDelete(api, reaction) {
       data: {
         msgId: msgId,
         cliMsgId: cliMsgId,
-        uidFrom: rMsg.uidFrom,
+        uidFrom: uidFrom,
       },
     };
 
