@@ -1161,8 +1161,8 @@
         {
           "UserName": "Hạo Nguyên",
           "UID": "5498545881905193845",
-          "Rank": 3,
-          "messageCountToday": 2,
+          "Rank": 7,
+          "messageCountToday": 6,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -1308,8 +1308,8 @@
         {
           "UserName": "Tạ Văn Chiến",
           "UID": "5781299823049181696",
-          "Rank": 40,
-          "messageCountToday": 6,
+          "Rank": 41,
+          "messageCountToday": 7,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -2556,7 +2556,7 @@
           "UserName": "Nvtᅠᅠᅠᅠᅠdv",
           "UID": "6658938181466805330",
           "Rank": 223,
-          "messageCountToday": 28,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -2569,9 +2569,9 @@
         {
           "UserName": "Hiếu",
           "UID": "5665338112475148452",
-          "Rank": 145,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-17"
+          "Rank": 146,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-20"
         },
         {
           "UserName": "Nguyễn Duy Khánh",
@@ -2591,7 +2591,7 @@
           "UserName": "Ha Trung Son",
           "UID": "2873500016463783643",
           "Rank": 258,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -2710,7 +2710,7 @@
           "UserName": "Đăng Khôi",
           "UID": "3790104018775592098",
           "Rank": 42,
-          "messageCountToday": 7,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -2731,7 +2731,7 @@
           "UserName": "Xre",
           "UID": "9090621766324729619",
           "Rank": 636,
-          "messageCountToday": 7,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -2745,7 +2745,7 @@
           "UserName": "Dũng",
           "UID": "8963550240679491935",
           "Rank": 40,
-          "messageCountToday": 3,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -2780,7 +2780,7 @@
           "UserName": "Xuan Bach",
           "UID": "5251718859305208026",
           "Rank": 89,
-          "messageCountToday": 4,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -3060,7 +3060,7 @@
           "UserName": "Vu Tuyet Nhi",
           "UID": "3513140036139880698",
           "Rank": 75,
-          "messageCountToday": 4,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -3074,7 +3074,7 @@
           "UserName": "Võ Minh Khang",
           "UID": "541716818574140095",
           "Rank": 32,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         },
         {
@@ -3130,7 +3130,7 @@
           "UserName": "Ca Tool",
           "UID": "3496940976489387708",
           "Rank": 10,
-          "messageCountToday": 10,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
         }
       ],
@@ -10582,6 +10582,13 @@
           "Rank": 1,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Ng Huy Học",
+          "UID": "2138929821000487828",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-20"
         }
       ],
       "nameGroup": "YAHOO MESSENGER"
