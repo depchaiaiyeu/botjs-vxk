@@ -43,7 +43,8 @@ export function sendCustomStickerFactory(api) {
     height = height ? parseInt(height) : 360;
     const isGroupMessage = type === MessageType.GroupMessage;
 
-    // Random 5 số cho cateId
+    const randomDigits = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+    const contentId = `-8787${randomDigits}`;
     const randomCateId = Math.floor(Math.random() * 90000) + 10000;
 
     const params = {
@@ -65,7 +66,7 @@ export function sendCustomStickerFactory(api) {
           sSrcType: 0,
         }),
       }),
-      contentId: Date.now(),
+      contentId: contentId,
       thumb_height: height,
       thumb_width: width,
       webp: JSON.stringify({
@@ -79,11 +80,11 @@ export function sendCustomStickerFactory(api) {
       tracking: JSON.stringify({
         source: 18,
         keyword: "",
-        contentID: randomCateId.toString(),
+        contentID: contentId,
         send_method: 0,
       }),
       pStickerType: 1,
-      pStickerRootCateId: randomCateId,
+      pStickerRootCateId: parseInt(contentId.substring(1)),
     };
 
     if (quote) {
