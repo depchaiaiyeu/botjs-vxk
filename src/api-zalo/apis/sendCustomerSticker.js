@@ -84,7 +84,7 @@ export function sendCustomStickerFactory(api) {
         send_method: 0,
       }),
       pStickerType: 1,
-      pStickerRootCateId: parseInt(contentId.substring(1)),
+      pStickerRootCateId: randomCateId,
     };
 
     if (quote) {
@@ -92,7 +92,7 @@ export function sendCustomStickerFactory(api) {
     }
 
     if (isGroupMessage) {
-      params.visibility: 0;
+      params.visibility = 0;
       params.grid = threadId.toString();
     } else {
       params.toId = threadId.toString();
