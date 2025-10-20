@@ -4304,8 +4304,8 @@
         {
           "UserName": "Việt",
           "UID": "6698910511481637580",
-          "Rank": 196,
-          "messageCountToday": 20,
+          "Rank": 199,
+          "messageCountToday": 23,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -4402,8 +4402,8 @@
         {
           "UserName": "Nguyen",
           "UID": "9026595573905447039",
-          "Rank": 79,
-          "messageCountToday": 34,
+          "Rank": 81,
+          "messageCountToday": 36,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -5417,8 +5417,15 @@
         {
           "UserName": "Trang",
           "UID": "2773564850422561350",
-          "Rank": 9,
-          "messageCountToday": 9,
+          "Rank": 10,
+          "messageCountToday": 10,
+          "lastMessageDate": "2025-10-20"
+        },
+        {
+          "UserName": "Thanh Long",
+          "UID": "6013797928214677326",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-20"
         }
       ],
