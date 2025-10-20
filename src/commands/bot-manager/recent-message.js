@@ -90,24 +90,35 @@ export async function getRecentMessage(api, message, count = 50) {
 }
 
 export async function handleAdminReactionDelete(api, reaction) {
+  console.log("=== handleAdminReactionDelete ===");
+  console.log("Reaction object:", JSON.stringify(reaction, null, 2));
+  
   const adminId = reaction.data.uidFrom;
   const rType = reaction.data.content.rType;
   
+  console.log(`Admin ID: ${adminId}, rType: ${rType}, isAdmin: ${isAdmin(adminId)}`);
+  
   // Kiểm tra xem người reaction có phải admin và reaction type là 3 hoặc 5
   if (!isAdmin(adminId) || (rType !== 3 && rType !== 5)) {
+    console.log("Điều kiện không thỏa mãn: không phải admin hoặc rType không phải 3 hoặc 5");
     return false;
   }
 
   try {
     // Lấy thông tin tin nhắn được reaction từ rMsg[0]
     const rMsg = reaction.data.content.rMsg[0];
+    console.log("rMsg:", JSON.stringify(rMsg, null, 2));
+    
     const msgId = rMsg.gMsgID.toString();
-    const cliMsgId = rMsg.cliMsgID?.toString();
-    const threadId = reaction.data.threadId || reaction.data.idTo;
+    const cliMsgId = rMsg.cMsgID?.toString();
+    const threadId = reaction.threadId || reaction.idTo;
+    const type = rMsg.msgType;
+
+    console.log(`msgId: ${msgId}, cliMsgId: ${cliMsgId}, threadId: ${threadId}, type: ${type}`);
 
     // Tạo object để xóa tin nhắn được reaction
     const msgToDelete = {
-      type: reaction.type,
+      type: type,
       threadId: threadId,
       data: {
         msgId: msgId,
@@ -116,13 +127,15 @@ export async function handleAdminReactionDelete(api, reaction) {
       },
     };
 
+    console.log("msgToDelete:", JSON.stringify(msgToDelete, null, 2));
+
     // Xóa tin nhắn được reaction
     await api.deleteMessage(msgToDelete, false);
 
-    console.log(`Admin ${adminId} đã xóa tin nhắn ID: ${msgId}`);
+    console.log(`✅ Admin ${adminId} đã xóa thành công tin nhắn ID: ${msgId}`);
     return true;
   } catch (error) {
-    console.log(`Lỗi khi xóa tin nhắn từ admin reaction:`, error);
+    console.error(`❌ Lỗi khi xóa tin nhắn từ admin reaction:`, error);
     return false;
   }
 }
