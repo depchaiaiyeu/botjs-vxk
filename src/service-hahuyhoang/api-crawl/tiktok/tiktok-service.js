@@ -2,8 +2,6 @@ import axios from "axios";
 import schedule from "node-schedule";
 import fs from "fs";
 import path from "path";
-import { promisify } from 'util';
-import { exec } from 'child_process';
 import * as cheerio from 'cheerio';
 
 import { getGlobalPrefix } from "../../service.js";
@@ -327,7 +325,7 @@ export async function downloadVideoTiktok(videoUrl) {
   return tempFilePath;
 }
 
-export async function handleTikTokReaction(api, reaction, message) {
+export async function handleTikTokReaction(api, reaction) {
   try {
     const msgId = reaction.data.content.rMsg[0].gMsgID.toString();
     if (!relatedVideosMap.has(msgId)) return false;
@@ -337,11 +335,10 @@ export async function handleTikTokReaction(api, reaction, message) {
     const rType = reaction.data.content.rType;
     if (rType !== 5) return false;
     relatedVideosMap.delete(msgId);
-    let { username, type, senderId: senderIdOriginal, senderName: senderNameOriginal } = relatedData;
-    const threadId = message.threadId;
+    const { username, type, threadId, senderId: senderIdOriginal, senderName: senderNameOriginal } = relatedData;
 
     if (!threadId) {
-      console.error("handleTikTokReaction: missing threadId for message", message);
+      console.error("handleTikTokReaction: missing threadId for relatedData", relatedData);
       return false;
     }
 
@@ -350,6 +347,7 @@ export async function handleTikTokReaction(api, reaction, message) {
       timeout: 10000
     });
     if (response.status !== 200) {
+      const message = { threadId, type };
       const object = {
         caption: "Không thể lấy thông tin từ username được cung cấp.",
       };
@@ -372,6 +370,7 @@ export async function handleTikTokReaction(api, reaction, message) {
       }
     });
     if (!userData) {
+      const message = { threadId, type };
       const object = {
         caption: "Không thể lấy thông tin người dùng.",
       };
@@ -403,6 +402,7 @@ export async function handleTikTokReaction(api, reaction, message) {
     caption += `🔞 Dưới 18 tuổi: ${userData.isUnderAge18 ? 'Có' : 'Không'}\n`;
     caption += `⭐ Mục yêu thích: ${userData.openFavorite ? 'Có' : 'Không'}\n`;
     if (userData.isADVirtual) caption += `📺 Tài khoản quảng cáo: Có\n`;
+    const message = { threadId, type };
     const object = {
       caption,
     };
