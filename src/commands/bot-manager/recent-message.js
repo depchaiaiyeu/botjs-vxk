@@ -107,7 +107,7 @@ export async function handleAdminReactionDelete(api, reaction) {
 
     // Tạo object để xóa tin nhắn được reaction
     const msgToDelete = {
-      type: reaction.data.type,
+      type: reaction.type,
       threadId: threadId,
       data: {
         msgId: msgId,
