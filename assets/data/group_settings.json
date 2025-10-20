@@ -375,7 +375,7 @@
     "antiMedia": false,
     "antiSticker": false,
     "autoReply": false,
-    "autoDownload": false,
+    "autoDownload": true,
     "removeLinkKeywords": false,
     "blockForward": false
   },
