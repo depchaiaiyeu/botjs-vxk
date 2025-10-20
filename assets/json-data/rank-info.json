@@ -7313,9 +7313,9 @@
         {
           "UserName": "Mỹ Nhân",
           "UID": "2794830227239735026",
-          "Rank": 11,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-12"
+          "Rank": 14,
+          "messageCountToday": 3,
+          "lastMessageDate": "2025-10-20"
         },
         {
           "UserName": "Nro",
@@ -7602,6 +7602,13 @@
           "UID": "8483070556819959170",
           "Rank": 3,
           "messageCountToday": 3,
+          "lastMessageDate": "2025-10-20"
+        },
+        {
+          "UserName": "Tran Van Trung",
+          "UID": "8170509630171083608",
+          "Rank": 7,
+          "messageCountToday": 7,
           "lastMessageDate": "2025-10-20"
         }
       ],
@@ -11034,8 +11041,8 @@
         {
           "UserName": "Rain",
           "UID": "1122260348766420392",
-          "Rank": 45,
-          "messageCountToday": 35,
+          "Rank": 48,
+          "messageCountToday": 38,
           "lastMessageDate": "2025-10-20"
         },
         {
