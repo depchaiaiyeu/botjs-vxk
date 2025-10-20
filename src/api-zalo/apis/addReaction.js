@@ -33,7 +33,7 @@ export function addReactionFactory(api) {
     const threadId = messageArray[0].threadId;
 
     const reaction = ReactionMap[icon] || ReactionMap.NONE;
-    const { text, rType } = reaction;
+    const { rType, text } = reaction;
     const rMsg = messageArray.map(msg => ({
       gMsgID: parseInt(msg.data.msgId),
       cMsgID: parseInt(msg.data.cliMsgId),
@@ -49,7 +49,7 @@ export function addReactionFactory(api) {
             rType,
             source: 6,
           }),
-          clientId: Date.now(),
+          clientId: Date.now()*600,
         },
       ],
       toid: isGroupMessage ? undefined : String(threadId),
