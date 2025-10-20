@@ -6,8 +6,6 @@ import { handleBlock, handleKick } from "./bot-manager/group-manage.js";
 import { handleActiveBotUser, handleActiveGameUser, managerData } from "./bot-manager/active-bot.js";
 import { helpCommand, adminCommand, gameInfoCommand } from "./instructions/help.js";
 
-import { handleEncodeParamsCommand } from "./utilities-command/decode-params.js"
-
 import { askGPTCommand } from "../service-hahuyhoang/api-crawl/content/gpt.js";
 import { askGeminiCommand } from "../service-hahuyhoang/api-crawl/assistant-ai/gemini.js";
 import { weatherCommand } from "../service-hahuyhoang/api-crawl/content/weather.js";
@@ -111,6 +109,7 @@ import {
   handleCallGroupCommand,
   handleEval,
   handleGetUID,
+  handleEncodeParamsCommand,
 } from "./bot-manager/utilities.js";
 import { handleBauCua } from "../service-hahuyhoang/game-service/bau-cua/bau-cua.js";
 import { handleKBBCommand } from "../service-hahuyhoang/game-service/keobuabao/keobuabao.js";
