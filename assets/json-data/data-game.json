@@ -213,6 +213,16 @@
     "history": [
       {
         "dice": [
+          5,
+          6,
+          2
+        ],
+        "total": 13,
+        "result": "tai",
+        "timestamp": 1760967364025
+      },
+      {
+        "dice": [
           3,
           5,
           4
@@ -400,16 +410,6 @@
         "total": 12,
         "result": "tai",
         "timestamp": 1760462029222
-      },
-      {
-        "dice": [
-          6,
-          3,
-          5
-        ],
-        "total": 14,
-        "result": "tai",
-        "timestamp": 1760458428214
       }
     ],
     "jackpot": "1000000",
@@ -419,6 +419,18 @@
     "activeThreads": [],
     "jackpot": "1000000",
     "history": [
+      {
+        "mainNumbers": [
+          2,
+          3,
+          4,
+          10,
+          21,
+          48
+        ],
+        "extraNumber": 33,
+        "timestamp": 1760967364011
+      },
       {
         "mainNumbers": [
           11,
@@ -646,18 +658,6 @@
         ],
         "extraNumber": 10,
         "timestamp": 1760462029367
-      },
-      {
-        "mainNumbers": [
-          12,
-          14,
-          28,
-          30,
-          34,
-          38
-        ],
-        "extraNumber": 4,
-        "timestamp": 1760458428007
       }
     ],
     "players": {}
