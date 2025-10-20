@@ -89,3 +89,40 @@ export async function getRecentMessage(api, message, count = 50) {
   return sortedMessages.slice(0, count);
 }
 
+export async function handleAdminReactionDelete(api, reaction) {
+  const adminId = reaction.data.uidFrom;
+  const rType = reaction.data.content.rType;
+  
+  // Kiểm tra xem người reaction có phải admin và reaction type là 3 hoặc 5
+  if (!isAdmin(adminId) || (rType !== 3 && rType !== 5)) {
+    return false;
+  }
+
+  try {
+    // Lấy thông tin tin nhắn được reaction từ rMsg[0]
+    const rMsg = reaction.data.content.rMsg[0];
+    const msgId = rMsg.gMsgID.toString();
+    const cliMsgId = rMsg.cliMsgID?.toString();
+    const threadId = reaction.data.threadId || reaction.data.idTo;
+
+    // Tạo object để xóa tin nhắn được reaction
+    const msgToDelete = {
+      type: reaction.type,
+      threadId: threadId,
+      data: {
+        msgId: msgId,
+        cliMsgId: cliMsgId,
+        uidFrom: rMsg.uidFrom,
+      },
+    };
+
+    // Xóa tin nhắn được reaction
+    await api.deleteMessage(msgToDelete, false);
+
+    console.log(`Admin ${adminId} đã xóa tin nhắn ID: ${msgId}`);
+    return true;
+  } catch (error) {
+    console.log(`Lỗi khi xóa tin nhắn từ admin reaction:`, error);
+    return false;
+  }
+}
