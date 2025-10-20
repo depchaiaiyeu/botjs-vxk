@@ -201,5 +201,17 @@
     }
   },
   "enable": false,
-  "botViolations": {}
+  "botViolations": {
+    "5464956150740844012": {
+      "5740068248289085075": {
+        "count": 1,
+        "times": [
+          {
+            "time": 1760971144273
+          }
+        ],
+        "name": "Long"
+      }
+    }
+  }
 }
