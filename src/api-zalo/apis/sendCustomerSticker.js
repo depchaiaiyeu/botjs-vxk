@@ -14,6 +14,7 @@ export function sendCustomStickerFactory(api) {
     zpw_type: Zalo.API_TYPE,
     nretry: "0",
   });
+
   /**
    * Gửi sticker tùy chỉnh (static/animation) đến một cuộc trò chuyện
    *
@@ -38,14 +39,17 @@ export function sendCustomStickerFactory(api) {
     const threadId = message.threadId;
     const quote = message.data.quote;
 
-    width = width ? parseInt(width) : 498;
-    height = height ? parseInt(height) : 332;
+    width = width ? parseInt(width) : 360;
+    height = height ? parseInt(height) : 360;
     const isGroupMessage = type === MessageType.GroupMessage;
+
+    // Random 5 số cho cateId
+    const randomCateId = Math.floor(Math.random() * 90000) + 10000;
 
     const params = {
       clientId: Date.now(),
-      title: "sticker creator vu xuan kien service bot",
-      description: "check cai coin card, dis me may",
+      title: "",
+      description: "",
       oriUrl: staticImgUrl,
       thumbUrl: staticImgUrl,
       hdUrl: staticImgUrl,
@@ -62,15 +66,24 @@ export function sendCustomStickerFactory(api) {
         }),
       }),
       contentId: Date.now(),
-      thumb_height: width,
-      thumb_width: height,
+      thumb_height: height,
+      thumb_width: width,
       webp: JSON.stringify({
         width,
         height,
         url: animationImgUrl,
+        thumb: "",
       }),
       zsource: -1,
       ttl,
+      tracking: JSON.stringify({
+        source: 18,
+        keyword: "",
+        contentID: randomCateId.toString(),
+        send_method: 0,
+      }),
+      pStickerType: 1,
+      pStickerRootCateId: randomCateId,
     };
 
     if (quote) {
@@ -78,7 +91,7 @@ export function sendCustomStickerFactory(api) {
     }
 
     if (isGroupMessage) {
-      params.visibility = 0;
+      params.visibility: 0;
       params.grid = threadId.toString();
     } else {
       params.toId = threadId.toString();
