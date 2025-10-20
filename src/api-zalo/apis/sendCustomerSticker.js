@@ -42,11 +42,6 @@ export function sendCustomStickerFactory(api) {
     width = width ? parseInt(width) : 360;
     height = height ? parseInt(height) : 360;
     const isGroupMessage = type === MessageType.GroupMessage;
-
-    const randomDigits = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
-    const contentId = `-8787${randomDigits}`;
-    const randomCateId = Math.floor(Math.random() * 90000) + 10000;
-
     const params = {
       clientId: Date.now(),
       title: "",
@@ -64,6 +59,7 @@ export function sendCustomStickerFactory(api) {
         ext: JSON.stringify({
           sSrcStr: "@STICKER",
           sSrcType: 0,
+          pStickerType: 1,
         }),
       }),
       contentId: contentId,
@@ -77,14 +73,6 @@ export function sendCustomStickerFactory(api) {
       }),
       zsource: -1,
       ttl,
-      tracking: JSON.stringify({
-        source: 18,
-        keyword: "",
-        contentID: contentId,
-        send_method: 0,
-      }),
-      pStickerType: 1,
-      pStickerRootCateId: randomCateId,
     };
 
     if (quote) {
