@@ -1476,9 +1476,9 @@
         {
           "UserName": "Chí Hải",
           "UID": "3472044514489302548",
-          "Rank": 58,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-16"
+          "Rank": 59,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-20"
         },
         {
           "UserName": "V H",
@@ -8647,8 +8647,8 @@
         {
           "UserName": "Kl W Bn",
           "UID": "3157504550156704746",
-          "Rank": 40,
-          "messageCountToday": 39,
+          "Rank": 41,
+          "messageCountToday": 40,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -8668,8 +8668,8 @@
         {
           "UserName": "穿过云层",
           "UID": "2466490641514133761",
-          "Rank": 38,
-          "messageCountToday": 38,
+          "Rank": 39,
+          "messageCountToday": 39,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -8689,8 +8689,15 @@
         {
           "UserName": "Thục Tâm",
           "UID": "1011361085936264754",
-          "Rank": 3,
-          "messageCountToday": 3,
+          "Rank": 4,
+          "messageCountToday": 4,
+          "lastMessageDate": "2025-10-20"
+        },
+        {
+          "UserName": "Nguyễn Văn Trực",
+          "UID": "2921209662786585521",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-20"
         }
       ],
@@ -10285,8 +10292,8 @@
         {
           "UserName": "Trung Trí",
           "UID": "450249133712562180",
-          "Rank": 45,
-          "messageCountToday": 21,
+          "Rank": 46,
+          "messageCountToday": 22,
           "lastMessageDate": "2025-10-20"
         }
       ],
@@ -11029,6 +11036,13 @@
           "UID": "104031139569602890",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-20"
+        },
+        {
+          "UserName": "Nguyễn Gia Huy",
+          "UID": "1512798259468110789",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-20"
         }
       ],
