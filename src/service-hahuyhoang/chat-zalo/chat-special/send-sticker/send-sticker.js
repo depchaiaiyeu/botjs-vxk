@@ -2,7 +2,6 @@ import fs from "fs"
 import path from "path"
 import https from "https"
 import http from "http"
-import { removeBackground } from "@imgly/background-removal-node"
 import { getGlobalPrefix } from "../../../service.js"
 import { deleteFile, downloadFileFake } from "../../../../utils/util.js"
 import { MessageType } from "../../../../api-zalo/index.js"
@@ -24,33 +23,24 @@ function getRedirectUrl(url) {
   })
 }
 
-async function removeBackgroundImgly(imageSrc) {
-  try {
-    const blob = await removeBackground(imageSrc)
-    const buffer = Buffer.from(await blob.arrayBuffer())
-    return buffer
-  } catch (error) {
-    throw error
-  }
-}
-
 async function getVideoRedirectUrl(url) {
   try {
     const response = await getRedirectUrl(url)
     return response
   } catch (error) {
+    console.error("Lỗi khi lấy redirect URL:", error)
     return url
   }
 }
 
-async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, removeBg = false) {
+async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType) {
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
   let imagePath = null
   let convertedWebpPath = null
-  let bgRemovedPath = null
-  let tempImagePath = null
+
+  const roundedFilter = "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2,format=yuva420p,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(gt(pow(max(0,80-min(X,W-X)),2)+pow(max(0,80-min(Y,H-Y)),2),6400),0,255)'"
 
   try {
     if (cliMsgType === 44) {
@@ -58,7 +48,7 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
       videoPath = path.join(tempDir, `sticker_video_${Date.now()}.mp4`)
       webpPath = path.join(tempDir, `sticker_webp_${Date.now()}.webp`)
       await downloadFileFake(redirectUrl, videoPath)
-      execSync(`ffmpeg -y -i "${videoPath}" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
+      execSync(`ffmpeg -y -i "${videoPath}" -vf "${roundedFilter}" -c:v libwebp -q:v 80 "${webpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([webpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
@@ -74,42 +64,17 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
         downloadUrl = mediaUrl.replace("/jxl/", "/jpg/").replace(".jxl", ".jpg")
         fileExt = "jpg"
       } else {
-        try {
-          if (mediaUrl.startsWith('http://') || mediaUrl.startsWith('https://')) {
-            const urlObj = new URL(mediaUrl)
-            const urlExt = path.extname(urlObj.pathname)
-            if (urlExt) {
-              fileExt = urlExt.slice(1)
-            }
-          } else {
-            const urlExt = path.extname(mediaUrl)
-            if (urlExt) {
-              fileExt = urlExt.slice(1)
-            }
-          }
-        } catch (e) {
-          const urlExt = path.extname(mediaUrl)
-          if (urlExt) {
-            fileExt = urlExt.slice(1)
-          }
+        const urlObj = new URL(mediaUrl)
+        const urlExt = path.extname(urlObj.pathname)
+        if (urlExt) {
+          fileExt = urlExt.slice(1)
         }
       }
-
+      imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
       convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
+      await downloadFileFake(downloadUrl, imagePath)
 
-      if (removeBg) {
-        bgRemovedPath = path.join(tempDir, `sticker_bg_removed_${Date.now()}.png`)
-        tempImagePath = path.join(tempDir, `sticker_temp_image_${Date.now()}.${fileExt}`)
-        await downloadFileFake(downloadUrl, tempImagePath)
-        const pngBuffer = await removeBackgroundImgly(tempImagePath)
-        fs.writeFileSync(bgRemovedPath, pngBuffer)
-        execSync(`ffmpeg -y -i "${bgRemovedPath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
-      } else {
-        imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
-        await downloadFileFake(downloadUrl, imagePath)
-        execSync(`ffmpeg -y -i "${imagePath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
-      }
-
+      execSync(`ffmpeg -y -i "${imagePath}" -vf "${roundedFilter}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
@@ -119,14 +84,13 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
     }
     return true
   } catch (error) {
+    console.error("Lỗi khi xử lý sticker:", error)
     throw error
   } finally {
     if (videoPath) await deleteFile(videoPath)
     if (webpPath) await deleteFile(webpPath)
     if (imagePath) await deleteFile(imagePath)
     if (convertedWebpPath) await deleteFile(convertedWebpPath)
-    if (bgRemovedPath) await deleteFile(bgRemovedPath)
-    if (tempImagePath) await deleteFile(tempImagePath)
   }
 }
 
@@ -138,10 +102,8 @@ export async function handleStickerCommand(api, message) {
   const msgContent = message.data?.content || ""
   const args = msgContent.split(/\s+/)
 
-  const removeBackgroundImg = args.includes("xp")
-
   if (!quote) {
-    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${removeBackgroundImg ? " xp" : ""}.`, true)
+    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker.`, true)
     return
   }
 
@@ -183,11 +145,12 @@ export async function handleStickerCommand(api, message) {
     const width = params.width || 512
     const height = params.height || 512
 
-    const statusMsg = removeBackgroundImg ? `Đang xóa phông và tạo sticker cho ${senderName}, vui lòng chờ một chút!` : `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`
+    const statusMsg = `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
-    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, removeBackgroundImg)
+    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
+    console.error("Lỗi khi xử lý lệnh sticker:", error)
     await sendMessageFailed(api, message, `${senderName}, Lỗi khi xử lý lệnh sticker: ${error.message}`, true)
   }
 }
