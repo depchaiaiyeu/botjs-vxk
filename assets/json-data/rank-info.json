@@ -6766,7 +6766,7 @@
           "UserName": "Nhon",
           "UID": "7865523427196480284",
           "Rank": 40,
-          "messageCountToday": 2,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -6787,7 +6787,7 @@
           "UserName": "Nguyễn Tuấn Khang",
           "UID": "9174094872528572011",
           "Rank": 36,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -6906,7 +6906,7 @@
           "UserName": "Thuan",
           "UID": "6599963277496561068",
           "Rank": 7,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-20"
         },
         {
@@ -6957,6 +6957,13 @@
           "Rank": 1,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Duy Hiếu",
+          "UID": "805051336357398039",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
         }
       ],
       "nameGroup": "Tài lộc quá lớn🍷"
@@ -9967,9 +9974,9 @@
         {
           "UserName": "Duy Hiếu",
           "UID": "805051336357398039",
-          "Rank": 1,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-17"
+          "Rank": 2,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
         },
         {
           "UserName": "Dương Quốc Hùng",
