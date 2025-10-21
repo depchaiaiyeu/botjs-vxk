@@ -73,9 +73,7 @@ export async function handleRankCommand(api, message, aliasCommand) {
 
   let isToday = false;
   let targetUid = null;
-  let isFromMention = false;
-  let mentionPos = -1;
-  let mentionLen = 0;
+  let targetName = "";
 
   if (args.length > 0 && args[0].toLowerCase() === "today") {
     isToday = true;
@@ -84,20 +82,12 @@ export async function handleRankCommand(api, message, aliasCommand) {
     } else if (message.data.mentions && message.data.mentions.length > 0) {
       const mention = message.data.mentions[0];
       targetUid = mention.uid;
-      isFromMention = true;
-      mentionPos = mention.pos;
-      mentionLen = mention.len;
-    } else if (args.length > 1) {
-      targetUid = args[1];
+      targetName = message.data.content.substr(mention.pos, mention.len).replace("@", "").trim();
     }
   } else if (message.data.mentions && message.data.mentions.length > 0) {
     const mention = message.data.mentions[0];
     targetUid = mention.uid;
-    isFromMention = true;
-    mentionPos = mention.pos;
-    mentionLen = mention.len;
-  } else if (args.length > 0) {
-    targetUid = args[0];
+    targetName = message.data.content.substr(mention.pos, mention.len).replace("@", "").trim();
   }
 
   const rankInfo = readRankInfo();
@@ -112,12 +102,10 @@ export async function handleRankCommand(api, message, aliasCommand) {
     return;
   }
 
-  let targetUser = null;
-  let messageMentions = [];
   let responseMsg = "";
 
   if (targetUid) {
-    targetUser = groupUsers.find(user => user.UID === targetUid);
+    const targetUser = groupUsers.find(user => user.UID === targetUid);
     if (!targetUser) {
       await api.sendMessage(
         { msg: `Không tìm thấy dữ liệu topchat cho user: ${targetUid}`, quote: message },
@@ -135,14 +123,8 @@ export async function handleRankCommand(api, message, aliasCommand) {
       count = targetUser.Rank;
     }
 
-    let userName = targetUser.UserName;
-    if (isFromMention) {
-      userName = "@" + message.data.content.substr(mentionPos, mentionLen).replace("@", "");
-      const mentionPosition = responseMsg.length + 18;
-      messageMentions.push(MessageMention(targetUid, userName.length, mentionPosition));
-    }
-
-    responseMsg = `📊 ${isToday ? "Hôm nay" : "Tổng"} topchat của ${userName}: ${count} tin nhắn`;
+    const userName = targetName || targetUser.UserName;
+    responseMsg = `📊${isToday ? " Hôm nay" : " Tổng"} số tin nhắn mà người dùng ${userName} đã nhắn là: ${count}`;
   } else {
     if (isToday) {
       const currentDate = new Date().toISOString().split("T")[0];
@@ -173,11 +155,7 @@ export async function handleRankCommand(api, message, aliasCommand) {
     }
   }
 
-  if (messageMentions.length > 0) {
-    await api.sendMessage({ msg: responseMsg, mentions: messageMentions, quote: message, ttl: 600000 }, threadId, MessageType.GroupMessage);
-  } else {
-    await api.sendMessage({ msg: responseMsg, quote: message, ttl: 600000 }, threadId, MessageType.GroupMessage);
-  }
+  await api.sendMessage({ msg: responseMsg, quote: message, ttl: 600000 }, threadId, MessageType.GroupMessage);
 }
 
 export async function initRankSystem() {
