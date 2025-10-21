@@ -101,7 +101,7 @@ export async function handleStickerCommand(api, message) {
   const msgContent = message.data?.content || ""
   const args = msgContent.split(/\s+/)
 
-  let radius = 50
+  let radius = 120
   for (let i = 1; i < args.length; i++) {
     if (args[i].startsWith('r')) {
       const num = parseInt(args[i].slice(1))
