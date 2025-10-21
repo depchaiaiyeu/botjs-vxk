@@ -331,7 +331,7 @@
     "adminList": {},
     "muteList": {},
     "whileList": {},
-    "activeBot": false,
+    "activeBot": true,
     "activeGame": false,
     "welcomeGroup": false,
     "byeGroup": false,
