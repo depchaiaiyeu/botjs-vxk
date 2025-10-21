@@ -451,5 +451,33 @@
     "autoDownload": false,
     "removeLinkKeywords": false,
     "blockForward": false
+  },
+  "8267999361087581830": {
+    "nameGroup": "Multi AI Coder [ CHAT BOT ZALO ]",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": false,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": false,
+    "autoDownload": false,
+    "removeLinkKeywords": false,
+    "blockForward": false,
+    "sendTask": true
   }
 }
