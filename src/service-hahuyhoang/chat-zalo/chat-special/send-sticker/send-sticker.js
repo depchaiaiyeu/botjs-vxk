@@ -149,13 +149,13 @@ export async function handleStickerCommand(api, message) {
 
     const params = attachData.params || {}
     const duration = params.duration || 0
-    if (cliMsgType === 44 && duration > 10000) {
-      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 10 giây!`, true)
+    if (cliMsgType === 44 && duration > 5000) {
+      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 5 giây!`, true)
       return
     }
 
-    const width = params.width
-    const height = params.height
+    const width = params.width || 512
+    const height = params.height || 512
 
     const statusMsg = `Đang tạo sticker (bo góc ${radius}px, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
