@@ -9751,9 +9751,9 @@
         {
           "UserName": "Khoa",
           "UID": "5282373923372099189",
-          "Rank": 13,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-12"
+          "Rank": 14,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
         },
         {
           "UserName": "Hthuanz",
@@ -11311,6 +11311,13 @@
         {
           "UserName": "Hgphú",
           "UID": "2738386642774869819",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
+        },
+        {
+          "UserName": "Khúc Thanh Thùy Trâm",
+          "UID": "2278267337187942565",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-21"
