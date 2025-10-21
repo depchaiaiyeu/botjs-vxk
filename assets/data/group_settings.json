@@ -352,7 +352,8 @@
     "removeLinkKeywords": false,
     "antiUndo": true,
     "autoDownload": false,
-    "blockForward": false
+    "blockForward": false,
+    "sendTask": true
   },
   "4825567233436439756": {
     "nameGroup": "⚜️ Infinite Coder ⚜️",
