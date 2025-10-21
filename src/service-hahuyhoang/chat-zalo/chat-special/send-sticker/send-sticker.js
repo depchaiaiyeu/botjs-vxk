@@ -28,7 +28,6 @@ async function getVideoRedirectUrl(url) {
     const response = await getRedirectUrl(url)
     return response
   } catch (error) {
-    console.error("Lỗi khi lấy redirect URL:", error)
     return url
   }
 }
@@ -85,7 +84,6 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
     }
     return true
   } catch (error) {
-    console.error("Lỗi khi xử lý sticker:", error)
     throw error
   } finally {
     if (videoPath) await deleteFile(videoPath)
@@ -133,15 +131,21 @@ export async function handleStickerCommand(api, message) {
 
   try {
     let attachData = {}
+    
     if (typeof attach === 'string') {
-      const cleanedAttach = attach.replace(/\\\\/g, "\\").replace(/\\\//g, "/")
-      try {
-        attachData = JSON.parse(cleanedAttach)
-      } catch (parseError) {
-        attachData = { href: attach }
+      attachData = JSON.parse(attach)
+      if (attachData.params && typeof attachData.params === "string") {
+        attachData.params = JSON.parse(
+          attachData.params.replace(/\\\\/g, "\\").replace(/\\\//g, "/")
+        )
       }
     } else {
       attachData = attach
+      if (attachData.params && typeof attachData.params === "string") {
+        attachData.params = JSON.parse(
+          attachData.params.replace(/\\\\/g, "\\").replace(/\\\//g, "/")
+        )
+      }
     }
 
     const mediaUrl = attachData.hdUrl || attachData.href || attachData.hd
@@ -161,6 +165,7 @@ export async function handleStickerCommand(api, message) {
 
     let width = Number(params.width) || 512
     let height = Number(params.height) || 512
+    
     if (width <= 0 || height <= 0) {
       width = 512
       height = 512
@@ -171,7 +176,6 @@ export async function handleStickerCommand(api, message) {
     await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, radius)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
-    console.error("Lỗi khi xử lý lệnh sticker:", error)
     await sendMessageFailed(api, message, `${senderName}, Lỗi khi xử lý lệnh sticker: ${error.message}`, true)
   }
 }
