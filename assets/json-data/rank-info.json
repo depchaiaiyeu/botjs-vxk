@@ -10974,9 +10974,9 @@
         {
           "UserName": "Hh Tháii",
           "UID": "4294509095872185250",
-          "Rank": 3,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-19"
+          "Rank": 5,
+          "messageCountToday": 2,
+          "lastMessageDate": "2025-10-21"
         },
         {
           "UserName": "Hồ Thiên Long",
@@ -11072,8 +11072,8 @@
         {
           "UserName": "Onew",
           "UID": "3386338295604654533",
-          "Rank": 458,
-          "messageCountToday": 261,
+          "Rank": 464,
+          "messageCountToday": 267,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -11361,6 +11361,13 @@
           "UID": "2646065181052009859",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-21"
+        },
+        {
+          "UserName": "Manhh Dungg",
+          "UID": "4256508423173326889",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-21"
         }
       ],
