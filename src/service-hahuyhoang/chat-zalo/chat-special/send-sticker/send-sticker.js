@@ -10,7 +10,7 @@ import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
 import { execSync } from "child_process"
 
-function getRedirectUrl(url) {
+export function getRedirectUrl(url) {
   return new Promise((resolve) => {
     const protocol = url.startsWith("https") ? https : http
     protocol.get(url, { method: "HEAD" }, (res) => {
@@ -23,7 +23,7 @@ function getRedirectUrl(url) {
   })
 }
 
-async function getVideoRedirectUrl(url) {
+export async function getVideoRedirectUrl(url) {
   try {
     const response = await getRedirectUrl(url)
     return response
@@ -33,14 +33,15 @@ async function getVideoRedirectUrl(url) {
   }
 }
 
-async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType) {
+async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, radius = 50) {
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
   let imagePath = null
   let convertedWebpPath = null
 
-  const roundedFilter = "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2,format=yuva420p,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(gt(pow(max(0,80-min(X,W-X)),2)+pow(max(0,80-min(Y,H-Y)),2),6400),0,255)'"
+  const radiusSquared = radius * radius
+  const roundedFilter = `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,format=yuva420p,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(gt(pow(max(0,${radius}-min(X,W-X)),2)+pow(max(0,${radius}-min(Y,H-Y)),2),${radiusSquared}),0,255)'`
 
   try {
     if (cliMsgType === 44) {
@@ -102,8 +103,19 @@ export async function handleStickerCommand(api, message) {
   const msgContent = message.data?.content || ""
   const args = msgContent.split(/\s+/)
 
+  let radius = 50
+  for (let i = 1; i < args.length; i++) {
+    if (args[i].startsWith('r')) {
+      const num = parseInt(args[i].slice(1))
+      if (!isNaN(num) && num > 0) {
+        radius = num
+      }
+      break
+    }
+  }
+
   if (!quote) {
-    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker.`, true)
+    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${radius !== 50 ? ` r${radius}` : ''}.`, true)
     return
   }
 
@@ -145,9 +157,9 @@ export async function handleStickerCommand(api, message) {
     const width = params.width || 512
     const height = params.height || 512
 
-    const statusMsg = `Đang tạo sticker cho ${senderName}, vui lòng chờ một chút!`
+    const statusMsg = `Đang tạo sticker (bo góc ${radius}px, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
-    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType)
+    await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, radius)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
     console.error("Lỗi khi xử lý lệnh sticker:", error)
