@@ -12,9 +12,6 @@ import { checkExstentionFileRemote } from "../../../../utils/util.js";
 const RESOURCE_BASE_PATH = path.join(process.cwd(), "assets", "resources", "voice");
 const TEMP_AUDIO_PATH = path.join(process.cwd(), "assets", "temp");
 
-// Author : Hà Huy Hoàng
-// Description: Pexels Image code by H H H BOT
-
 const ALLOWED_AUDIO_EXT = ["mp3", "m4a", "wav", "ogg", "flac", "aac"];
 function ensureDirectories() {
   if (!fs.existsSync(RESOURCE_BASE_PATH)) fs.mkdirSync(RESOURCE_BASE_PATH, { recursive: true });
@@ -42,7 +39,7 @@ async function downloadFile(url, savePath) {
     throw new Error("❌ Không thể tải file từ link đã cung cấp.");
   }
 }
-function addFileExtensionIfNeeded(url, defaultExt = "/NguyenPhiHoang.aac") {
+function addFileExtensionIfNeeded(url, defaultExt = "/VXK-Service-BOT.aac") {
   if (!path.extname(url)) {
     return url + defaultExt; 
   }
@@ -66,8 +63,8 @@ export async function handleSendVoice(api, message, aliasCommand) {
         let voiceUrl = fileUrl;
 
         if (fileExt === "aac") {
-          if (!voiceUrl.endsWith("/NguyenPhiHoang.aac")) {
-            voiceUrl += "/NguyenPhiHoang.aac";
+          if (!voiceUrl.endsWith("/VXK-Service-BOT.aac")) {
+            voiceUrl += "/VXK-Service-BOT.aac";
           }
         }
         else if (ALLOWED_AUDIO_EXT.includes(fileExt)) {
