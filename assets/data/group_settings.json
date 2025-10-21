@@ -246,7 +246,8 @@
     "removeLinkKeywords": false,
     "antiUndo": true,
     "autoDownload": true,
-    "blockForward": false
+    "blockForward": false,
+    "sendTask": true
   },
   "1747464985521437051": {
     "nameGroup": "ZCA | CHATBOT　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　gwengay",
