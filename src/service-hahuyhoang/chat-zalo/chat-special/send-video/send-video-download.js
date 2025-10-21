@@ -9,9 +9,6 @@ const RESOURCE_BASE_PATH = path.join(process.cwd(), "assets", "resources");
 const VIDEO_RESOURCE_PATH = path.join(RESOURCE_BASE_PATH, "video");
 const TEMP_VIDEO_PATH = path.join(VIDEO_RESOURCE_PATH, "downloaded_video.mp4");
 
-// Author : Hà Huy Hoàng
-// Description: Pexels Image code by H H H BOT
-
 function getAvailableVideos() {
   if (!fs.existsSync(VIDEO_RESOURCE_PATH)) return [];
   return fs.readdirSync(VIDEO_RESOURCE_PATH).filter(file => file.endsWith(".mp4"));
