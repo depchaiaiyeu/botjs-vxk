@@ -11209,8 +11209,8 @@
         {
           "UserName": "Rain",
           "UID": "1122260348766420392",
-          "Rank": 268,
-          "messageCountToday": 11,
+          "Rank": 270,
+          "messageCountToday": 13,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -11300,8 +11300,8 @@
         {
           "UserName": "Trung Trí",
           "UID": "450249133712562180",
-          "Rank": 205,
-          "messageCountToday": 7,
+          "Rank": 215,
+          "messageCountToday": 17,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -11484,6 +11484,13 @@
           "UID": "7737323664429181531",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-21"
+        },
+        {
+          "UserName": "Cà Chua",
+          "UID": "458532284636805734",
+          "Rank": 10,
+          "messageCountToday": 10,
           "lastMessageDate": "2025-10-21"
         }
       ],
