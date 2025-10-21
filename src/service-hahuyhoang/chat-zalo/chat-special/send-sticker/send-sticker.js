@@ -24,9 +24,9 @@ function getRedirectUrl(url) {
   })
 }
 
-async function removeBackgroundImgly(imagePath) {
+async function removeBackgroundImgly(imageUrl) {
   try {
-    const blob = await removeBackground(imagePath)
+    const blob = await removeBackground(imageUrl)
     const buffer = Buffer.from(await blob.arrayBuffer())
     return buffer
   } catch (error) {
@@ -45,7 +45,7 @@ async function getVideoRedirectUrl(url) {
   }
 }
 
-async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, removeBackground = false) {
+async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, removeBg = false) {
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
@@ -75,25 +75,40 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
         downloadUrl = mediaUrl.replace("/jxl/", "/jpg/").replace(".jxl", ".jpg")
         fileExt = "jpg"
       } else {
-        const urlObj = new URL(mediaUrl)
-        const urlExt = path.extname(urlObj.pathname)
-        if (urlExt) {
-          fileExt = urlExt.slice(1)
+        try {
+          if (mediaUrl.startsWith('http://') || mediaUrl.startsWith('https://')) {
+            const urlObj = new URL(mediaUrl)
+            const urlExt = path.extname(urlObj.pathname)
+            if (urlExt) {
+              fileExt = urlExt.slice(1)
+            }
+          } else {
+            const urlExt = path.extname(mediaUrl)
+            if (urlExt) {
+              fileExt = urlExt.slice(1)
+            }
+          }
+        } catch (e) {
+          const urlExt = path.extname(mediaUrl)
+          if (urlExt) {
+            fileExt = urlExt.slice(1)
+          }
         }
       }
-      imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
-      convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
-      await downloadFileFake(downloadUrl, imagePath)
 
-      let processPath = imagePath
-      if (removeBackground) {
+      convertedWebpPath = path.join(tempDir, `sticker_converted_${Date.now()}.webp`)
+
+      if (removeBg) {
         bgRemovedPath = path.join(tempDir, `sticker_bg_removed_${Date.now()}.png`)
-        const pngBuffer = await removeBackgroundImgly(imagePath)
+        const pngBuffer = await removeBackgroundImgly(downloadUrl)
         fs.writeFileSync(bgRemovedPath, pngBuffer)
-        processPath = bgRemovedPath
+        execSync(`ffmpeg -y -i "${bgRemovedPath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
+      } else {
+        imagePath = path.join(tempDir, `sticker_image_${Date.now()}.${fileExt}`)
+        await downloadFileFake(downloadUrl, imagePath)
+        execSync(`ffmpeg -y -i "${imagePath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
       }
 
-      execSync(`ffmpeg -y -i "${processPath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
       const webpUpload = await api.uploadAttachment([convertedWebpPath], threadId, appContext.send2meId, MessageType.DirectMessage)
       const webpUrl = webpUpload?.[0]?.fileUrl
       if (!webpUrl) {
