@@ -8,9 +8,6 @@ import { removeMention } from "../../../../utils/format-util.js";
 const RESOURCE_BASE_PATH = path.join(process.cwd(), "assets", "resources");
 const IMAGE_RESOURCE_PATH = path.join(RESOURCE_BASE_PATH, "image");
 
-// Author : Hà Huy Hoàng
-// Description: Pexels Image code by H H H BOT
-
 function ensureImageDirectoryExists() {
   if (!fs.existsSync(IMAGE_RESOURCE_PATH)) {
     fs.mkdirSync(IMAGE_RESOURCE_PATH, { recursive: true });
