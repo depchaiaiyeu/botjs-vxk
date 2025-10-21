@@ -1798,8 +1798,8 @@
         {
           "UserName": "Gwen",
           "UID": "3302883472978811629",
-          "Rank": 180,
-          "messageCountToday": 180,
+          "Rank": 181,
+          "messageCountToday": 181,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -7406,6 +7406,13 @@
           "Rank": 1,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-19"
+        },
+        {
+          "UserName": "Q Huy",
+          "UID": "1755431780036846951",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
         }
       ],
       "nameGroup": "Động Cappo"
