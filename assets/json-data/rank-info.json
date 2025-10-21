@@ -1154,8 +1154,8 @@
         {
           "UserName": "Mai Quoc Trieu",
           "UID": "7251491771286693785",
-          "Rank": 1130,
-          "messageCountToday": 156,
+          "Rank": 1134,
+          "messageCountToday": 160,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -5662,6 +5662,13 @@
         {
           "UserName": "Boykute",
           "UID": "1094254136418386196",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
+        },
+        {
+          "UserName": "Thanh Hoa",
+          "UID": "8515736202325277206",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-21"
