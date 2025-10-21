@@ -10673,8 +10673,8 @@
         {
           "UserName": "Onew",
           "UID": "3386338295604654533",
-          "Rank": 230,
-          "messageCountToday": 33,
+          "Rank": 232,
+          "messageCountToday": 35,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -10855,6 +10855,13 @@
         {
           "UserName": "Phan Phước",
           "UID": "8183427927542923690",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
+        },
+        {
+          "UserName": "Hieu Tran",
+          "UID": "5157136723794605994",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-21"
