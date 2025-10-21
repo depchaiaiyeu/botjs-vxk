@@ -958,8 +958,8 @@
         {
           "UserName": "Take Care For Groups",
           "UID": "227886665729461010",
-          "Rank": 7275,
-          "messageCountToday": 24,
+          "Rank": 7276,
+          "messageCountToday": 25,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -979,8 +979,8 @@
         {
           "UserName": "Lee Anh Thu",
           "UID": "651216097038065970",
-          "Rank": 2142,
-          "messageCountToday": 103,
+          "Rank": 2143,
+          "messageCountToday": 104,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -1000,8 +1000,8 @@
         {
           "UserName": "Lê Quốc Đạt",
           "UID": "2784271520159982744",
-          "Rank": 510,
-          "messageCountToday": 82,
+          "Rank": 512,
+          "messageCountToday": 84,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -1658,8 +1658,8 @@
         {
           "UserName": "Thu Hương",
           "UID": "8483070556819959170",
-          "Rank": 288,
-          "messageCountToday": 82,
+          "Rank": 289,
+          "messageCountToday": 83,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -9900,6 +9900,13 @@
           "UID": "7315527878672056766",
           "Rank": 1,
           "messageCountToday": 1,
+          "lastMessageDate": "2025-10-21"
+        },
+        {
+          "UserName": "Gwen",
+          "UID": "3302883472978811629",
+          "Rank": 3,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-21"
         }
       ],
