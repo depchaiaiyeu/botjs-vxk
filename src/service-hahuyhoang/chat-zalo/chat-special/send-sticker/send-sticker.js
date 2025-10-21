@@ -24,13 +24,12 @@ function getRedirectUrl(url) {
   })
 }
 
-async function removeBackgroundImgly(imageUrl) {
+async function removeBackgroundImgly(imageSrc) {
   try {
-    const blob = await removeBackground(imageUrl)
+    const blob = await removeBackground(imageSrc)
     const buffer = Buffer.from(await blob.arrayBuffer())
     return buffer
   } catch (error) {
-    console.error("Lỗi khi xóa phông:", error)
     throw error
   }
 }
@@ -40,7 +39,6 @@ async function getVideoRedirectUrl(url) {
     const response = await getRedirectUrl(url)
     return response
   } catch (error) {
-    console.error("Lỗi khi lấy redirect URL:", error)
     return url
   }
 }
@@ -52,6 +50,7 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
   let imagePath = null
   let convertedWebpPath = null
   let bgRemovedPath = null
+  let tempImagePath = null
 
   try {
     if (cliMsgType === 44) {
@@ -100,7 +99,9 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
 
       if (removeBg) {
         bgRemovedPath = path.join(tempDir, `sticker_bg_removed_${Date.now()}.png`)
-        const pngBuffer = await removeBackgroundImgly(downloadUrl)
+        tempImagePath = path.join(tempDir, `sticker_temp_image_${Date.now()}.${fileExt}`)
+        await downloadFileFake(downloadUrl, tempImagePath)
+        const pngBuffer = await removeBackgroundImgly(tempImagePath)
         fs.writeFileSync(bgRemovedPath, pngBuffer)
         execSync(`ffmpeg -y -i "${bgRemovedPath}" -c:v libwebp -q:v 80 "${convertedWebpPath}"`, { stdio: 'pipe' })
       } else {
@@ -118,7 +119,6 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
     }
     return true
   } catch (error) {
-    console.error("Lỗi khi xử lý sticker:", error)
     throw error
   } finally {
     if (videoPath) await deleteFile(videoPath)
@@ -126,6 +126,7 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
     if (imagePath) await deleteFile(imagePath)
     if (convertedWebpPath) await deleteFile(convertedWebpPath)
     if (bgRemovedPath) await deleteFile(bgRemovedPath)
+    if (tempImagePath) await deleteFile(tempImagePath)
   }
 }
 
@@ -187,7 +188,6 @@ export async function handleStickerCommand(api, message) {
     await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, removeBackgroundImg)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
   } catch (error) {
-    console.error("Lỗi khi xử lý lệnh sticker:", error)
     await sendMessageFailed(api, message, `${senderName}, Lỗi khi xử lý lệnh sticker: ${error.message}`, true)
   }
 }
