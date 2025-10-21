@@ -10,7 +10,7 @@ import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
 import { execSync } from "child_process"
 
-export function getRedirectUrl(url) {
+function getRedirectUrl(url) {
   return new Promise((resolve) => {
     const protocol = url.startsWith("https") ? https : http
     protocol.get(url, { method: "HEAD" }, (res) => {
@@ -23,7 +23,7 @@ export function getRedirectUrl(url) {
   })
 }
 
-export async function getVideoRedirectUrl(url) {
+async function getVideoRedirectUrl(url) {
   try {
     const response = await getRedirectUrl(url)
     return response
@@ -41,7 +41,7 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
   let convertedWebpPath = null
 
   const radiusSquared = radius * radius
-  const roundedFilter = `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,format=yuva420p,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(gt(pow(max(0,${radius}-min(X,W-X)),2)+pow(max(0,${radius}-min(Y,H-Y)),2),${radiusSquared}),0,255)'`
+  const roundedFilter = `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=0x00000000,format=yuva420p,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(gt(pow(max(0,${radius}-min(X,W-X)),2)+pow(max(0,${radius}-min(Y,H-Y)),2),${radiusSquared}),0,255)'`
 
   try {
     if (cliMsgType === 44) {
@@ -149,13 +149,13 @@ export async function handleStickerCommand(api, message) {
 
     const params = attachData.params || {}
     const duration = params.duration || 0
-    if (cliMsgType === 44 && duration > 5000) {
-      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 5 giây!`, true)
+    if (cliMsgType === 44 && duration > 10000) {
+      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 10 giây!`, true)
       return
     }
 
-    const width = params.width || 512
-    const height = params.height || 512
+    const width = params.width
+    const height = params.height
 
     const statusMsg = `Đang tạo sticker (bo góc ${radius}px, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
