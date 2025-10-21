@@ -132,14 +132,19 @@ export async function handleStickerCommand(api, message) {
   }
 
   try {
-    let attachData
-    try {
-      attachData = typeof attach === 'string' ? JSON.parse(attach) : attach
-    } catch {
+    let attachData = {}
+    if (typeof attach === 'string') {
+      const cleanedAttach = attach.replace(/\\\\/g, "\\").replace(/\\\//g, "/")
+      try {
+        attachData = JSON.parse(cleanedAttach)
+      } catch (parseError) {
+        attachData = { href: attach }
+      }
+    } else {
       attachData = attach
     }
 
-    const mediaUrl = attachData.hdUrl || attachData.href
+    const mediaUrl = attachData.hdUrl || attachData.href || attachData.hd
     if (!mediaUrl) {
       await sendMessageWarning(api, message, `${senderName}, Không tìm thấy URL trong đính kèm của tin nhắn bạn đã reply.`, true)
       return
@@ -154,8 +159,12 @@ export async function handleStickerCommand(api, message) {
       return
     }
 
-    const width = params.width || 512
-    const height = params.height || 512
+    let width = Number(params.width) || 512
+    let height = Number(params.height) || 512
+    if (width <= 0 || height <= 0) {
+      width = 512
+      height = 512
+    }
 
     const statusMsg = `Đang tạo sticker (bo góc ${radius}px, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
