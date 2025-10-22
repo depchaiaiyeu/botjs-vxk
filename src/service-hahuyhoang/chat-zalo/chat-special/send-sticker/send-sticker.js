@@ -9,7 +9,7 @@ import { tempDir } from "../../../../utils/io-json.js"
 import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
 import { execSync } from "child_process"
-import { isAdmin } from "../../../../index.js"
+import { admins } from "../../../../index.js"
 
 function getRedirectUrl(url) {
   return new Promise((resolve) => {
@@ -99,11 +99,13 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
 export async function handleStickerCommand(api, message) {
   const quote = message.data?.quote
   const senderName = message.data.dName
-  const senderId = message.senderId
+  const senderId = message.data.uidFrom
   const threadId = message.threadId
   const prefix = getGlobalPrefix()
   const msgContent = message.data?.content || ""
   const args = msgContent.split(/\s+/)
+
+  const isAdmin = admins.includes(senderId)
 
   let radius = 30
   for (let i = 1; i < args.length; i++) {
@@ -162,10 +164,9 @@ export async function handleStickerCommand(api, message) {
 
     const params = attachData.params || {}
     const duration = params.duration || 0
-    const userIsAdmin = isAdmin(senderId, threadId)
-
-    if (cliMsgType === 44 && duration > 10000 && !userIsAdmin) {
-      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 10 giây! (Admin không giới hạn)`, true)
+    
+    if (cliMsgType === 44 && !isAdmin && duration > 10000) {
+      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 10 giây đối với thành viên. (Video của bạn: ${(duration / 1000).toFixed(1)}s)`, true)
       return
     }
 
@@ -177,8 +178,9 @@ export async function handleStickerCommand(api, message) {
       height = 512
     }
 
-    const cornerInfo = radius === 0 ? "không bo góc" : `bo góc ${radius}px`
-    const statusMsg = `Đang tạo sticker (${cornerInfo}, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
+    const statusMsg = radius > 0 
+      ? `Đang tạo sticker (bo góc ${radius}px, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
+      : `Đang tạo sticker (kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
     await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, radius)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
