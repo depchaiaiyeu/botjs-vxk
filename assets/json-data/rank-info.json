@@ -12750,8 +12750,8 @@
         {
           "UserName": "Nguyễn Nhật Trường",
           "UID": "6527621012657548717",
-          "Rank": 7,
-          "messageCountToday": 7,
+          "Rank": 9,
+          "messageCountToday": 9,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12820,8 +12820,8 @@
         {
           "UserName": "Thiên Hòa",
           "UID": "520742462503410689",
-          "Rank": 8,
-          "messageCountToday": 8,
+          "Rank": 10,
+          "messageCountToday": 10,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12962,6 +12962,13 @@
           "UID": "3854702399365655109",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Chí Đức",
+          "UID": "5972553439690969561",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
