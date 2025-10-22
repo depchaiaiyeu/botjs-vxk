@@ -10994,9 +10994,9 @@
         {
           "UserName": "Ngân Phân Vân",
           "UID": "3413369657828773989",
-          "Rank": 3,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-21"
+          "Rank": 4,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
         },
         {
           "UserName": "Cold Handsome Man",
@@ -11087,6 +11087,13 @@
           "UID": "27898586867106392",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Nguyễn Hùng",
+          "UID": "6300048203678373973",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
