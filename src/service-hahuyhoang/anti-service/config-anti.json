@@ -201,5 +201,17 @@
     }
   },
   "enable": false,
-  "botViolations": {}
+  "botViolations": {
+    "4699745045071009795": {
+      "4936185666344592827": {
+        "count": 1,
+        "times": [
+          {
+            "time": 1761111194476
+          }
+        ],
+        "name": "Nt Mmo"
+      }
+    }
+  }
 }
