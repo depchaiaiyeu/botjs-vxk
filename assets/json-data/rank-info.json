@@ -10900,7 +10900,7 @@
           "UserName": "Phạm Tuyết",
           "UID": "786310750288610002",
           "Rank": 3,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -10916,6 +10916,13 @@
           "Rank": 2,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-17"
+        },
+        {
+          "UserName": "Hanh Nguyen",
+          "UID": "8551620487224375958",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
         }
       ],
       "nameGroup": "PHHS LỚP 7/1 2025- 2026"
