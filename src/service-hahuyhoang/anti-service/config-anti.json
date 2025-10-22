@@ -201,17 +201,5 @@
     }
   },
   "enable": false,
-  "botViolations": {
-    "4699745045071009795": {
-      "2784271520159982744": {
-        "count": 1,
-        "times": [
-          {
-            "time": 1761137954699
-          }
-        ],
-        "name": "Lê Quốc Đạt"
-      }
-    }
-  }
+  "botViolations": {}
 }
