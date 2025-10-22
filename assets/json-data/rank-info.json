@@ -7271,7 +7271,7 @@
           "UserName": "Nhímツ",
           "UID": "5024283440221658498",
           "Rank": 55,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -7285,7 +7285,7 @@
           "UserName": "Linh W Witt",
           "UID": "2716137648060265866",
           "Rank": 34,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -7306,7 +7306,7 @@
           "UserName": "Vjtt 八",
           "UID": "6449944685982005945",
           "Rank": 19,
-          "messageCountToday": 3,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -7410,9 +7410,9 @@
         {
           "UserName": "Minh Tú",
           "UID": "3085991445847546088",
-          "Rank": 8,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-18"
+          "Rank": 9,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
         },
         {
           "UserName": "Khả Hân",
@@ -7453,7 +7453,7 @@
           "UserName": "Q Huy",
           "UID": "1755431780036846951",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         }
       ],
@@ -10515,6 +10515,13 @@
           "UID": "1097350646085407745",
           "Rank": 4,
           "messageCountToday": 4,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Minh Tú",
+          "UID": "3085991445847546088",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
