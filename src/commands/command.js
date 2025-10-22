@@ -161,6 +161,7 @@ import { handleCheckHostCommand } from "../service-hahuyhoang/servises/check-hos
 
 import { handleAntiStickerCommand } from "../service-hahuyhoang/anti-service/anti-sticker.js";
 import { handleHH3DCommand } from "../service-hahuyhoang/api-crawl/video/yanhh3d-phim3d.js";
+import { handleKKPhimCommand } from "../service-hahuyhoang/api-crawl/video/kkphim.js";
 
 const lastCommandUsage = {};
 
@@ -720,6 +721,9 @@ export async function handleCommandPrivate(api, message) {
                 return 0;                
               case "hoathinh3dtrungquoc":
                 await handleHH3DCommand (api, message, aliasCommand);
+                return 0;
+              case "kkphim":
+                await handleKKPhimCommand (api, message, aliasCommand);
                 return 0;
         }
       } else {
@@ -1356,6 +1360,9 @@ export async function handleCommand(
                 break;
               case "hoathinh3dtrungquoc":
                 await handleHH3DCommand (api, message, aliasCommand);
+                break;
+              case "kkphim":
+                await handleKKPhimCommand (api, message, aliasCommand);
                 break;
               case "clipphot":
                 await handleClipphotCommand(api, message, aliasCommand);
