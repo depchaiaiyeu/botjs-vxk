@@ -350,7 +350,7 @@
     "antiSticker": false,
     "autoReply": true,
     "removeLinkKeywords": false,
-    "antiUndo": true,
+    "antiUndo": false,
     "autoDownload": false,
     "blockForward": false,
     "sendTask": true
