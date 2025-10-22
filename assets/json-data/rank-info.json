@@ -1147,8 +1147,8 @@
         {
           "UserName": "Harry Nguyễn",
           "UID": "1847479899180587928",
-          "Rank": 108,
-          "messageCountToday": 23,
+          "Rank": 109,
+          "messageCountToday": 24,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -1665,8 +1665,8 @@
         {
           "UserName": "Vantam",
           "UID": "7793042347894516509",
-          "Rank": 243,
-          "messageCountToday": 111,
+          "Rank": 244,
+          "messageCountToday": 112,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -10366,8 +10366,8 @@
         {
           "UserName": "Triều Đông",
           "UID": "7654139448969933571",
-          "Rank": 41,
-          "messageCountToday": 10,
+          "Rank": 42,
+          "messageCountToday": 11,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12172,6 +12172,13 @@
         {
           "UserName": "Hà Hương",
           "UID": "7322285028067318182",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Vũ Hải Anh",
+          "UID": "5373733675657672872",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
