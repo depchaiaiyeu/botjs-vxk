@@ -12911,8 +12911,8 @@
         {
           "UserName": "Pin",
           "UID": "2995519415898495657",
-          "Rank": 12,
-          "messageCountToday": 12,
+          "Rank": 13,
+          "messageCountToday": 13,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12955,6 +12955,13 @@
           "UID": "8809154742463650683",
           "Rank": 3,
           "messageCountToday": 3,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Vũ Đức Dũng",
+          "UID": "3854702399365655109",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
