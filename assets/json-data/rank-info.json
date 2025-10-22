@@ -5669,8 +5669,8 @@
         {
           "UserName": "Trang",
           "UID": "2773564850422561350",
-          "Rank": 55,
-          "messageCountToday": 4,
+          "Rank": 56,
+          "messageCountToday": 5,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -11983,8 +11983,8 @@
         {
           "UserName": "Phương Duyen",
           "UID": "3778986973743424586",
-          "Rank": 41,
-          "messageCountToday": 4,
+          "Rank": 42,
+          "messageCountToday": 5,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12018,8 +12018,8 @@
         {
           "UserName": "Kiều Tiên",
           "UID": "4065532201203085904",
-          "Rank": 13,
-          "messageCountToday": 7,
+          "Rank": 15,
+          "messageCountToday": 9,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12235,6 +12235,13 @@
         {
           "UserName": "Thanhh",
           "UID": "1546295088607199566",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Xạ Thủ Khải Huyền",
+          "UID": "7306234377977421919",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
@@ -12927,6 +12934,20 @@
           "UID": "951404341088638991",
           "Rank": 12,
           "messageCountToday": 12,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Uchia Duyy",
+          "UID": "5532213470918241277",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Nguyễn Huy Hậu",
+          "UID": "8388907642863124048",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
