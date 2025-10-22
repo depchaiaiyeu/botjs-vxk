@@ -3596,8 +3596,8 @@
         {
           "UserName": "Nt Mmo",
           "UID": "4936185666344592827",
-          "Rank": 9,
-          "messageCountToday": 8,
+          "Rank": 10,
+          "messageCountToday": 9,
           "lastMessageDate": "2025-10-22"
         }
       ],
@@ -5760,6 +5760,13 @@
         {
           "UserName": "Jnyanhtuan",
           "UID": "4910691212569281309",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Quynh Anh",
+          "UID": "3206055377482036037",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
@@ -9053,9 +9060,9 @@
         {
           "UserName": "穿过云层",
           "UID": "2466490641514133761",
-          "Rank": 99,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-21"
+          "Rank": 100,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
         },
         {
           "UserName": "Tuan Anh",
@@ -9067,8 +9074,8 @@
         {
           "UserName": "Duong",
           "UID": "3270782253916498015",
-          "Rank": 44,
-          "messageCountToday": 10,
+          "Rank": 45,
+          "messageCountToday": 11,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -10234,8 +10241,8 @@
         {
           "UserName": "Khôi Lê",
           "UID": "7443878250674604918",
-          "Rank": 1,
-          "messageCountToday": 1,
+          "Rank": 3,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-22"
         }
       ],
