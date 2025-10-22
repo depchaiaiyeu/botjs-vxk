@@ -10,7 +10,6 @@ import { createBotInfoImage, clearImagePath } from "../../utils/canvas/index.js"
 export async function getBotDetails(api, message, groupSettings = {}) {
   const threadId = message.threadId;
   const uptime = getUptime();
-  const activeSince = getStartTime("2025-9-26");
   const memoryUsage = getMemoryUsage();
   const { onConfigs, offConfigs } = getConfigStatus(threadId, groupSettings);
   const botVersion = getBotVersion();
@@ -42,14 +41,12 @@ export async function getBotDetails(api, message, groupSettings = {}) {
     cpu: `${os.cpus().length} Cores - Utilization ${cpuData.currentLoad.toFixed(1)}% `,
     ram: `${usedRam} GB / ${totalRam} GB (Free ${freeRam} GB)`,
     cpuModel: os.cpus()[0].model,
-    // cpuTemp: os.cpus()[0].temp,
     disk: diskUsage,
-    // network: si.networkInterfaces()
   };
 
   let imagePath = null;
   try {
-    imagePath = await createBotInfoImage(botInfo, uptime, botStats, onConfigs, offConfigs, activeSince);
+    imagePath = await createBotInfoImage(botInfo, uptime, botStats, onConfigs, offConfigs);
     await api.sendMessage({ msg: "", attachments: [imagePath] }, threadId, message.type,5000000);
   } catch (error) {
     console.error("Lỗi khi tạo hình ảnh thông tin bot:", error);
@@ -80,23 +77,6 @@ function getUptime() {
   const hours = Math.floor((uptimeInSeconds % 86400) / 3600);
   const minutes = Math.floor((uptimeInSeconds % 3600) / 60);
   const seconds = Math.floor(uptimeInSeconds % 60);
-
-  return `${days} ngày, ${hours} giờ, ${minutes} phút, ${seconds} giây`;
-}
-
-function getStartTime(startDateString) {
-  const startDate = new Date(startDateString);
-  const now = new Date();
-  const diffTime = now - startDate;
-
-  if (isNaN(startDate.getTime())) {
-    throw new Error("Ngày bắt đầu không hợp lệ!");
-  }
-
-  const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
 
   return `${days} ngày, ${hours} giờ, ${minutes} phút, ${seconds} giây`;
 }
