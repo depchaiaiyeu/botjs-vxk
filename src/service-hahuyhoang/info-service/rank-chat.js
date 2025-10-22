@@ -4,6 +4,7 @@ import { MessageType, MessageMention } from "zlbotdqt";
 import { getGlobalPrefix } from '../service.js';
 import { removeMention } from "../../utils/format-util.js";
 import { readGroupSettings } from "../../utils/io-json.js";
+import { createRankImage } from "../../utils/canvas/rank-canvas.js";
 
 const rankInfoPath = path.join(process.cwd(), "assets", "json-data", "rank-info.json");
 
@@ -125,7 +126,10 @@ export async function handleRankCommand(api, message, aliasCommand) {
 
     const userName = targetName || targetUser.UserName;
     responseMsg = `📊${isToday ? " Hôm nay" : " Tổng"} số tin nhắn mà người dùng ${userName} đã nhắn là: ${count}`;
+    await api.sendMessage({ msg: responseMsg, quote: message, ttl: 600000 }, threadId, MessageType.GroupMessage);
   } else {
+    let rankData = [];
+    let title = "";
     if (isToday) {
       const currentDate = new Date().toISOString().split("T")[0];
       const todayUsers = groupUsers.filter((user) => user.lastMessageDate === currentDate);
@@ -137,25 +141,36 @@ export async function handleRankCommand(api, message, aliasCommand) {
         );
         return;
       }
-      const sortedUsers = todayUsers.sort((a, b) => b.messageCountToday - a.messageCountToday);
-      const top10Users = sortedUsers.slice(0, 10);
-
-      responseMsg = "🏆 Bảng topchat hôm nay:\n\n";
-      top10Users.forEach((user, index) => {
-        responseMsg += `${index + 1}. ${user.UserName}: ${user.messageCountToday} tin nhắn\n`;
-      });
+      rankData = todayUsers.sort((a, b) => b.messageCountToday - a.messageCountToday).slice(0, 10);
+      title = "🏆 Bảng xếp hạng tin nhắn hôm nay:";
     } else {
-      const sortedUsers = groupUsers.sort((a, b) => b.Rank - a.Rank); 
-      const top10Users = sortedUsers.slice(0, 10);
-      responseMsg = "🏆 Bảng topchat:\n\n";
-      top10Users.forEach((user, index) => {
-        responseMsg += `${index + 1}. ${user.UserName}: ${user.Rank} tin nhắn\n`;
+      rankData = groupUsers.sort((a, b) => b.Rank - a.Rank).slice(0, 10);
+      title = "🏆 Bảng xếp hạng tin nhắn:";
+    }
+
+    let filePath = null;
+    try {
+      filePath = await createRankImage(rankData, title, api);
+      await api.sendMessage(
+        {
+          attachments: [filePath],
+        },
+        threadId,
+        message.type
+      );
+    } catch (error) {
+      console.error("Lỗi khi tạo hình ảnh topchat:", error);
+      responseMsg = isToday ? "🏆 Bảng topchat hôm nay:\n\n" : "🏆 Bảng topchat:\n\n";
+      rankData.forEach((user, index) => {
+        const count = isToday ? user.messageCountToday : user.Rank;
+        responseMsg += `${index + 1}. ${user.UserName}: ${count} tin nhắn\n`;
       });
-      responseMsg += `\nDùng ${prefix}${aliasCommand} today để xem topchat hàng ngày.`;
+      if (!isToday) {
+        responseMsg += `\nDùng ${prefix}${aliasCommand} today để xem topchat hàng ngày.`;
+      }
+      await api.sendMessage({ msg: responseMsg, quote: message, ttl: 600000 }, threadId, MessageType.GroupMessage);
     }
   }
-
-  await api.sendMessage({ msg: responseMsg, quote: message, ttl: 600000 }, threadId, MessageType.GroupMessage);
 }
 
 export async function initRankSystem() {
