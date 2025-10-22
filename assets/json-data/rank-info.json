@@ -12841,8 +12841,8 @@
         {
           "UserName": "Nguyên Jr",
           "UID": "4660336419719089559",
-          "Rank": 3,
-          "messageCountToday": 3,
+          "Rank": 4,
+          "messageCountToday": 4,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12948,6 +12948,13 @@
           "UID": "8388907642863124048",
           "Rank": 1,
           "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Egg",
+          "UID": "8809154742463650683",
+          "Rank": 2,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-22"
         }
       ],
