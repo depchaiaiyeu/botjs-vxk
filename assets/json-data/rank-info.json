@@ -7095,7 +7095,7 @@
           "UserName": "Thành Nhân",
           "UID": "3875953011135749873",
           "Rank": 7,
-          "messageCountToday": 3,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -7200,7 +7200,7 @@
           "UserName": "Bảo Ngọc",
           "UID": "7366050608235494914",
           "Rank": 3,
-          "messageCountToday": 2,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         },
         {
@@ -7214,15 +7214,22 @@
           "UserName": "Duy Hiếu",
           "UID": "805051336357398039",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
         },
         {
           "UserName": "Khắc Hiếu",
           "UID": "4072844267924839614",
           "Rank": 1,
-          "messageCountToday": 1,
+          "messageCountToday": 0,
           "lastMessageDate": "2025-10-21"
+        },
+        {
+          "UserName": "Như Nhi んふんひ",
+          "UID": "7695799011731326967",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
         }
       ],
       "nameGroup": "Tài lộc quá lớn🍷"
