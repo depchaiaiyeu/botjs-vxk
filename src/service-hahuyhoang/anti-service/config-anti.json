@@ -198,22 +198,6 @@
         "mediaCount": 0,
         "stickerCount": 1
       }
-    },
-    "4699745045071009795": {
-      "7147491400582574603": {
-        "count": 2,
-        "words": [
-          {
-            "word": "@All",
-            "time": 1761134721371
-          },
-          {
-            "word": "@All",
-            "time": 1761134748952
-          }
-        ],
-        "name": "Hoàng Nam"
-      }
     }
   },
   "enable": false,

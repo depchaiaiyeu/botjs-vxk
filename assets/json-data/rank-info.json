@@ -1798,8 +1798,8 @@
         {
           "UserName": "Gwen",
           "UID": "3302883472978811629",
-          "Rank": 193,
-          "messageCountToday": 7,
+          "Rank": 196,
+          "messageCountToday": 10,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12613,6 +12613,32 @@
         }
       ],
       "nameGroup": "Cô ni hiệu trưởng trường Võ Thị Sáu(2025-2027)"
+    },
+    "7736001302901444960": {
+      "users": [
+        {
+          "UserName": "Thiên Cơ Lệnh",
+          "UID": "2942456526346984686",
+          "Rank": 6,
+          "messageCountToday": 6,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Lê Xuân Định",
+          "UID": "6891143807206038681",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Triều Đông",
+          "UID": "7654139448969933571",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        }
+      ],
+      "nameGroup": "games"
     }
   }
 }
