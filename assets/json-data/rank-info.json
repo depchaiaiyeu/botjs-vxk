@@ -1189,8 +1189,8 @@
         {
           "UserName": "Tiến Dũng",
           "UID": "2359098671970024582",
-          "Rank": 14,
-          "messageCountToday": 1,
+          "Rank": 15,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -10299,6 +10299,13 @@
           "UID": "7443878250674604918",
           "Rank": 4,
           "messageCountToday": 4,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Võ Trọng Nhân",
+          "UID": "4594286362806000889",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
