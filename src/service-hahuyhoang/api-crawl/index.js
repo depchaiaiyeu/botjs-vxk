@@ -19,6 +19,7 @@ import { handleSendHeroSkinDetail } from "../servises/LQM-General.js";
 import { handleSendLOLChampionDetail } from "../servises/LOL.General.js";
 import { handleSendHH3DEpisode } from "./video/yanhh3d-phim3d.js";
 import { handleSendSubNhanhChillEpisode } from "./video/subnhanhchill.net.js";
+import { handleSendKKPhimEpisode } from "./video/kkphim.js";
 const TIME_TO_SELECT = 60000;
 export const selectionsMapData = new LRUCache({
   max: 500,
@@ -38,6 +39,10 @@ export function deleteSelectionsMapData(idUser) {
 export async function checkReplySelectionsMapData(api, message) {
   const platformResolvers = {
     hh3d: (collection, input) => {
+      const cleanInput = input.trim().replace(/\s/g, "");
+      return collection.find(item => item.selectedSkin?.label?.replace(/\s/g, "") === cleanInput);
+    },
+    kkphim: (collection, input) => {
       const cleanInput = input.trim().replace(/\s/g, "");
       return collection.find(item => item.selectedSkin?.label?.replace(/\s/g, "") === cleanInput);
     },
@@ -89,6 +94,8 @@ export async function checkReplySelectionsMapData(api, message) {
         return await handleSendSubNhanhChillEpisode(api, message, media);
       case "hh3d":
         return await handleSendHH3DEpisode(api, message, media);
+      case "kkphim":
+        return await handleSendKKPhimEpisode(api, message, media);
       case "lol":
         return await handleSendLOLChampionDetail(api, message, media);
       case "lienquan":
