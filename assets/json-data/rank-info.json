@@ -12883,8 +12883,15 @@
         {
           "UserName": "Nguyễn Văn Kiệt",
           "UID": "29011788577113692",
-          "Rank": 4,
-          "messageCountToday": 4,
+          "Rank": 7,
+          "messageCountToday": 7,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Anwin",
+          "UID": "8855040671241107672",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
