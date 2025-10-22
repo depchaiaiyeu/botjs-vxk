@@ -2272,6 +2272,17 @@
       "type": 5,
       "author": "Vũ Xuân Kiên",
       "active": true
+    },
+    {
+      "name": "kkphim",
+      "description": "Xem phim từ nền tảng KKPhim",
+      "syntax": "{p}kkphim <keyword>",
+      "permission": "all",
+      "countdown": 30,
+      "icon": "🎞️",
+      "type": 1,
+      "author": "Vũ Xuân Kiên",
+      "active": true
     }
   ]
 }
