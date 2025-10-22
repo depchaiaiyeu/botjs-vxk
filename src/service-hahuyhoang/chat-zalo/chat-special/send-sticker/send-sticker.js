@@ -9,6 +9,7 @@ import { tempDir } from "../../../../utils/io-json.js"
 import { appContext } from "../../../../api-zalo/context.js"
 import { sendMessageComplete, sendMessageWarning, sendMessageFailed } from "../../chat-style/chat-style.js"
 import { execSync } from "child_process"
+import { isAdmin } from "../../../../index.js"
 
 function getRedirectUrl(url) {
   return new Promise((resolve) => {
@@ -32,7 +33,7 @@ async function getVideoRedirectUrl(url) {
   }
 }
 
-async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, radius = 50) {
+async function processAndSendSticker(api, message, mediaUrl, width, height, cliMsgType, radius = 30) {
   const threadId = message.threadId
   let videoPath = null
   let webpPath = null
@@ -40,7 +41,9 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
   let convertedWebpPath = null
 
   const radiusSquared = radius * radius
-  const roundedFilter = `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=0x00000000,format=yuva420p,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(gt(pow(max(0,${radius}-min(X,W-X)),2)+pow(max(0,${radius}-min(Y,H-Y)),2),${radiusSquared}),0,255)'`
+  const roundedFilter = radius > 0 
+    ? `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=0x00000000,format=yuva420p,geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='if(gt(pow(max(0,${radius}-min(X,W-X)),2)+pow(max(0,${radius}-min(Y,H-Y)),2),${radiusSquared}),0,255)'`
+    : `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=0x00000000`
 
   try {
     if (cliMsgType === 44) {
@@ -96,16 +99,17 @@ async function processAndSendSticker(api, message, mediaUrl, width, height, cliM
 export async function handleStickerCommand(api, message) {
   const quote = message.data?.quote
   const senderName = message.data.dName
+  const senderId = message.senderId
   const threadId = message.threadId
   const prefix = getGlobalPrefix()
   const msgContent = message.data?.content || ""
   const args = msgContent.split(/\s+/)
 
-  let radius = 120
+  let radius = 30
   for (let i = 1; i < args.length; i++) {
     if (args[i].startsWith('r')) {
       const num = parseInt(args[i].slice(1))
-      if (!isNaN(num) && num > 0) {
+      if (!isNaN(num) && num >= 0) {
         radius = num
       }
       break
@@ -113,7 +117,7 @@ export async function handleStickerCommand(api, message) {
   }
 
   if (!quote) {
-    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${radius !== 50 ? ` r${radius}` : ''}.`, true)
+    await sendMessageWarning(api, message, `${senderName}, Hãy reply vào tin nhắn chứa ảnh hoặc video cần tạo sticker và dùng lại lệnh ${prefix}sticker${radius !== 30 ? ` r${radius}` : ''}.`, true)
     return
   }
 
@@ -158,8 +162,10 @@ export async function handleStickerCommand(api, message) {
 
     const params = attachData.params || {}
     const duration = params.duration || 0
-    if (cliMsgType === 44 && duration > 5000) {
-      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 5 giây!`, true)
+    const userIsAdmin = isAdmin(senderId, threadId)
+
+    if (cliMsgType === 44 && duration > 10000 && !userIsAdmin) {
+      await sendMessageWarning(api, message, `${senderName}, Sticker video chỉ được phép dài tối đa 10 giây! (Admin không giới hạn)`, true)
       return
     }
 
@@ -171,7 +177,8 @@ export async function handleStickerCommand(api, message) {
       height = 512
     }
 
-    const statusMsg = `Đang tạo sticker (bo góc ${radius}px, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
+    const cornerInfo = radius === 0 ? "không bo góc" : `bo góc ${radius}px`
+    const statusMsg = `Đang tạo sticker (${cornerInfo}, kích thước ${width}x${height}) cho ${senderName}, vui lòng chờ một chút!`
     await sendMessageWarning(api, message, statusMsg, true)
     await processAndSendSticker(api, message, decodedUrl, width, height, cliMsgType, radius)
     await sendMessageComplete(api, message, `Sticker của bạn đây!`, true)
