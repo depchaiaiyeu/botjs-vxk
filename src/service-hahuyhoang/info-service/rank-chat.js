@@ -4,7 +4,7 @@ import { MessageType, MessageMention } from "zlbotdqt";
 import { getGlobalPrefix } from '../service.js';
 import { removeMention } from "../../utils/format-util.js";
 import { readGroupSettings } from "../../utils/io-json.js";
-import { createRankImage } from "../../utils/canvas/rank-canvas.js";
+import { createRankImage } from "./canvas/rank-canvas.js";
 
 const rankInfoPath = path.join(process.cwd(), "assets", "json-data", "rank-info.json");
 
