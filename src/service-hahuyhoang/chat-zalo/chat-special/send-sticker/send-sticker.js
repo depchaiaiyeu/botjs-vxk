@@ -170,8 +170,16 @@ export async function handleStickerCommand(api, message) {
       return
     }
 
-    let width = Number(params.width) || 512
-    let height = Number(params.height) || 512
+    let width = 512
+    let height = 512
+
+    if (cliMsgType === 44) {
+      width = Number(params.video_original_width) || Number(params.video_width) || 512
+      height = Number(params.video_original_height) || Number(params.video_height) || 512
+    } else {
+      width = Number(params.width) || 512
+      height = Number(params.height) || 512
+    }
     
     if (width <= 0 || height <= 0) {
       width = 512
