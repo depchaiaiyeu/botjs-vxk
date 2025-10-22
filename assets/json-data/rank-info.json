@@ -2494,9 +2494,9 @@
         {
           "UserName": "Quốc Việt",
           "UID": "6971993208642289914",
-          "Rank": 6,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-21"
+          "Rank": 7,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
         },
         {
           "UserName": "Nguyên",
@@ -3003,8 +3003,8 @@
         {
           "UserName": "̀nguyễn Duy Khang",
           "UID": "310916094085117291",
-          "Rank": 78,
-          "messageCountToday": 3,
+          "Rank": 79,
+          "messageCountToday": 4,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -11289,8 +11289,8 @@
         {
           "UserName": "Onew",
           "UID": "3386338295604654533",
-          "Rank": 617,
-          "messageCountToday": 133,
+          "Rank": 619,
+          "messageCountToday": 135,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -11634,6 +11634,13 @@
           "UID": "333989407218354073",
           "Rank": 3,
           "messageCountToday": 3,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Quốc Việt",
+          "UID": "6971993208642289914",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
