@@ -951,8 +951,8 @@
         {
           "UserName": "N H L",
           "UID": "8347261672526530028",
-          "Rank": 3097,
-          "messageCountToday": 110,
+          "Rank": 3099,
+          "messageCountToday": 112,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -979,8 +979,8 @@
         {
           "UserName": "L A T",
           "UID": "651216097038065970",
-          "Rank": 2268,
-          "messageCountToday": 16,
+          "Rank": 2269,
+          "messageCountToday": 17,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12808,6 +12808,13 @@
           "UID": "2193123053467603028",
           "Rank": 1,
           "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Nguyên Jr",
+          "UID": "4660336419719089559",
+          "Rank": 2,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-22"
         }
       ],
