@@ -1,5 +1,11 @@
 {
   "groupRequiredReset": "-1",
   "onGamePrivate": true,
-  "onBotPrivate": true
+  "onBotPrivate": true,
+  "blockBot": [
+    {
+      "idUserZalo": "8915416487975134082",
+      "senderName": "ツ White Timeline Cookie"
+    }
+  ]
 }
