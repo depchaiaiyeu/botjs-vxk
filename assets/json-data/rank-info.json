@@ -12729,8 +12729,8 @@
         {
           "UserName": "Đức Minh",
           "UID": "8219745491712082217",
-          "Rank": 7,
-          "messageCountToday": 7,
+          "Rank": 10,
+          "messageCountToday": 10,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12764,8 +12764,8 @@
         {
           "UserName": "Juny",
           "UID": "9118490568542065840",
-          "Rank": 13,
-          "messageCountToday": 13,
+          "Rank": 14,
+          "messageCountToday": 14,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12778,8 +12778,15 @@
         {
           "UserName": "Briar Baby",
           "UID": "341021680301465216",
-          "Rank": 3,
-          "messageCountToday": 3,
+          "Rank": 5,
+          "messageCountToday": 5,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Nhật Hoàng",
+          "UID": "9091912412236428055",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
