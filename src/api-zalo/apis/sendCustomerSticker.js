@@ -58,8 +58,7 @@ export function sendCustomStickerFactory(api) {
         type: 3,
         ext: JSON.stringify({
           sSrcStr: "@STICKER",
-          sSrcType: 0,
-          pStickerType: 1,
+          sSrcType: 1,
         }),
       }),
       contentId: Date.now(),
