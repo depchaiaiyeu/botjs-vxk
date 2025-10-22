@@ -72,6 +72,7 @@ export function sendCustomStickerFactory(api) {
       }),
       zsource: -1,
       ttl,
+      pStickerType: 1
     };
 
     if (quote) {
