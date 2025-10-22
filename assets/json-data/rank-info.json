@@ -951,8 +951,8 @@
         {
           "UserName": "N H L",
           "UID": "8347261672526530028",
-          "Rank": 3050,
-          "messageCountToday": 63,
+          "Rank": 3051,
+          "messageCountToday": 64,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -1000,8 +1000,8 @@
         {
           "UserName": "Lê Quốc Đạt",
           "UID": "2784271520159982744",
-          "Rank": 619,
-          "messageCountToday": 12,
+          "Rank": 623,
+          "messageCountToday": 16,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -1014,8 +1014,8 @@
         {
           "UserName": "Vu Gia Huy",
           "UID": "5797048306653413960",
-          "Rank": 218,
-          "messageCountToday": 47,
+          "Rank": 220,
+          "messageCountToday": 49,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -1693,8 +1693,8 @@
         {
           "UserName": "Đức Hạnh",
           "UID": "6240120676003884706",
-          "Rank": 41,
-          "messageCountToday": 18,
+          "Rank": 44,
+          "messageCountToday": 21,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12716,6 +12716,18 @@
         }
       ],
       "nameGroup": "games"
+    },
+    "4900013684850631995": {
+      "users": [
+        {
+          "UserName": "Nguyễn Nhật Trường",
+          "UID": "6527621012657548717",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        }
+      ],
+      "nameGroup": "ProGAYmers 2033"
     }
   }
 }
