@@ -480,5 +480,32 @@
     "removeLinkKeywords": false,
     "blockForward": false,
     "sendTask": true
+  },
+  "206503079877623526": {
+    "nameGroup": "穿过云层",
+    "adminList": {},
+    "muteList": {},
+    "whileList": {},
+    "activeBot": true,
+    "activeGame": false,
+    "welcomeGroup": false,
+    "byeGroup": false,
+    "antiSpam": false,
+    "filterBadWords": false,
+    "filterBot": false,
+    "removeLinks": false,
+    "learnEnabled": false,
+    "replyEnabled": false,
+    "onlyText": false,
+    "memberApprove": false,
+    "antiNude": false,
+    "whiteList": {},
+    "autoLockChat": {},
+    "antiMedia": false,
+    "antiSticker": false,
+    "autoReply": false,
+    "autoDownload": false,
+    "removeLinkKeywords": false,
+    "blockForward": false
   }
 }
