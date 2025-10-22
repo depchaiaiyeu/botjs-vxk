@@ -12764,8 +12764,8 @@
         {
           "UserName": "Juny",
           "UID": "9118490568542065840",
-          "Rank": 17,
-          "messageCountToday": 17,
+          "Rank": 23,
+          "messageCountToday": 23,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -12787,6 +12787,13 @@
           "UID": "9091912412236428055",
           "Rank": 5,
           "messageCountToday": 5,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Thiên Hòa",
+          "UID": "520742462503410689",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
         }
       ],
