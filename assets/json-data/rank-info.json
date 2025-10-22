@@ -2863,8 +2863,8 @@
         {
           "UserName": "Xre",
           "UID": "9090621766324729619",
-          "Rank": 1112,
-          "messageCountToday": 161,
+          "Rank": 1113,
+          "messageCountToday": 162,
           "lastMessageDate": "2025-10-22"
         },
         {
@@ -13079,6 +13079,13 @@
         {
           "UserName": "Pham Khanh",
           "UID": "378885570347083385",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Nguyễn Bảo",
+          "UID": "5461000099680117746",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-22"
