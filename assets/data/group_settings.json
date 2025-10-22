@@ -242,7 +242,7 @@
     "autoLockChat": {},
     "antiMedia": false,
     "antiSticker": false,
-    "autoReply": true,
+    "autoReply": false,
     "removeLinkKeywords": false,
     "antiUndo": true,
     "autoDownload": true,
