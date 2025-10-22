@@ -221,7 +221,7 @@ export async function createBotInfoImage(botInfo, uptime, botStats, onConfigs, o
     { label: "🔄 Processes:", value: runningProcesses },
     { label: "🏠 Hostname:", value: hostname },
     { label: "🛠️ Kernel:", value: kernelVersion },
-    { label: "🖴 Terminal:", value: terminal }
+    { label: "💻 Terminal:", value: terminal }
   ];
 
   const tempCanvas = createCanvas(1, 1);
@@ -327,7 +327,7 @@ export async function createBotInfoImage(botInfo, uptime, botStats, onConfigs, o
   ctx.fillText(botInfo.name, 300, headerY + 100);
   ctx.font = "bold 28px BeVietnamPro";
   ctx.fillStyle = cv.getRandomGradient ? cv.getRandomGradient(ctx, leftColumnWidth) : "#ffffff";
-  ctx.fillText("Thời gian hoạt động: " + uptime, 300, headerY + 180);
+  ctx.fillText("Thời gian hoạt động: " + uptime, 300, headerY + 140);
 
   const leftColumnX = 60;
 
