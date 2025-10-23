@@ -40,6 +40,9 @@ import { superCheckBox } from "./vxk-test.js";
 import { antiNude } from "../service-hahuyhoang/anti-service/anti-nude/anti-nude.js";
 import { isUserBlocked } from "../commands/bot-manager/group-manage.js";
 
+// ✅ Thêm import antiJoinLeave
+import { antiJoinLeave } from "../service-hahuyhoang/anti-service/anti-join-leave.js";
+
 const userLastMessageTime = new Map();
 const COOLDOWN_TIME = 1000;
 
@@ -49,7 +52,6 @@ const BUSINESS_CARD_COOLDOWN = 5 * 60 * 1000;
 async function canReplyToUser(senderId) {
   const currentTime = Date.now();
   const lastMessageTime = userLastMessageTime.get(senderId);
-
   if (!lastMessageTime || currentTime - lastMessageTime >= COOLDOWN_TIME) {
     userLastMessageTime.set(senderId, currentTime);
     return true;
@@ -61,21 +63,10 @@ export async function checkAndSendBusinessCard(api, senderId, senderName) {
   if (isAdmin(senderId)) return false;
   const currentTime = Date.now();
   const lastSentTime = lastBusinessCardTime.get(senderId);
-
   if (!lastSentTime || currentTime - lastSentTime >= BUSINESS_CARD_COOLDOWN) {
     lastBusinessCardTime.set(senderId, currentTime);
     const idBot = getBotId();
     if (admins.length == 0 || (admins.length == 1 && admins.includes(idBot.toString()))) return false;
-    //await api.sendMessage(
-      //{
-        //msg:
-          //`Xin Chào ${senderName}, Tôi Là Vũ Xuân Kiên.\n` +
-          //`Hiện Tại Tôi Đang Bận Bạn Có Thể Nhắn Lại Sau Nhé.\n`+
-          //`Link Group Của Tôi: https://zalo.me/g/cytzbq576\n`,
-      //},
-      //senderId,
-      //MessageType.DirectMessage
-    //);
     for (const userId of admins) {
       if (userId != idBot) {
         //await api.sendBusinessCard(null, userId, null, MessageType.DirectMessage, senderId);
@@ -144,8 +135,9 @@ export async function messagesUser(api, message) {
             continueProcessingChat && !(!isSelf && (await checkAndSendBusinessCard(api, senderId, senderName)));
         }
       }
-      break; 
-    } 
+      break;
+    }
+
     case MessageType.GroupMessage: {
       let groupAdmins = [];
       let nameGroup = "";
@@ -173,6 +165,9 @@ export async function messagesUser(api, message) {
       const groupSettings = readGroupSettings();
       initGroupSettings(groupSettings, threadId, nameGroup);
       pushMessageToWebLog(io, nameGroup, senderName, content, groupInfo.avt);
+
+      // ✅ Thêm antiJoinLeave vào đây
+      await antiJoinLeave(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf, senderId);
 
       if (!isSelf) {
         updateUserRank(threadId, senderId, message.data.dName, nameGroup);
