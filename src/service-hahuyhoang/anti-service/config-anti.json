@@ -201,17 +201,5 @@
     }
   },
   "enable": false,
-  "botViolations": {
-    "5464956150740844012": {
-      "6022805619971467182": {
-        "count": 1,
-        "times": [
-          {
-            "time": 1761213593324
-          }
-        ],
-        "name": "Nhân Ios Adr"
-      }
-    }
-  }
+  "botViolations": {}
 }
