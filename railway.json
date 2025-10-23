@@ -4,7 +4,14 @@
     "nixpacksPlan": {
       "phases": {
         "setup": {
-          "nixPkgs": ["...", "ffmpeg"]
+          "nixPkgs": [
+            "nodejs",
+            "python3",
+            "ffmpeg"
+          ]
+        },
+        "install": {
+          "cmds": ["npm install"]
         }
       }
     }
