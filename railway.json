@@ -5,14 +5,21 @@
       "phases": {
         "setup": {
           "nixPkgs": [
-            "nodejs",
-            "python3",
+            "nodejs_20",
             "npm",
+            "python3",
+            "gnumake",
+            "gcc",
+            "gnutar",
+            "xz",
             "ffmpeg"
           ]
         },
         "install": {
-          "cmds": ["npm install"]
+          "cmds": [
+            "export YOUTUBE_DL_SKIP_PYTHON_CHECK=1",
+            "npm install"
+          ]
         }
       }
     }
