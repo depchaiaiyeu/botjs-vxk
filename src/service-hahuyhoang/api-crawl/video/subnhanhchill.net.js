@@ -1,7 +1,7 @@
 import axios from "axios";
 import path from "path";
 import * as cheerio from "cheerio";
-import youtubedl from 'yt-dlp-exec';
+import youtubedl from 'youtube-dl-exec';
 import { fileURLToPath } from 'url';
 import { tempDir } from "../../../utils/io-json.js";
 import { getCachedMedia, setCacheData } from "../../../utils/link-platform-cache.js";
