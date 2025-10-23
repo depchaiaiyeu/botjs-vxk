@@ -59,7 +59,6 @@
     "whois-json": "^2.0.4",
     "ws": "^8.18.0",
     "youtube-dl-exec": "^3.0.12",
-    "yt-dlp-exec": "^1.0.2",
     "zlbotdqt": "file:",
     "mysql-memory-server": "^1.12.0"
   },
