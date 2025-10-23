@@ -5,7 +5,7 @@
       "phases": {
         "setup": {
           "nixPkgs": [
-            "nodejs",
+            "nodejs_20",
             "python3",
             "gcc",
             "gnumake",
@@ -17,7 +17,11 @@
             "pango",
             "libjpeg",
             "giflib",
-            "librsvg"
+            "librsvg",
+            "autoconf",
+            "automake",
+            "libtool",
+            "bzip2"
           ]
         }
       }
