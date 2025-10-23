@@ -5053,9 +5053,9 @@
         {
           "UserName": "Paimon",
           "UID": "994751199810691829",
-          "Rank": 1,
-          "messageCountToday": 0,
-          "lastMessageDate": "2025-10-09"
+          "Rank": 2,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-23"
         },
         {
           "UserName": "Quyhoang Bá Mà",
@@ -12981,8 +12981,8 @@
         {
           "UserName": "Lê Lợi",
           "UID": "5695605463800357937",
-          "Rank": 5,
-          "messageCountToday": 3,
+          "Rank": 7,
+          "messageCountToday": 5,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -13373,15 +13373,15 @@
         {
           "UserName": "Nguyễn Văn An",
           "UID": "7114839391273959303",
-          "Rank": 1,
-          "messageCountToday": 1,
+          "Rank": 3,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-23"
         },
         {
           "UserName": "Thành Đạt",
           "UID": "2278695476164780452",
-          "Rank": 1,
-          "messageCountToday": 1,
+          "Rank": 2,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-23"
         }
       ],
