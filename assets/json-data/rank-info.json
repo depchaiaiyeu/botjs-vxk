@@ -1399,8 +1399,8 @@
         {
           "UserName": "Mèo Cam",
           "UID": "6291471045773392244",
-          "Rank": 39,
-          "messageCountToday": 11,
+          "Rank": 40,
+          "messageCountToday": 12,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -13121,8 +13121,8 @@
         {
           "UserName": "Pham Hoang Anh",
           "UID": "1345623115709046679",
-          "Rank": 5,
-          "messageCountToday": 1,
+          "Rank": 6,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -13270,6 +13270,13 @@
           "UID": "1897580788963749486",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-23"
+        },
+        {
+          "UserName": "Nguyễn Đức Duy",
+          "UID": "6567602597931458079",
+          "Rank": 14,
+          "messageCountToday": 14,
           "lastMessageDate": "2025-10-23"
         }
       ],
