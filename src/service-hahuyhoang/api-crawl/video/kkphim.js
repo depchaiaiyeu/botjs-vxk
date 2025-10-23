@@ -22,6 +22,28 @@ const execAsync = promisify(exec);
 const PLATFORM = "kkphim";
 const selectionsMap = new Map();
 
+function normalizeEpisodeName(input) {
+  const normalized = input.toLowerCase().replace(/\s/g, "");
+  if (normalized === "full") return "full";
+  const numMatch = normalized.match(/\d+/);
+  return numMatch ? numMatch[0] : normalized;
+}
+
+function matchEpisode(episodes, input) {
+  const normalizedInput = normalizeEpisodeName(input);
+  
+  return episodes.find(ep => {
+    const epName = ep.name.toLowerCase().replace(/\s/g, "");
+    if (epName === normalizedInput) return true;
+    if (epName === "full" && normalizedInput === "full") return true;
+    
+    const epNum = epName.match(/\d+/);
+    if (epNum && epNum[0] === normalizedInput) return true;
+    
+    return false;
+  });
+}
+
 export async function searchKKPhim(keyword) {
   try {
     const url = `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=10`;
@@ -65,35 +87,6 @@ export async function getMovieDetail(slug) {
   }
 }
 
-async function downloadVideo(url, outputPath) {
-  try {
-    const response = await axios({
-      method: 'GET',
-      url: url,
-      responseType: 'stream',
-      timeout: 300000
-    });
-
-    const writer = fs.createWriteStream(outputPath);
-    response.data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    });
-  } catch (err) {
-    throw new Error(`Download failed: ${err.message}`);
-  }
-}
-
-async function convertM3U8toMP4(m3u8Url, outputPath) {
-  try {
-    await execAsync(`ffmpeg -i "${m3u8Url}" -c copy -bsf:a aac_adtstoasc "${outputPath}"`);
-  } catch (err) {
-    throw new Error(`Convert failed: ${err.message}`);
-  }
-}
-
 export async function handleKKPhimCommand(api, message, command) {
   const content = removeMention(message);
   const prefix = getGlobalPrefix();
@@ -129,7 +122,7 @@ export async function handleKKPhimCommand(api, message, command) {
     const labels = allEpisodes.map(ep => ep.name).join(", ");
 
     const reply = await sendMessageCompleteRequest(api, message, {
-      caption: `${selected.title}\n${selected.origin_name}\nNăm: ${selected.year} | ${selected.quality} | ${selected.lang}\nTập hiện tại: ${selected.episode_current}\n\nCác tập có sẵn:\n${labels}\n\nTrả lời đúng tên tập để xem`,
+      caption: `${selected.title}\n${selected.origin_name}\nNăm: ${selected.year} | ${selected.quality} | ${selected.lang}\nTập hiện tại: ${selected.episode_current}\n\nCác tập có sẵn:\n${labels}\n\nTrả lời tên tập để xem (VD: Full, 1, 50)`,
     }, 60000);
 
     const newMsgId = reply?.message?.msgId || reply?.attachment?.[0]?.msgId;
@@ -179,7 +172,7 @@ export async function handleKKPhimReply(api, message) {
   const data = selectionsMap.get(quotedMsgId);
   if (!data || data.userId !== senderId) return false;
 
-  const selectedInput = removeMention(message).trim().replace(/\s/g, "");
+  const selectedInput = removeMention(message).trim();
 
   try {
     await api.deleteMessage({
@@ -215,7 +208,7 @@ export async function handleKKPhimReply(api, message) {
     const listLabel = allEpisodes.map(e => e.name).join(", ");
     
     const reply = await sendMessageCompleteRequest(api, message, {
-      caption: `${selected.title}\nCác tập có sẵn: ${listLabel}\n\nTrả lời đúng tên tập để xem`,
+      caption: `${selected.title}\nCác tập có sẵn: ${listLabel}\n\nTrả lời tên tập để xem (VD: Full, 1, 50)`,
     }, 60000);
 
     const newMsgId = reply?.message?.msgId || reply?.attachment?.[0]?.msgId;
@@ -249,10 +242,10 @@ export async function handleKKPhimReply(api, message) {
       return true;
     }
 
-    const match = episodes.find(ep => ep.name.replace(/\s/g, "").toLowerCase() === selectedInput.toLowerCase());
+    const match = matchEpisode(episodes, selectedInput);
     if (!match) {
       await sendMessageWarningRequest(api, message, {
-        caption: `Tập không hợp lệ. Hãy nhập đúng tên tập.`,
+        caption: `Tập không hợp lệ. Hãy nhập đúng tên tập (VD: Full, 1, 50).`,
       });
       return true;
     }
@@ -271,20 +264,21 @@ export async function handleKKPhimReply(api, message) {
         const m3u8Url = match.link_m3u8;
         if (!m3u8Url) throw new Error("Không tìm thấy link video");
 
-        const mp4File = path.join(tempDir, `${Date.now()}_${match.name}.mp4`);
-
-        try {
-          await downloadVideo(m3u8Url, mp4File);
-        } catch (downloadErr) {
-          await convertM3U8toMP4(m3u8Url, mp4File);
-        }
+        const mp4File = path.join(tempDir, `${Date.now()}_${match.name.replace(/\s/g, "_")}.mp4`);
+        
+        await execAsync(`ffmpeg -i "${m3u8Url}" -c copy -bsf:a aac_adtstoasc "${mp4File}"`);
 
         await sendMessageCompleteRequest(api, message, {
-          caption: `Đã tải xong tập ${match.name}.\nĐang xử lý video, vui lòng đợi...`,
+          caption: `Đã tải xong tập ${match.name}.\nĐang upload video, vui lòng đợi...`,
         }, 15000);
+
+        if (!fs.existsSync(mp4File)) {
+          throw new Error("File không tồn tại sau khi convert");
+        }
 
         const uploadResult = await api.uploadAttachment([mp4File], senderId, MessageType.DirectMessage);
         videoUrl = uploadResult?.[0]?.fileUrl;
+        
         deleteFile(mp4File);
 
         if (!videoUrl) {
@@ -307,7 +301,7 @@ export async function handleKKPhimReply(api, message) {
     } catch (err) {
       console.error("Lỗi khi gửi phim:", err.message);
       await sendMessageWarningRequest(api, message, {
-        caption: `Không thể xử lý tập ${match.name}.`,
+        caption: `Không thể xử lý tập ${match.name}. Lỗi: ${err.message}`,
       }, 15000);
     }
 
@@ -332,16 +326,17 @@ export async function handleSendKKPhimEpisode(api, message, media) {
     let videoUrl = cached?.fileUrl;
 
     if (!videoUrl) {
-      const mp4File = path.join(tempDir, `${Date.now()}_${match.name}.mp4`);
+      const mp4File = path.join(tempDir, `${Date.now()}_${match.name.replace(/\s/g, "_")}.mp4`);
       
-      try {
-        await downloadVideo(match.link_m3u8, mp4File);
-      } catch (downloadErr) {
-        await convertM3U8toMP4(match.link_m3u8, mp4File);
+      await execAsync(`ffmpeg -i "${match.link_m3u8}" -c copy -bsf:a aac_adtstoasc "${mp4File}"`);
+
+      if (!fs.existsSync(mp4File)) {
+        throw new Error("File không tồn tại sau khi convert");
       }
 
       const uploadResult = await api.uploadAttachment([mp4File], message.data.uidFrom, MessageType.DirectMessage);
       videoUrl = uploadResult?.[0]?.fileUrl;
+      
       deleteFile(mp4File);
 
       if (!videoUrl) throw new Error("Không upload được video.");
@@ -365,7 +360,7 @@ export async function handleSendKKPhimEpisode(api, message, media) {
   } catch (err) {
     console.error("Lỗi gửi tập phim KKPhim:", err.message);
     await sendMessageWarningRequest(api, message, {
-      caption: `Không thể xử lý tập ${match.name}.`,
+      caption: `Không thể xử lý tập ${match.name}. Lỗi: ${err.message}`,
     }, 15000);
     return true;
   }
