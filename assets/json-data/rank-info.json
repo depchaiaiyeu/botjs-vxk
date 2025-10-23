@@ -13198,8 +13198,8 @@
         {
           "UserName": "Bùi Văn Doanh",
           "UID": "6889886110018642854",
-          "Rank": 2,
-          "messageCountToday": 1,
+          "Rank": 3,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -13303,6 +13303,13 @@
         {
           "UserName": "Vu Gia Huy",
           "UID": "5797048306653413960",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-23"
+        },
+        {
+          "UserName": "Vantam",
+          "UID": "7793042347894516509",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-23"
