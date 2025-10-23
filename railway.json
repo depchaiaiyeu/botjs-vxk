@@ -17,11 +17,14 @@
             "pango",
             "libjpeg",
             "giflib",
-            "librsvg",
-            "autoconf",
-            "automake",
-            "libtool",
-            "bzip2"
+            "librsvg"
+          ]
+        },
+        "install": {
+          "cmds": [
+            "npm ci --omit=dev --ignore-scripts",
+            "npm rebuild canvas lzma-native",
+            "npm cache clean --force"
           ]
         }
       }
