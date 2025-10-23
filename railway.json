@@ -17,15 +17,23 @@
             "pango",
             "libjpeg",
             "giflib",
-            "librsvg"
+            "librsvg",
+            "bzip2"
           ]
         },
         "install": {
           "cmds": [
-            "npm install --omit=dev --no-audit --no-fund",
+            "npm install --omit=dev --no-audit --no-fund"
+          ]
+        },
+        "build": {
+          "cmds": [
             "npm cache clean --force",
             "rm -rf /tmp/*",
-            "rm -rf /root/.npm/_cacache"
+            "find /app/node_modules -name '*.md' -delete",
+            "find /app/node_modules -name 'test' -type d -exec rm -rf {} +",
+            "find /app/node_modules -name 'tests' -type d -exec rm -rf {} +",
+            "find /app/node_modules -name '*.map' -delete"
           ]
         }
       }
