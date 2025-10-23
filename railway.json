@@ -6,7 +6,6 @@
         "setup": {
           "nixPkgs": [
             "nodejs_20",
-            "npm",
             "python3",
             "gnumake",
             "gcc",
