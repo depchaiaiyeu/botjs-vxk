@@ -184,6 +184,16 @@ export async function handleKKPhimReply(api, message) {
         uidFrom: botId,
       }
     }, false);
+
+    await api.deleteMessage({
+      type: message.type,
+      threadId: message.threadId,
+      data: {
+        cliMsgId: message.data.cliMsgId,
+        msgId: message.data.msgId,
+        uidFrom: senderId,
+      }
+    }, false);
   } catch (e) {}
 
   if (data.stage === "movie") {
@@ -276,13 +286,18 @@ export async function handleKKPhimReply(api, message) {
           throw new Error("File không tồn tại sau khi convert");
         }
 
+        const fileStats = fs.statSync(mp4File);
+        console.log(`File size: ${fileStats.size} bytes`);
+
         const uploadResult = await api.uploadAttachment([mp4File], senderId, MessageType.DirectMessage);
+        console.log("Upload result:", uploadResult);
+        
         videoUrl = uploadResult?.[0]?.fileUrl;
         
         deleteFile(mp4File);
 
         if (!videoUrl) {
-          throw new Error("Upload không thành công.");
+          throw new Error("Upload không thành công hoặc thiếu URL.");
         }
 
         await setCacheData(PLATFORM, key, { fileUrl: videoUrl });
@@ -294,6 +309,7 @@ export async function handleKKPhimReply(api, message) {
         threadType: message.type,
         message: {
           text: `${selected.title} – Tập ${match.name}`,
+          type: message.type,
           mentions: [MessageMention(senderId, 0, 0, false)],
         },
         ttl: 60000000,
@@ -334,8 +350,8 @@ export async function handleSendKKPhimEpisode(api, message, media) {
         throw new Error("File không tồn tại sau khi convert");
       }
 
-      const uploadResult = await api.uploadAttachment([mp4File], message.data.uidFrom, MessageType.DirectMessage);
-      videoUrl = uploadResult?.[0]?.fileUrl;
+      const uploadResult = await api.uploadAttachment([mp4File], message.threadId, message.type);
+      videoUrl = uploadResult?.[0]?.hdUrl || uploadResult?.[0]?.normalUrl || uploadResult?.[0]?.fileUrl;
       
       deleteFile(mp4File);
 
@@ -344,12 +360,13 @@ export async function handleSendKKPhimEpisode(api, message, media) {
     }
 
     if (videoUrl) {
-      await api.sendVideov2({
+      await api.sendVideo({
         videoUrl,
         threadId: message.threadId,
         threadType: message.type,
         message: {
           text: `${selected.title} – Tập ${match.name}`,
+          type: message.type,
           mentions: [MessageMention(message.data.uidFrom, 0, 0, false)],
         },
         ttl: 60000000,
