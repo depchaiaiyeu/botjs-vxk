@@ -1,83 +1,24 @@
 import mysql from "mysql2/promise";
-import { createDB } from "mysql-memory-server";
 import chalk from "chalk";
 import fs from "fs/promises";
 import path from "path";
 import { claimDailyReward, getMyCard } from "./player.js";
 import { getTopPlayers } from "./jdbc.js";
-
+import { getBotInfo } from "../utils/env.js";
 export * from "./player.js";
 export * from "./jdbc.js";
 
+const botInfo = await getBotInfo();
+const configPath = botInfo.databaseFile;
 let nameServer = "";
 let connection;
 let NAME_TABLE_PLAYERS;
 let NAME_TABLE_ACCOUNT;
 let DAILY_REWARD;
-let embeddedDB = null;
 
 async function loadConfig() {
-  const configPath = path.join(
-    process.cwd(),
-    "assets",
-    "json-data",
-    "database-config.json"
-  );
   const configFile = await fs.readFile(configPath, "utf8");
   return JSON.parse(configFile);
-}
-
-export async function getNameServer() {
-  const config = await loadConfig();
-  return config.nameServer;
-}
-
-export function updateNameServer(newName) {
-  nameServer = newName;
-}
-
-async function checkMySQLConnection(config) {
-  try {
-    const testConnection = await mysql.createConnection({
-      host: config.host || "127.0.0.1",
-      user: config.user || "root",
-      password: config.password || "",
-      port: config.port || 3306,
-      connectTimeout: 3000,
-    });
-    await testConnection.end();
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
-async function createEmbeddedMySQL(config) {
-  console.log(chalk.yellow("MySQL server not found. Creating embedded instance..."));
-  
-  try {
-    embeddedDB = await createDB({
-      version: config.mysqlVersion || "8.4.x",
-      dbName: config.database || "game_db",
-      username: config.user || "root",
-      port: config.port || 0,
-      downloadBinaryOnce: true,
-      logLevel: "ERROR",
-    });
-
-    console.log(chalk.green(`Embedded MySQL created successfully on port ${embeddedDB.port}`));
-
-    return {
-      host: "127.0.0.1",
-      user: embeddedDB.username,
-      password: "",
-      port: embeddedDB.port,
-      database: embeddedDB.dbName,
-    };
-  } catch (error) {
-    console.error(chalk.red("Failed to create embedded MySQL:"), error.message);
-    throw error;
-  }
 }
 
 export async function initializeDatabase() {
@@ -89,83 +30,77 @@ export async function initializeDatabase() {
     NAME_TABLE_ACCOUNT = config.tableAccount;
     DAILY_REWARD = config.dailyReward;
 
-    const isConnected = await checkMySQLConnection(config);
-
-    let dbConfig = config;
-    
-    if (!isConnected) {
-      const embeddedConfig = await createEmbeddedMySQL(config);
-      dbConfig = { ...config, ...embeddedConfig };
-    }
-
+    // Tạo kết nối tạm thời Không cần chọn database
     const tempConnection = await mysql.createConnection({
-      host: dbConfig.host || "127.0.0.1",
-      user: dbConfig.user || "root",
-      password: dbConfig.password || "",
-      port: dbConfig.port || 3306,
+      host: config.host,
+      user: config.user,
+      password: config.password,
     });
 
+    // Tạo database nếu chưa tồn tại
     await tempConnection.execute(
-      `CREATE DATABASE IF NOT EXISTS \`${dbConfig.database}\``
+      `CREATE DATABASE IF NOT EXISTS \`${config.database}\``
     );
 
+    // Đóng kết nối tạm thời
     await tempConnection.end();
 
+    // Tạo pool connection với database đã chọn
     connection = mysql.createPool({
-      host: dbConfig.host || "127.0.0.1",
-      user: dbConfig.user || "root",
-      password: dbConfig.password || "",
-      database: dbConfig.database,
-      port: dbConfig.port || 3306,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
+      host: config.host,
+      user: config.user,
+      password: config.password,
+      database: config.database,
+      port: config.port,
     });
 
     const [tablesAccount] = await connection.execute(
       `SHOW TABLES LIKE '${NAME_TABLE_ACCOUNT}'`
     );
-    
     if (tablesAccount.length === 0) {
+      // Tạo bảng account nếu chưa tồn tại
       await connection.execute(`
-        CREATE TABLE IF NOT EXISTS ${NAME_TABLE_ACCOUNT} (
-          id INT PRIMARY KEY AUTO_INCREMENT,
-          username VARCHAR(255) NOT NULL UNIQUE,
-          password VARCHAR(255) NOT NULL,
-          is_admin BOOLEAN DEFAULT false,
-          vnd BIGINT DEFAULT 0
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-      `);
-      console.log(`Table ${NAME_TABLE_ACCOUNT} created`);
+            CREATE TABLE IF NOT EXISTS ${NAME_TABLE_ACCOUNT} (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                username VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                is_admin BOOLEAN DEFAULT false,
+                vnd BIGINT DEFAULT 0
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            `);
+      console.log(`✓ Đã kiểm tra/tạo bảng ${NAME_TABLE_ACCOUNT}`);
     }
 
+    // Kiểm tra và tạo bảng players
     const [tables] = await connection.execute(
       `SHOW TABLES LIKE '${NAME_TABLE_PLAYERS}'`
     );
 
     if (tables.length === 0) {
+      // Nếu bảng chưa tồn tại, tạo bảng mới
       await connection.execute(`
-        CREATE TABLE ${NAME_TABLE_PLAYERS} (
-          id INT AUTO_INCREMENT,
-          username VARCHAR(255) NOT NULL,
-          idUserZalo VARCHAR(255) DEFAULT '-1',
-          playerName VARCHAR(255) NOT NULL,
-          balance BIGINT DEFAULT 10000,
-          registrationTime DATETIME,
-          totalWinnings BIGINT DEFAULT 0,
-          totalLosses BIGINT DEFAULT 0,
-          netProfit BIGINT DEFAULT 0,
-          totalWinGames BIGINT DEFAULT 0,
-          totalGames BIGINT DEFAULT 0,
-          winRate DECIMAL(5, 2) DEFAULT 0,
-          lastDailyReward DATETIME,
-          isBanned BOOLEAN DEFAULT FALSE,
-          PRIMARY KEY (id),
-          UNIQUE KEY (username)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-      `);
-      console.log(`Table ${NAME_TABLE_PLAYERS} created`);
+                CREATE TABLE ${NAME_TABLE_PLAYERS} (
+                    id INT AUTO_INCREMENT,
+                    username VARCHAR(255) NOT NULL,
+                    idUserZalo VARCHAR(255) DEFAULT '-1',
+                    playerName VARCHAR(255) NOT NULL,
+                    balance BIGINT DEFAULT 10000,
+                    registrationTime DATETIME,
+                    totalWinnings BIGINT DEFAULT 0,
+                    totalLosses BIGINT DEFAULT 0,
+                    netProfit BIGINT DEFAULT 0,
+                    totalWinGames BIGINT DEFAULT 0,
+                    totalGames BIGINT DEFAULT 0,
+                    winRate DECIMAL(5, 2) DEFAULT 0,
+                    lastDailyReward DATETIME,
+                    isBanned BOOLEAN DEFAULT FALSE,
+                    PRIMARY KEY (id),
+                    UNIQUE KEY (username)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            `);
+      console.log(`✓ Đã tạo bảng ${NAME_TABLE_PLAYERS}`);
     } else {
+      // Kiểm tra và thêm các cột còn thiếu
       const [columns] = await connection.execute(
         `SHOW COLUMNS FROM ${NAME_TABLE_PLAYERS}`
       );
@@ -231,36 +166,19 @@ export async function initializeDatabase() {
           await connection.execute(
             `ALTER TABLE ${NAME_TABLE_PLAYERS} ${column.query}`
           );
-          console.log(`Column ${column.name} added to ${NAME_TABLE_PLAYERS}`);
+          console.log(
+            `Đã thêm/sửa cột ${column.name} vào bảng ${NAME_TABLE_PLAYERS}`
+          );
         }
       }
     }
 
-    console.log(chalk.green("Database initialized successfully"));
+    console.log(chalk.green("✓ Khởi tạo database thành công"));
   } catch (error) {
-    console.error(chalk.red("Database initialization failed:"), error.message);
-    throw error;
+    console.error(chalk.red("Lỗi khi khởi tạo cơ sở dữ liệu: "), error);
+    console.error(chalk.red("Vui lòng mở XAMPP MySQL và khởi động lại!"));
   }
 }
-
-export async function closeDatabase() {
-  if (connection) {
-    await connection.end();
-  }
-  if (embeddedDB) {
-    await embeddedDB.stop();
-  }
-}
-
-process.on("SIGINT", async () => {
-  await closeDatabase();
-  process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-  await closeDatabase();
-  process.exit(0);
-});
 
 export {
   connection,
