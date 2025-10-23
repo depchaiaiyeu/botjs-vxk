@@ -3,9 +3,6 @@ import { createGroupInfoImage, clearImagePath } from "../../utils/canvas/index.j
 import { sendMessageWarning } from "../chat-zalo/chat-style/chat-style.js";
 import { getUserInfoData } from "./user-info.js";
 
-const groupInfoCache = new Map();
-const CACHE_DURATION = 10000;
-
 export async function groupInfoCommand(api, message) {
   const threadId = message.threadId;
 
@@ -49,22 +46,8 @@ export async function getGroupName(api, threadId) {
 }
 
 export async function getGroupInfoData(api, threadId) {
-  const now = Date.now();
-  const cachedData = groupInfoCache.get(threadId);
-
-  if (cachedData && (now - cachedData.timestamp) < CACHE_DURATION) {
-    return cachedData.data;
-  }
-
   const groupInfo = await api.getGroupInfo(threadId);
-  const processedInfo = getAllInfoGroup(groupInfo, threadId);
-
-  groupInfoCache.set(threadId, {
-    data: processedInfo,
-    timestamp: now
-  });
-
-  return processedInfo;
+  return getAllInfoGroup(groupInfo, threadId);
 }
 
 function getAllInfoGroup(groupInfo, threadId) {
