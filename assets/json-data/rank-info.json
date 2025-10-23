@@ -951,8 +951,8 @@
         {
           "UserName": "N H L",
           "UID": "8347261672526530028",
-          "Rank": 3213,
-          "messageCountToday": 11,
+          "Rank": 3215,
+          "messageCountToday": 13,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -13172,6 +13172,13 @@
           "UID": "696391438564082321",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-23"
+        },
+        {
+          "UserName": "Gin",
+          "UID": "3977429232404816905",
+          "Rank": 3,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-23"
         }
       ],
