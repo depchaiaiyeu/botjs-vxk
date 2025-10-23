@@ -7,9 +7,7 @@
           "nixPkgs": [
             "nodejs",
             "python3",
-            "gnumake",
-            "gcc",
-            "tar",
+            "npm",
             "ffmpeg"
           ]
         },
