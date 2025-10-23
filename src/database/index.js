@@ -24,6 +24,13 @@ async function loadConfig() {
   const configFile = await fs.readFile(configPath, "utf8");
   return JSON.parse(configFile);
 }
+export async function getNameServer() {
+  const config = await loadConfig(); 
+  return config.nameServer;
+}
+export function updateNameServer(newName) {
+  nameServer = newName;
+}
 
 export async function initializeDatabase() {
   try {
@@ -34,7 +41,7 @@ export async function initializeDatabase() {
     NAME_TABLE_ACCOUNT = config.tableAccount;
     DAILY_REWARD = config.dailyReward;
 
-    // Tạo kết nối tạm thời Không cần chọn database
+    // Tạo kết nối tạm thời không cần chọn database
     const tempConnection = await mysql.createConnection({
       host: config.host,
       user: config.user,
