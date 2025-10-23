@@ -13240,8 +13240,8 @@
         {
           "UserName": "Nguyễn Quang Tuấn",
           "UID": "2422136222545960358",
-          "Rank": 10,
-          "messageCountToday": 10,
+          "Rank": 11,
+          "messageCountToday": 11,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -13284,6 +13284,13 @@
           "UID": "942687646152161582",
           "Rank": 5,
           "messageCountToday": 5,
+          "lastMessageDate": "2025-10-23"
+        },
+        {
+          "UserName": "Phan Ngọc Nguyên",
+          "UID": "7999375420534164792",
+          "Rank": 2,
+          "messageCountToday": 2,
           "lastMessageDate": "2025-10-23"
         }
       ],
