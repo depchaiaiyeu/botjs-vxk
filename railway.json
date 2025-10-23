@@ -22,9 +22,10 @@
         },
         "install": {
           "cmds": [
-            "npm ci --omit=dev --ignore-scripts",
-            "npm rebuild canvas lzma-native",
-            "npm cache clean --force"
+            "npm install --omit=dev --no-audit --no-fund",
+            "npm cache clean --force",
+            "rm -rf /tmp/*",
+            "rm -rf /root/.npm/_cacache"
           ]
         }
       }
