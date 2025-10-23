@@ -10,7 +10,7 @@
             "gcc",
             "gnumake",
             "pkg-config",
-            "liblzma",
+            "xz",
             "ffmpeg"
           ]
         }
