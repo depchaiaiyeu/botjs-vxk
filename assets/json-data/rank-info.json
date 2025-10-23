@@ -13240,8 +13240,8 @@
         {
           "UserName": "Gin",
           "UID": "3977429232404816905",
-          "Rank": 16,
-          "messageCountToday": 16,
+          "Rank": 17,
+          "messageCountToday": 17,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -13410,6 +13410,13 @@
           "UID": "1285499423547860972",
           "Rank": 2,
           "messageCountToday": 2,
+          "lastMessageDate": "2025-10-23"
+        },
+        {
+          "UserName": "Medusa",
+          "UID": "106837533958675264",
+          "Rank": 1,
+          "messageCountToday": 1,
           "lastMessageDate": "2025-10-23"
         }
       ],
