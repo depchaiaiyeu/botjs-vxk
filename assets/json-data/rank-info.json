@@ -1665,8 +1665,8 @@
         {
           "UserName": "Vantam",
           "UID": "7793042347894516509",
-          "Rank": 296,
-          "messageCountToday": 3,
+          "Rank": 297,
+          "messageCountToday": 4,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -4143,6 +4143,13 @@
           "Rank": 1,
           "messageCountToday": 0,
           "lastMessageDate": "2025-10-22"
+        },
+        {
+          "UserName": "Lê Anh Bắc",
+          "UID": "3540571263832322585",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-23"
         }
       ],
       "nameGroup": "Bot Zép Lào🩴"
