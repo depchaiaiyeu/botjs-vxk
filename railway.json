@@ -11,7 +11,13 @@
             "gnumake",
             "pkg-config",
             "xz",
-            "ffmpeg"
+            "ffmpeg",
+            "pixman",
+            "cairo",
+            "pango",
+            "libjpeg",
+            "giflib",
+            "librsvg"
           ]
         }
       }
