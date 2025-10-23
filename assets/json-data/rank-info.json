@@ -12249,8 +12249,8 @@
         {
           "UserName": "Duy Khang メ",
           "UID": "8181192500801051058",
-          "Rank": 7,
-          "messageCountToday": 2,
+          "Rank": 8,
+          "messageCountToday": 3,
           "lastMessageDate": "2025-10-23"
         },
         {
@@ -12382,6 +12382,13 @@
         {
           "UserName": "Yến Nhi",
           "UID": "5835189999129217985",
+          "Rank": 1,
+          "messageCountToday": 1,
+          "lastMessageDate": "2025-10-23"
+        },
+        {
+          "UserName": "Hưng",
+          "UID": "3025070485940155328",
           "Rank": 1,
           "messageCountToday": 1,
           "lastMessageDate": "2025-10-23"
