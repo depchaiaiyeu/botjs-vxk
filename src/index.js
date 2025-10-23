@@ -42,7 +42,6 @@ import { initService } from "./service-hahuyhoang/service.js";
 import { reactionEvents } from "./automations/events-reaction.js";
 //import { updateMessageCache } from "./service-hahuyhoang/anti-service/anti-undo.js";
 import { updateMessageCache } from "./utils/message-cache.js";
-import { handleGroupEventNotify } from "./service-hahuyhoang/servises/SettingGroup.js";
 import { handleWelcomeByGroup } from "./service-hahuyhoang/servises/send-msg-code.js";
 import { handleAutoBlockOnJoin } from "./service-hahuyhoang/servises/block-user-join.js";
 
@@ -174,9 +173,6 @@ api.listener.on("message", async (message) => {
 api.listener.on("group_event", async (event) => {
   try {
     await groupEvents(api, event);
-    await handleGroupEventNotify(api, event);
-    await handleWelcomeByGroup (api, event);
-    await handleAutoBlockOnJoin ( api,event);
   } catch (error) {
     const detailError = `Mã Lỗi: ${error.code} - > Chú Thích Lỗi Sự Kiện Nhóm: ${error.message}\nNội Dung Lỗi: ${error.stack}`;
     console.error(detailError);
