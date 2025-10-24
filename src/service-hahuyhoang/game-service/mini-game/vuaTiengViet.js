@@ -9,11 +9,15 @@ function shuffleWord(word) {
     const j = Math.floor(Math.random() * (i + 1));
     [chars[i], chars[j]] = [chars[j], chars[i]];
   }
-  return chars.join('/');
+  return chars.join(' | ');
 }
 
 function normalizeText(text) {
   return text.toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+function hasSpecialCharacters(text) {
+  return /[^\p{L}\p{N}\s]/u.test(text);
 }
 
 async function getInitWord() {
@@ -47,6 +51,20 @@ async function checkAnswer(word) {
   }
 }
 
+function startTimeout(api, message, threadId, game) {
+  if (game.timeoutId) {
+    clearTimeout(game.timeoutId);
+  }
+  
+  game.timeoutId = setTimeout(async () => {
+    const activeGames = getActiveGames();
+    if (activeGames.has(threadId)) {
+      await sendMessageComplete(api, message, `🚫 Hết thời gian! Bạn đã thua!\n\nĐáp án đúng là: ${game.currentWord}`);
+      activeGames.delete(threadId);
+    }
+  }, 30000);
+}
+
 export async function handleVuaTiengVietCommand(api, message) {
   const threadId = message.threadId;
   const args = message.data.content.split(" ");
@@ -61,6 +79,9 @@ export async function handleVuaTiengVietCommand(api, message) {
     if (getActiveGames().has(threadId)) {
       const game = getActiveGames().get(threadId).game;
       if (game.players.has(message.data.uidFrom)) {
+        if (game.timeoutId) {
+          clearTimeout(game.timeoutId);
+        }
         game.players.delete(message.data.uidFrom);
         if (game.players.size === 0) {
           getActiveGames().delete(threadId);
@@ -84,7 +105,6 @@ export async function handleVuaTiengVietCommand(api, message) {
         await sendMessageWarning(api, message, "Bạn đã tham gia trò chơi rồi.");
       } else {
         game.players.add(message.data.uidFrom);
-        game.incorrectAttempts.set(message.data.uidFrom, 0);
         await sendMessageComplete(api, message, "Bạn đã tham gia trò chơi.");
       }
       return;
@@ -98,16 +118,19 @@ export async function handleVuaTiengVietCommand(api, message) {
 
     const shuffled = shuffleWord(initWord);
     
+    const game = {
+      currentWord: initWord,
+      shuffledWord: shuffled,
+      players: new Set([message.data.uidFrom]),
+      timeoutId: null
+    };
+    
     getActiveGames().set(threadId, {
       type: 'vuaTiengViet',
-      game: {
-        currentWord: initWord,
-        shuffledWord: shuffled,
-        players: new Set([message.data.uidFrom]),
-        incorrectAttempts: new Map([[message.data.uidFrom, 0]]),
-        isFirstRound: true
-      }
+      game: game
     });
+    
+    startTimeout(api, message, threadId, game);
     
     await sendMessageComplete(api, message, `🎮 Trò chơi Vua Tiếng Việt bắt đầu!\n\n🤖 Từ Bot ra là: ${shuffled}\n\nHãy đoán xem từ gốc là gì??? 🤔`);
     return;
@@ -127,28 +150,26 @@ export async function handleVuaTiengVietMessage(api, message) {
 
   if (cleanContent.startsWith(prefix)) return;
   if (!game.players.has(senderId)) return;
+  if (hasSpecialCharacters(cleanContent)) return;
+
+  const words = cleanContent.split(/\s+/);
+  if (words.length !== 2) return;
 
   const userAnswer = normalizeText(cleanContent);
   const correctAnswer = normalizeText(game.currentWord);
 
-  if (!game.incorrectAttempts.has(senderId)) {
-    game.incorrectAttempts.set(senderId, 0);
-  }
-
   if (userAnswer !== correctAnswer) {
-    let attempts = game.incorrectAttempts.get(senderId) + 1;
-    game.incorrectAttempts.set(senderId, attempts);
-
-    if (attempts >= 2) {
-      await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\n\nĐáp án đúng là: ${game.currentWord}\nLý do: Trả lời sai 2 lần liên tiếp.`);
-      activeGames.delete(threadId);
-    } else {
-      await sendMessageWarning(api, message, `Sai rồi! Bạn còn ${2 - attempts} lần đoán sai trước khi bị loại.`);
+    if (game.timeoutId) {
+      clearTimeout(game.timeoutId);
     }
+    await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\n\nĐáp án đúng là: ${game.currentWord}\nLý do: Trả lời sai.`);
+    activeGames.delete(threadId);
     return;
   }
 
-  game.incorrectAttempts.set(senderId, 0);
+  if (game.timeoutId) {
+    clearTimeout(game.timeoutId);
+  }
 
   const result = await checkAnswer(game.currentWord);
   
@@ -172,7 +193,8 @@ export async function handleVuaTiengVietMessage(api, message) {
 
   game.currentWord = result.nextWord;
   game.shuffledWord = shuffleWord(result.nextWord);
-  game.isFirstRound = false;
 
-  await sendMessageComplete(api, message, `✅ Bạn đã đoán đúng!\n\n🤖 Từ Bot ra là: ${game.shuffledWord}\n\nHãy đoán xem từ gốc là gì??? 🤔`);
+  startTimeout(api, message, threadId, game);
+
+  await sendMessageComplete(api, message, `✅ Bạn đã đoán đúng!\n\n🤖 Từ tiếp theo Bot ra là: ${game.shuffledWord}\n\n🤔 Hãy đoán xem từ gốc là gì???`);
 }
