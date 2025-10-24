@@ -1,117 +1,150 @@
 import axios from "axios";
-import { getGlobalPrefix } from "../../service.js";
-import { getActiveGames, checkHasActiveGame } from "./index.js";
-import { sendMessageCompleteRequest } from "../../chat-zalo/chat-style/chat-style.js";
+import { getActiveGames } from "./index.js";
+import { sendMessageComplete, sendMessageFromSQL, sendMessageFailed, sendMessageQuery } from "../../chat-zalo/chat-style/chat-style.js";
+
+const TURN_TIMEOUT = 30000;
 
 export async function handleWordChainCommand(api, message) {
   const threadId = message.threadId;
   const args = message.data.content.split(" ");
+  const action = args[1]?.toLowerCase();
+  const userId = message.data.uidFrom;
+  const activeGames = getActiveGames();
 
-  if (args[1]?.toLowerCase() === "cancel") {
-    if (getActiveGames().has(threadId)) {
-      getActiveGames().delete(threadId);
-      await sendMessageCompleteRequest(api, message, {
-        caption: "❌ Trò chơi nối từ đã được hủy bỏ.",
-        ttl: 60000
-      }, 180000);
+  if (action === "join") {
+    if (!activeGames.has(threadId)) {
+      activeGames.set(threadId, {
+        type: "wordChain",
+        game: {
+          lastPhrase: "",
+          players: new Set([userId]),
+          botTurn: false,
+          maxWords: 2,
+          userFails: new Map(),
+          currentPlayer: userId,
+          timeoutId: null,
+          started: false
+        }
+      });
+      await sendMessageFromSQL(api, message, { caption: "Phòng nối từ đã được tạo. Hãy nhập 2 từ để bắt đầu trò chơi." }, 180000);
+      startTurnTimer(api, message, threadId);
     } else {
-      await sendMessageCompleteRequest(api, message, {
-        caption: "⚠️ Không có trò chơi nối từ nào đang diễn ra để hủy bỏ.",
-        ttl: 60000
-      }, 180000);
+      const game = activeGames.get(threadId).game;
+      if (game.players.has(userId)) {
+        await sendMessageQuery(api, message, { caption: "Bạn đã tham gia trò chơi này rồi." }, 180000);
+      } else {
+        game.players.add(userId);
+        await sendMessageComplete(api, message, { caption: "Bạn đã tham gia phòng nối từ." }, 180000);
+      }
     }
     return;
   }
 
-  if (await checkHasActiveGame(api, message, threadId)) return;
-
-  getActiveGames().set(threadId, {
-    type: 'wordChain',
-    game: {
-      lastPhrase: "",
-      players: new Set(),
-      botTurn: false,
-      maxWords: 2
+  if (action === "leave") {
+    if (!activeGames.has(threadId)) {
+      await sendMessageFailed(api, message, { caption: "Không có phòng nối từ nào để rời." }, 180000);
+      return;
     }
-  });
-
-  await sendMessageCompleteRequest(api, message, {
-    caption: "🎮 Trò chơi nối từ bắt đầu! Hãy nhập một cụm từ (tối đa 2 từ) để bắt đầu.",
-    ttl: 60000
-  }, 180000);
+    const game = activeGames.get(threadId).game;
+    if (!game.players.has(userId)) {
+      await sendMessageQuery(api, message, { caption: "Bạn chưa tham gia trò chơi này." }, 180000);
+      return;
+    }
+    game.players.delete(userId);
+    await sendMessageComplete(api, message, { caption: "Bạn đã rời khỏi trò chơi nối từ." }, 180000);
+    if (game.players.size === 0) {
+      clearTimeout(game.timeoutId);
+      activeGames.delete(threadId);
+      await sendMessageFromSQL(api, message, { caption: "Không còn người chơi nào, trò chơi kết thúc." }, 180000);
+    }
+    return;
+  }
 }
 
 export async function handleWordChainMessage(api, message) {
   const threadId = message.threadId;
+  const userId = message.data.uidFrom;
   const activeGames = getActiveGames();
 
-  if (!activeGames.has(threadId) || activeGames.get(threadId).type !== 'wordChain') return;
+  if (!activeGames.has(threadId) || activeGames.get(threadId).type !== "wordChain") return;
 
   const game = activeGames.get(threadId).game;
+  if (userId !== game.currentPlayer) return;
+
   const cleanContent = message.data.content.trim().toLowerCase();
   const cleanContentTrim = cleanContent.replace(/[^\p{L}\p{N}\s]/gu, "").trim();
   if (cleanContent !== cleanContentTrim) return;
 
   const words = cleanContentTrim.split(/\s+/);
-  if (words.length > game.maxWords) {
-    await sendMessageCompleteRequest(api, message, {
-      caption: `❌ Bạn đã thua! Cụm từ của bạn vượt quá ${game.maxWords} từ cho phép.`,
-      ttl: 60000
-    }, 180000);
-    activeGames.delete(threadId);
-    return;
-  }
+  if (words.length !== 2) return; // chỉ chấp nhận đúng 2 từ
 
-  if (!game.botTurn) {
-    if (game.lastPhrase === "" || cleanContentTrim.startsWith(game.lastPhrase.split(/\s+/).pop())) {
-      game.lastPhrase = cleanContentTrim;
-      game.players.add(message.data.uidFrom);
-      game.botTurn = true;
+  clearTimeout(game.timeoutId);
 
-      const botPhrase = await findNextPhrase(game.lastPhrase);
-      if (botPhrase) {
-        game.lastPhrase = botPhrase;
-        await sendMessageCompleteRequest(api, message, {
-          caption: `🤖 Bot: ${botPhrase}\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`,
-          ttl: 60000
-        }, 180000);
-        game.botTurn = false;
-      } else {
-        await sendMessageCompleteRequest(api, message, {
-          caption: "🎉 Bot không tìm được cụm từ phù hợp. Bạn thắng!",
-          ttl: 60000
-        }, 180000);
-        activeGames.delete(threadId);
-      }
+  const validUserWord = await validateWord(cleanContentTrim);
+  if (!validUserWord) {
+    const fails = (game.userFails.get(userId) || 0) + 1;
+    game.userFails.set(userId, fails);
+    if (fails >= 2) {
+      await sendMessageFailed(api, message, { caption: "Bạn đã nhập từ sai 2 lần. Bạn thua!" }, 180000);
+      getActiveGames().delete(threadId);
+      return;
     } else {
-      await sendMessageCompleteRequest(api, message, {
-        caption: `⚠️ Cụm từ không hợp lệ! Cụm từ phải bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}"`,
-        ttl: 60000
-      }, 180000);
+      await sendMessageQuery(api, message, { caption: `Cụm từ "${cleanContentTrim}" không hợp lệ. (Lần ${fails}/2)` }, 180000);
+      startTurnTimer(api, message, threadId);
+      return;
     }
-  } else {
-    game.botTurn = false;
   }
 
-  if (game.players.size >= 10) {
-    await sendMessageCompleteRequest(api, message, {
-      caption: "🏁 Trò chơi kết thúc! Cảm ơn mọi người đã tham gia.",
-      ttl: 60000
-    }, 180000);
-    activeGames.delete(threadId);
+  if (!game.started) game.started = true;
+  game.lastPhrase = cleanContentTrim;
+  game.botTurn = true;
+
+  const botPhrase = await findNextPhrase(cleanContentTrim);
+  if (botPhrase) {
+    const validBotWord = await validateWord(botPhrase);
+    if (!validBotWord) {
+      await sendMessageComplete(api, message, { caption: "Bot không tìm được cụm từ phù hợp. Bạn thắng!" }, 180000);
+      getActiveGames().delete(threadId);
+      return;
+    }
+    game.lastPhrase = botPhrase;
+    await sendMessageFromSQL(api, message, { caption: `Bot: ${botPhrase}\nCụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"` }, 180000);
+    game.botTurn = false;
+    startTurnTimer(api, message, threadId);
+  } else {
+    await sendMessageComplete(api, message, { caption: "Bot không tìm được cụm từ phù hợp. Bạn thắng!" }, 180000);
+    getActiveGames().delete(threadId);
   }
+}
+
+function startTurnTimer(api, message, threadId) {
+  const activeGames = getActiveGames();
+  const gameData = activeGames.get(threadId);
+  if (!gameData) return;
+  clearTimeout(gameData.game.timeoutId);
+  gameData.game.timeoutId = setTimeout(async () => {
+    await sendMessageFailed(api, message, { caption: "Hết thời gian 30 giây! Bạn đã thua lượt này." }, 180000);
+    activeGames.delete(threadId);
+  }, TURN_TIMEOUT);
 }
 
 async function findNextPhrase(lastPhrase) {
   try {
     const encodedWord = encodeURIComponent(lastPhrase);
     const response = await axios.get(`https://noitu.pro/answer?word=${encodedWord}`);
-    if (response.data.success) {
-      return response.data.nextWord.text;
-    }
+    if (response.data.success) return response.data.nextWord.text;
     return null;
-  } catch (error) {
-    console.error("❌ Lỗi khi gọi API nối từ:", error.message);
+  } catch {
     return null;
+  }
+}
+
+async function validateWord(word) {
+  try {
+    const encodedWord = encodeURIComponent(word);
+    const response = await axios.get(`https://noitu.pro/answer?word=${encodedWord}`);
+    return response.data.success;
+  } catch {
+    return false;
   }
 }
