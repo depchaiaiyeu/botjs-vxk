@@ -56,9 +56,9 @@ export async function helpCommand(api, message, groupAdmins) {
         icon: "🤖",
       },
       chat: {
-        command: `${prefix}chat [nội dung]`,
-        description: "Trò chuyện với Bot",
-        icon: "💬",
+        command: `${prefix}download [link]`,
+        description: "Tải xuống media từ các nền tảng mạng xã hội",
+        icon: "▶",
       },
       info: {
         command: `${prefix}info`,
