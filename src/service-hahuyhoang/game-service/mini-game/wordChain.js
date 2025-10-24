@@ -63,6 +63,7 @@ export async function handleWordChainCommand(api, message) {
         }, 180000);
       } else {
         game.players.add(message.data.uidFrom);
+        game.incorrectAttempts.set(message.data.uidFrom, 0);
         await sendMessageCompleteRequest(api, message, {
           caption: "✅ Bạn đã tham gia trò chơi nối từ.",
         }, 180000);
@@ -76,7 +77,8 @@ export async function handleWordChainCommand(api, message) {
         lastPhrase: "",
         players: new Set([message.data.uidFrom]),
         botTurn: false,
-        maxWords: 2
+        maxWords: 2,
+        incorrectAttempts: new Map([[message.data.uidFrom, 0]]),
       }
     });
     await sendMessageCompleteRequest(api, message, {
@@ -90,6 +92,7 @@ export async function handleWordChainMessage(api, message) {
   const threadId = message.threadId;
   const activeGames = getActiveGames();
   const prefix = getGlobalPrefix();
+  const senderId = message.data.uidFrom;
 
   if (!activeGames.has(threadId) || activeGames.get(threadId).type !== 'wordChain') return;
 
@@ -99,34 +102,66 @@ export async function handleWordChainMessage(api, message) {
 
   if (cleanContent !== cleanContentTrim) return;
   if (cleanContent.startsWith(prefix)) return;
-  if (!game.players.has(message.data.uidFrom)) return;
+  if (!game.players.has(senderId)) return;
 
   const words = cleanContentTrim.split(/\s+/);
   if (words.length > game.maxWords || words.length === 0) {
-    await sendMessageWarningRequest(api, message, {
-      caption: `🚫 Từ không hợp lệ! Cụm từ của bạn phải có từ 1 đến ${game.maxWords} từ.`,
-    }, 180000);
+    let attempts = game.incorrectAttempts.get(senderId) + 1;
+    game.incorrectAttempts.set(senderId, attempts);
+
+    if (attempts >= 2) {
+      await sendMessageCompleteRequest(api, message, {
+        caption: `🚫 ${message.data.dName} đã thua! Cụm từ của bạn vượt quá ${game.maxWords} từ cho phép hoặc không hợp lệ 2 lần. Số từ của bạn: ${words.length}.`,
+      }, 180000);
+      activeGames.delete(threadId);
+      return;
+    } else {
+      await sendMessageWarningRequest(api, message, {
+        caption: `🚫 Từ không hợp lệ! Cụm từ của bạn phải có từ 1 đến ${game.maxWords} từ. (Lượt sai: ${attempts}/2)`,
+      }, 180000);
+    }
     return;
   }
 
   if (!await checkWordValidity(cleanContentTrim)) {
-    await sendMessageWarningRequest(api, message, {
-      caption: `🚫 Từ "${cleanContentTrim}" không hợp lệ. Vui lòng nhập từ khác.`,
-    }, 180000);
+    let attempts = game.incorrectAttempts.get(senderId) + 1;
+    game.incorrectAttempts.set(senderId, attempts);
+
+    if (attempts >= 2) {
+      await sendMessageCompleteRequest(api, message, {
+        caption: `🚫 ${message.data.dName} đã thua! Từ "${cleanContentTrim}" không hợp lệ 2 lần.`,
+      }, 180000);
+      activeGames.delete(threadId);
+      return;
+    } else {
+      await sendMessageWarningRequest(api, message, {
+        caption: `🚫 Từ "${cleanContentTrim}" không hợp lệ. Vui lòng nhập từ khác. (Lượt sai: ${attempts}/2)`,
+      }, 180000);
+    }
     return;
   }
 
   if (!game.botTurn) {
     if (game.lastPhrase === "" || cleanContentTrim.startsWith(game.lastPhrase.split(/\s+/).pop())) {
       game.lastPhrase = cleanContentTrim;
+      game.incorrectAttempts.set(senderId, 0);
       game.botTurn = true;
+
       const botPhrase = await findNextPhrase(game.lastPhrase);
       if (botPhrase) {
-        game.lastPhrase = botPhrase;
-        await sendMessageCompleteRequest(api, message, {
-          caption: `🤖 Bot: ${botPhrase}\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`,
-        }, 180000);
-        game.botTurn = false;
+        const isBotPhraseValid = await checkWordValidity(botPhrase);
+        if (isBotPhraseValid) {
+          game.lastPhrase = botPhrase;
+          await sendMessageCompleteRequest(api, message, {
+            caption: `🤖 Bot: ${botPhrase}\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`,
+          }, 180000);
+          game.botTurn = false;
+        } else {
+          await sendMessageCompleteRequest(api, message, {
+            caption: "🎉 Bot không tìm được cụm từ phù hợp hoặc từ của bot không hợp lệ. Bot thua! Bạn thắng!",
+          }, 180000);
+          activeGames.delete(threadId);
+        }
       } else {
         await sendMessageCompleteRequest(api, message, {
           caption: "🎉 Bot không tìm được cụm từ phù hợp. Bạn thắng!",
@@ -134,9 +169,20 @@ export async function handleWordChainMessage(api, message) {
         activeGames.delete(threadId);
       }
     } else {
-      await sendMessageWarningRequest(api, message, {
-        caption: `⚠️ Cụm từ không hợp lệ! Cụm từ phải bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}"`,
-      }, 180000);
+      let attempts = game.incorrectAttempts.get(senderId) + 1;
+      game.incorrectAttempts.set(senderId, attempts);
+
+      if (attempts >= 2) {
+        await sendMessageCompleteRequest(api, message, {
+          caption: `🚫 ${message.data.dName} đã thua! Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}" 2 lần.`,
+        }, 180000);
+        activeGames.delete(threadId);
+        return;
+      } else {
+        await sendMessageWarningRequest(api, message, {
+          caption: `⚠️ Cụm từ không hợp lệ! Cụm từ phải bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}". (Lượt sai: ${attempts}/2)`,
+        }, 180000);
+      }
     }
   } else {
     game.botTurn = false;
