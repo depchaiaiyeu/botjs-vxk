@@ -1,5 +1,0 @@
-[phases.setup]
-nixPkgs = ['ffmpeg-full', 'python3']
-
-[variables]
-TZ = 'Asia/Ho_Chi_Minh'
