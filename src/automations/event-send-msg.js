@@ -1,27 +1,21 @@
 import schedule from "node-schedule";
 import { MessageMention, MessageType } from "zlbotdqt";
-
 import { getIO } from "../web-service/web-server.js";
-
 import { getBotId, isAdmin, admins, checkDisableProphylacticConfig } from "../index.js";
-
 import { antiLink } from "../service-hahuyhoang/anti-service/anti-link.js";
 import { antiSpam } from "../service-hahuyhoang/anti-service/anti-spam.js";
 import { antiBadWord } from "../service-hahuyhoang/anti-service/anti-badword.js";
 import { antiBot } from "../service-hahuyhoang/anti-service/anti-bot.js";
-
 import { autoDownload } from "../service-hahuyhoang/api-crawl/api-hahuyhoangbot/auto-download.js";
-
 import { antiNotText } from "../service-hahuyhoang/anti-service/anti-not-text.js";
 import { handleMute } from "../service-hahuyhoang/anti-service/mute-user.js";
 import { antiMedia } from "../service-hahuyhoang/anti-service/anti-media.js";
 import { antiSticker } from "../service-hahuyhoang/anti-service/anti-sticker.js";
 import { antiLinkKeyword } from "../service-hahuyhoang/anti-service/anti-keyword-link.js";
 import { antiForward } from "../service-hahuyhoang/anti-service/anti-forward.js";
-
+import { handleWordChainMessage } from "../service-hahuyhoang/game-service/mini-game/wordChain.js";
 import { Reactions } from "../api-zalo/index.js";
 import { handleOnChatUser, handleOnReplyFromUser } from "../service-hahuyhoang/service.js";
-
 import { chatWithSimsimi } from "../service-hahuyhoang/chat-bot/simsimi/simsimi-api.js";
 import { handleChatBot } from "../service-hahuyhoang/chat-bot/bot-learning/dqt-bot.js";
 
@@ -228,7 +222,8 @@ export async function messagesUser(api, message) {
         antiLinkKeyword(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf),
         antiNotText(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf),
         antiNude(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf),
-        antiForward(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf)
+        antiForward(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf),
+        handleWordChainMessage(api, message)
       ]);
       break;
     }
