@@ -36,7 +36,7 @@ export const ReactionMap = {
   THEM: { text: ";g", rType: 31 },
   WOW: { text: ":o", rType: 32 },
   NGU: { text: ":z", rType: 33 },
-  CLOCK: { text: "🕑", rType: 55 },
+  CLOCK: { text: "🕛", rType: 55 },
   OK: { text: "/-ok", rType: 68 },
   NONE: { text: "", rType: 75 },
   HOAHONG: { text: "/-rose", rType: 100 }
