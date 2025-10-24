@@ -1,7 +1,7 @@
 import { MessageType } from "zlbotdqt";
 import { getGlobalPrefix } from "../../service.js";
 import { getActiveGames, checkHasActiveGame } from "./index.js";
-import { sendMessageCompleteRequest, sendMessageWarningRequest } from "../../chat-zalo/chat-style/chat-style.js";
+import { sendMessageComplete, sendMessageWarning } from "../../chat-zalo/chat-style/chat-style.js";
 
 const playerCooldowns = new Map();
 
@@ -13,9 +13,7 @@ export async function handleGuessNumberCommand(api, message) {
   const senderId = message.data.uidFrom;
 
   if (args[0]?.toLowerCase() === `${prefix}doanso` && !args[1]) {
-    await sendMessageCompleteRequest(api, message, {
-      caption: `Hướng dẫn game đoán số. 🎲\n${prefix}doanso join -> Tham gia trò chơi đoán số với Bot (phạm vi mặc định 1-20).\n${prefix}doanso join [số_lớn_nhất] -> Tham gia trò chơi với phạm vi tùy chỉnh.\n${prefix}doanso leave -> Rời khỏi trò chơi đoán số.`,
-    }, 180000);
+    await sendMessageComplete(api, message, `Hướng dẫn game đoán số. 🎲\n${prefix}doanso join -> Tham gia trò chơi đoán số với Bot (phạm vi mặc định 1-20).\n${prefix}doanso join [số_lớn_nhất] -> Tham gia trò chơi với phạm vi tùy chỉnh.\n${prefix}doanso leave -> Rời khỏi trò chơi đoán số.`);
     return;
   }
 
@@ -26,23 +24,15 @@ export async function handleGuessNumberCommand(api, message) {
         game.players.delete(senderId);
         if (game.players.size === 0) {
           activeGames.delete(threadId);
-          await sendMessageCompleteRequest(api, message, {
-            caption: "🚫 Trò chơi đoán số đã được hủy bỏ do không còn người chơi.",
-          }, 180000);
+          await sendMessageComplete(api, message, "🚫 Trò chơi đoán số đã được hủy bỏ do không còn người chơi.");
         } else {
-          await sendMessageCompleteRequest(api, message, {
-            caption: "👋 Bạn đã rời khỏi trò chơi đoán số.",
-          }, 180000);
+          await sendMessageComplete(api, message, "👋 Bạn đã rời khỏi trò chơi đoán số.");
         }
       } else {
-        await sendMessageWarningRequest(api, message, {
-          caption: "⚠️ Bạn chưa tham gia trò chơi đoán số nào trong nhóm này.",
-        }, 180000);
+        await sendMessageWarning(api, message, "⚠️ Bạn chưa tham gia trò chơi đoán số nào trong nhóm này.");
       }
     } else {
-      await sendMessageWarningRequest(api, message, {
-        caption: "⚠️ Không có trò chơi đoán số nào đang diễn ra để rời khỏi.",
-      }, 180000);
+      await sendMessageWarning(api, message, "⚠️ Không có trò chơi đoán số nào đang diễn ra để rời khỏi.");
     }
     return;
   }
@@ -54,23 +44,17 @@ export async function handleGuessNumberCommand(api, message) {
       if (!isNaN(customRange) && customRange >= 2) {
         range = customRange;
       } else {
-        await sendMessageWarningRequest(api, message, {
-          caption: "⚠️ Số lớn nhất phải là một số nguyên lớn hơn hoặc bằng 2. Sử dụng phạm vi mặc định 1-20.",
-        }, 180000);
+        await sendMessageWarning(api, message, "⚠️ Số lớn nhất phải là một số nguyên lớn hơn hoặc bằng 2. Sử dụng phạm vi mặc định 1-20.");
       }
     }
 
     if (await checkHasActiveGame(api, message, threadId)) {
       const game = activeGames.get(threadId).game;
       if (game.players.has(senderId)) {
-        await sendMessageWarningRequest(api, message, {
-          caption: "⚠️ Bạn đã tham gia trò chơi đoán số rồi.",
-        }, 180000);
+        await sendMessageWarning(api, message, "⚠️ Bạn đã tham gia trò chơi đoán số rồi.");
       } else {
-        game.players.add(senderId);
-        await sendMessageCompleteRequest(api, message, {
-          caption: "✅ Bạn đã tham gia trò chơi đoán số.",
-        }, 180000);
+        game.players.set(senderId, { attempts: 0 });
+        await sendMessageComplete(api, message, "✅ Bạn đã tham gia trò chơi đoán số.");
       }
       return;
     }
@@ -88,9 +72,7 @@ export async function handleGuessNumberCommand(api, message) {
       }
     });
 
-    await sendMessageCompleteRequest(api, message, {
-      caption: `🎮 Trò chơi đoán số bắt đầu! Hãy đoán một số từ 1 đến ${range}. Bạn có tối đa ${maxAttemptsPerPlayer} lượt đoán sai.`,
-    }, 180000);
+    await sendMessageComplete(api, message, `🎮 Trò chơi đoán số bắt đầu! Hãy đoán một số từ 1 đến ${range}. Bạn có tối đa ${maxAttemptsPerPlayer} lượt đoán sai.`);
     return;
   }
 }
@@ -119,14 +101,10 @@ export async function handleGuessNumberGame(api, message) {
     await handleCorrectGuess(api, message, threadId, game, senderId);
   } else if (guessedNumber < game.targetNumber) {
     playerAttempts.attempts++;
-    await sendMessageWarningRequest(api, message, {
-      caption: `Số bạn đoán nhỏ hơn. Hãy thử lại! (Bạn còn ${game.maxAttemptsPerPlayer - playerAttempts.attempts} lượt sai)`,
-    }, 10000);
+    await sendMessageWarning(api, message, `Số bạn đoán nhỏ hơn. Hãy thử lại! (Bạn còn ${game.maxAttemptsPerPlayer - playerAttempts.attempts} lượt sai)`);
   } else {
     playerAttempts.attempts++;
-    await sendMessageWarningRequest(api, message, {
-      caption: `Số bạn đoán lớn hơn. Hãy thử lại! (Bạn còn ${game.maxAttemptsPerPlayer - playerAttempts.attempts} lượt sai)`,
-    }, 10000);
+    await sendMessageWarning(api, message, `Số bạn đoán lớn hơn. Hãy thử lại! (Bạn còn ${game.maxAttemptsPerPlayer - playerAttempts.attempts} lượt sai)`);
   }
 
   if (playerAttempts.attempts >= game.maxAttemptsPerPlayer) {
@@ -139,29 +117,21 @@ export async function handleGuessNumberGame(api, message) {
 }
 
 async function handleCorrectGuess(api, message, threadId, game, senderId) {
-  await sendMessageCompleteRequest(api, message, {
-    caption: `🎉 Chúc mừng ${message.data.dName}! Bạn đã đoán đúng số ${game.targetNumber} sau ${game.players.get(senderId).attempts + 1} lần thử.`,
-  });
+  await sendMessageComplete(api, message, `🎉 Chúc mừng ${message.data.dName}! Bạn đã đoán đúng số ${game.targetNumber} sau ${game.players.get(senderId).attempts + 1} lần thử.`);
   getActiveGames().delete(threadId);
 }
 
 async function handlePlayerEliminated(api, message, threadId, game, senderId) {
-  await sendMessageCompleteRequest(api, message, {
-    caption: `❌ ${message.data.dName} đã thua! Bạn đã hết lượt đoán sai. Số cần đoán là ${game.targetNumber}.`,
-  });
+  await sendMessageComplete(api, message, `❌ ${message.data.dName} đã thua! Bạn đã hết lượt đoán sai. Số cần đoán là ${game.targetNumber}.`);
   game.players.delete(senderId);
   playerCooldowns.delete(`${threadId}-${senderId}`);
 }
 
 async function handleGameOver(api, message, threadId, game, allPlayersEliminated = false) {
   if (allPlayersEliminated) {
-    await sendMessageCompleteRequest(api, message, {
-      caption: `🏁 Trò chơi kết thúc! Không còn người chơi nào. Số cần đoán là ${game.targetNumber}.`,
-    });
+    await sendMessageComplete(api, message, `🏁 Trò chơi kết thúc! Không còn người chơi nào. Số cần đoán là ${game.targetNumber}.`);
   } else {
-    await sendMessageCompleteRequest(api, message, {
-      caption: `🏁 Trò chơi kết thúc! Số cần đoán là ${game.targetNumber}.`,
-    });
+    await sendMessageComplete(api, message, `🏁 Trò chơi kết thúc! Số cần đoán là ${game.targetNumber}.`);
   }
   getActiveGames().delete(threadId);
   for (const [pId] of game.players) {
