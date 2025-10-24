@@ -3,7 +3,7 @@ import whois from 'whois-json';
 import fetch from 'node-fetch';
 import { removeMention } from "../../utils/format-util.js";
 import { sendMessageWarningRequest, sendMessageCompleteRequest } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
-import { getGlobalPrefix } from "../service.js";
+import { getGlobalPrefix } from "../../service-hahuyhoang/service.js";
 
 const IP_REGEX = /^(\d{1,3}\.){3}\d{1,3}$/;
 
