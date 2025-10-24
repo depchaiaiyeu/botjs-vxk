@@ -1356,7 +1356,7 @@ export async function handleCommand(
                 await handleCheckHostCommand (api, message, aliasCommand);
                 break;
               case "checkdomain":
-                await handleCheckHostCommand (api, message, aliasCommand);
+                await handleCheckHostCommand (api, message);
                 break;
               case "hoathinh3dtrungquoc":
                 await handleHH3DCommand (api, message, aliasCommand);
@@ -1426,15 +1426,15 @@ export async function handleCommand(
               break;
 
             case "doanso":
-              await startGame(api, message, groupSettings);
+              await startGame(api, message, groupSettings, "guessNumber", commandParts.slice(1), isAdminBox);
               break;
 
             case "noitu":
-              await startGame(api, message, groupSettings);
+              await startGame(api, message, groupSettings, "wordChain", commandParts.slice(1), isAdminBox);
               break;
 
             case "doantu":
-              await startGame(api, message, groupSettings);
+              await startGame(api, message, groupSettings, "wordGuess", commandParts.slice(1), isAdminBox);
               break;
          //     case "noitu":
           //   await handleNoitu(api, message, command, true);
