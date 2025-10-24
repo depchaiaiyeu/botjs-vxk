@@ -2,7 +2,7 @@ import dns from 'node:dns';
 import whois from 'whois-json';
 import fetch from 'node-fetch';
 import { removeMention } from "../../utils/format-util.js";
-import { sendMessageWarningRequest, sendMessageCompleteRequest } from "../chat-zalo/chat-style/chat-style.js";
+import { sendMessageWarningRequest, sendMessageCompleteRequest } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
 import { getGlobalPrefix } from "../service.js";
 
 const IP_REGEX = /^(\d{1,3}\.){3}\d{1,3}$/;
