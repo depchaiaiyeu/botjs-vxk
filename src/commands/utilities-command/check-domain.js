@@ -10,8 +10,11 @@ const IP_REGEX = /^(\d{1,3}\.){3}\d{1,3}$/;
 export async function handleCheckDomainCommand(api, message, aliasCommand) {
   try {
     const prefix = getGlobalPrefix();
-    const rawInput = removeMention(message).replace(`${prefix}${aliasCommand}`, "").trim();
-    const cleanedInput = rawInput.replace(/^https?:\/\//i, "").replace(/\/.*$/, "").replace(/[^a-zA-Z0-9.-]/g, "");
+    const rawText = removeMention(message).trim();
+    const argsText = rawText.startsWith(`${prefix}${aliasCommand}`)
+      ? rawText.slice((prefix + aliasCommand).length).trim()
+      : rawText;
+    const cleanedInput = argsText.replace(/^https?:\/\//i, "").replace(/\/$/, "");
     if (!cleanedInput) {
       await sendMessageWarningRequest(api, message, { caption: "Vui lòng nhập domain hoặc IP hợp lệ." }, 30000);
       return;
@@ -62,7 +65,7 @@ export async function handleCheckDomainCommand(api, message, aliasCommand) {
     }
 
     await sendMessageCompleteRequest(api, message, { caption }, 600000);
-  } catch (err) {
+  } catch {
     await sendMessageWarningRequest(api, message, { caption: "❌ Đã xảy ra lỗi, vui lòng thử lại." }, 30000);
   }
 }
