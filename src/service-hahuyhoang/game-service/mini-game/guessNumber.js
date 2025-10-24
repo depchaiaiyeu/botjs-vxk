@@ -1,7 +1,7 @@
 import { MessageType } from "zlbotdqt";
 import { getGlobalPrefix } from "../../service.js";
 import { getActiveGames, checkHasActiveGame } from "./index.js";
-import { sendMessageCompleteRequest, sendMessageWarningRequest } from "../../chat-zalo/chat-style/chat-style.js"; // Import necessary styles
+import { sendMessageCompleteRequest, sendMessageWarningRequest } from "../../chat-zalo/chat-style/chat-style.js";
 
 const playerCooldowns = new Map();
 
@@ -48,7 +48,7 @@ export async function handleGuessNumberCommand(api, message) {
   }
 
   if (args[1]?.toLowerCase() === "join") {
-    let range = 20; // Default range
+    let range = 20;
     if (args.length > 2) {
       const customRange = parseInt(args[2]);
       if (!isNaN(customRange) && customRange >= 2) {
@@ -76,13 +76,13 @@ export async function handleGuessNumberCommand(api, message) {
     }
 
     const targetNumber = Math.floor(Math.random() * range) + 1;
-    const maxAttemptsPerPlayer = 5; // Each player gets 5 incorrect guesses
+    const maxAttemptsPerPlayer = 5;
 
     activeGames.set(threadId, {
       type: 'guessNumber',
       game: {
         targetNumber,
-        players: new Map([[senderId, { attempts: 0 }]]), // Store attempts per player
+        players: new Map([[senderId, { attempts: 0 }]]),
         range,
         maxAttemptsPerPlayer
       }
@@ -106,11 +106,11 @@ export async function handleGuessNumberGame(api, message) {
   const guessedNumber = parseInt(message.data.content);
 
   if (!game.players.has(senderId)) {
-    return; // Ignore messages from non-participating players
+    return;
   }
 
   if (isNaN(guessedNumber) || guessedNumber < 1 || guessedNumber > game.range) {
-    return; // Ignore invalid guesses (not a number, out of range)
+    return;
   }
 
   const playerAttempts = game.players.get(senderId);
@@ -133,9 +133,8 @@ export async function handleGuessNumberGame(api, message) {
     await handlePlayerEliminated(api, message, threadId, game, senderId);
   }
 
-  // If no players left, end the game
   if (game.players.size === 0) {
-    await handleGameOver(api, message, threadId, game, true); // True means all players eliminated
+    await handleGameOver(api, message, threadId, game, true);
   }
 }
 
@@ -150,8 +149,8 @@ async function handlePlayerEliminated(api, message, threadId, game, senderId) {
   await sendMessageCompleteRequest(api, message, {
     caption: `❌ ${message.data.dName} đã thua! Bạn đã hết lượt đoán sai. Số cần đoán là ${game.targetNumber}.`,
   });
-  game.players.delete(senderId); // Remove player from the game
-  playerCooldowns.delete(`${threadId}-${senderId}`); // Clear cooldown if any
+  game.players.delete(senderId);
+  playerCooldowns.delete(`${threadId}-${senderId}`);
 }
 
 async function handleGameOver(api, message, threadId, game, allPlayersEliminated = false) {
