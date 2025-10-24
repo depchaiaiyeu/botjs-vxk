@@ -7,9 +7,6 @@ import { sendMessageWarningRequest, sendMessageCompleteRequest } from '../chat-z
 const RESOURCE_BASE_PATH = path.join(process.cwd(), 'assets', 'resources', 'voice');
 const VOICE_JSON_PATH = path.join(RESOURCE_BASE_PATH, 'voice_links.json');
 
-// Author : Hà Huy Hoàng
-// Description: Pexels Image code by H H H BOT
-
 // Đảm bảo thư mục và file JSON tồn tại
 function ensureVoiceJsonExists() {
   if (!fs.existsSync(RESOURCE_BASE_PATH)) {
