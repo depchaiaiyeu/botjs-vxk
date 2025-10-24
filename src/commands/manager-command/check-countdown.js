@@ -11,7 +11,7 @@ async function isBotActive(threadId) {
         const groupSettings = JSON.parse(data);
         return groupSettings[threadId]?.activeBot === true;
     } catch (error) {
-        console.error('Lỗi đọc file cấu hình nhóm:', error);
+        console.error('Lỗi đọc group_settings.json:', error);
         return false;
     }
 }
@@ -22,20 +22,20 @@ export async function sendReactionWaitingCountdown(api, message, count) {
     const threadId = message.threadId || message.data?.threadId;
 
     const isActive = await isBotActive(threadId);
-    if (!isActive) return;
+    if (!isActive) {
+        return;
+    }
 
     const date = new Date(Date.now() + 300);
     const job = schedule.scheduleJob(date, async () => {
         try {
-            let processedCount = 0;
-
             while (messages.length > 0) {
                 try {
-                    await api.addReaction("CLOCK", [messages[0]]);
+                    await api.addReaction("CLOCK", messages);
                     await new Promise(resolve => setTimeout(resolve, 1000));
-                    await api.addReaction("UNDO", [messages[0]]);
-                    processedCount++;
-                } catch {}
+                    await api.addReaction("UNDO", messages);
+                } catch (error) {
+                }
                 messages.splice(0, 1);
             }
         } catch (error) {
@@ -45,13 +45,6 @@ export async function sendReactionWaitingCountdown(api, message, count) {
             countdownJobs.delete(messageId);
         }
     });
-
+    
     countdownJobs.set(messageId, job);
-    job.on('canceled', async () => {
-        try {
-            await api.addReaction("LIKE", [message]);
-        } catch (error) {
-            console.error(`Lỗi khi gửi like đến message có ID ${messageId}:`, error);
-        }
-    });
 }
