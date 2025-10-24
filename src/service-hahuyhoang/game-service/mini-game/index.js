@@ -77,15 +77,12 @@ export async function startGame(api, message, groupSettings, gameType, args, isA
 export async function checkHasActiveGame(api, message, threadId) {
   if (activeGames.has(threadId)) {
     const activeGame = activeGames.get(threadId);
-    await api.sendMessage(
-      {
-        msg: `Trò chơi: ${activeGame.type === "guessNumber" ? "Đoán số" : activeGame.type === "wordChain" ? "Chuỗi từ" : "Đoán từ"
-          } đang diễn ra trong nhóm này. Hãy kết thúc trò chơi hiện tại trước khi bắt đầu trò chơi mới.`,
-        quote: message,
-      },
-      threadId,
-      message.type
-    );
+    const gameName = activeGame.type === "guessNumber" ? "Đoán số" : activeGame.type === "wordChain" ? "Nối từ" : "Đoán từ";
+    const result = {
+      success: false,
+      message: `Trò chơi: ${gameName}\nĐang diễn ra trong nhóm này, hãy kết thúc trò chơi hiện tại trước khi bắt đầu trò chơi mới.`,
+    };
+    await sendMessageFromSQL(api, message, result, true, 30000);
     return true;
   }
   return false;
