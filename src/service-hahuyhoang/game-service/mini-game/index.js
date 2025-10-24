@@ -2,7 +2,7 @@ import { isAdmin } from "../../../index.js";
 import { sendMessageFromSQL } from "../../chat-zalo/chat-style/chat-style.js";
 import { handleGuessNumberCommand, handleGuessNumberGame } from "./guessNumber.js";
 import { handleWordChainCommand, handleWordChainMessage } from "./wordChain.js";
-import { handleWordGuessCommand, handleWordGuessGame } from "./wordGuess.js";
+import { handleVuaTiengVietCommand, handleVuaTiengVietMessage } from "./vuaTiengViet.js";
 import { getGlobalPrefix } from "../../service.js";
 const activeGames = new Map();
 
@@ -31,8 +31,8 @@ export async function handleChatWithGame(api, message, isCallGame, groupSettings
         case "wordChain":
           await handleWordChainMessage(api, message);
           break;
-        case "wordGuess":
-          await handleWordGuessGame(api, message, threadId);
+        case "vuaTiengViet":
+          await handleVuaTiengVietMessage(api, message, threadId);
           break;
       }
     }
@@ -68,8 +68,8 @@ export async function startGame(api, message, groupSettings, gameType, args, isA
       case "wordChain":
         await handleWordChainCommand(api, message, args);
         return;
-      case "wordGuess":
-        await handleWordGuessCommand(api, message, threadId, args);
+      case "vuaTiengViet":
+        await handleVuaTiengVietCommand(api, message, threadId, args);
         return;
     }
   }
@@ -83,8 +83,8 @@ export async function startGame(api, message, groupSettings, gameType, args, isA
     case "wordChain":
       await handleWordChainCommand(api, message, args);
       break;
-    case "wordGuess":
-      await handleWordGuessCommand(api, message, threadId, args);
+    case "vuaTiengViet":
+      await handleVuaTiengVietCommand(api, message, threadId, args);
       break;
   }
 }
@@ -92,7 +92,7 @@ export async function startGame(api, message, groupSettings, gameType, args, isA
 export async function checkHasActiveGame(api, message, threadId) {
   if (activeGames.has(threadId)) {
     const activeGame = activeGames.get(threadId);
-    const gameName = activeGame.type === "guessNumber" ? "Đoán số" : activeGame.type === "wordChain" ? "Nối từ" : "Đoán từ";
+    const gameName = activeGame.type === "guessNumber" ? "Đoán số" : activeGame.type === "wordChain" ? "Nối từ" : "Vua Tiếng Việt";
     const result = {
       success: false,
       message: `Trò chơi: ${gameName}\nĐang diễn ra trong nhóm này, hãy kết thúc trò chơi hiện tại trước khi bắt đầu trò chơi mới.`,
