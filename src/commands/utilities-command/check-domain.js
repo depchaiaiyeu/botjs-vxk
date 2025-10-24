@@ -1,30 +1,26 @@
-import dns from "node:dns";
-import fetch from "node-fetch";
-import whois from "whois-json";
+import dns from 'node:dns';
+import whois from 'whois-json';
+import fetch from 'node-fetch';
 import { removeMention } from "../../utils/format-util.js";
-import { sendMessageWarningRequest, sendMessageCompleteRequest } from "../../service-hahuyhoang/chat-zalo/chat-style/chat-style.js";
-import { getGlobalPrefix } from "../../service-hahuyhoang/service.js";
+import { sendMessageWarningRequest, sendMessageCompleteRequest } from "../chat-zalo/chat-style/chat-style.js";
+import { getGlobalPrefix } from "../service.js";
 
 const IP_REGEX = /^(\d{1,3}\.){3}\d{1,3}$/;
 
 export async function handleCheckDomainCommand(api, message, aliasCommand) {
   try {
     const prefix = getGlobalPrefix();
-    const rawText = removeMention(message).trim();
-    const argsText = rawText.startsWith(`${prefix}${aliasCommand}`)
-      ? rawText.slice((prefix + aliasCommand).length).trim()
-      : rawText;
-    const cleanedInput = argsText.replace(/^https?:\/\//i, "").replace(/\/$/, "");
-    if (!cleanedInput) {
-      await sendMessageWarningRequest(api, message, { caption: "Vui lòng nhập domain hoặc IP hợp lệ." }, 30000);
+    const inputRaw = removeMention(message).replace(`${prefix}${aliasCommand}`, "").trim();
+    const input = inputRaw.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+    if (!input) {
+      await sendMessageWarningRequest(api, message, { caption: "Vui lòng nhập domain hoặc IP để kiểm tra." }, 30000);
       return;
     }
-
-    const isIP = IP_REGEX.test(cleanedInput);
-    let ip = cleanedInput;
-    let domain = isIP ? null : cleanedInput;
-
+    const isIP = IP_REGEX.test(input);
+    let ip = input;
+    let domain = null;
     if (!isIP) {
+      domain = input;
       try {
         const result = await dns.promises.lookup(domain);
         ip = result.address;
@@ -33,7 +29,6 @@ export async function handleCheckDomainCommand(api, message, aliasCommand) {
         return;
       }
     }
-
     let ipInfo = null;
     try {
       const res = await fetch(`https://ipwho.is/${ip}`);
@@ -42,15 +37,13 @@ export async function handleCheckDomainCommand(api, message, aliasCommand) {
     } catch {
       ipInfo = null;
     }
-
     let whoisData = null;
     try {
       whoisData = await whois(domain || ip);
     } catch {
       whoisData = null;
     }
-
-    let caption = `🔍 Kết quả kiểm tra ${isIP ? `IP: ${ip}` : `Domain: ${domain}`}\n\n`;
+    let caption = `🔍 Kết quả kiểm tra ${isIP ? `IP: \`${ip}\`` : `Domain: \`${domain}\``}\n\n`;
     caption += `🌐 IP: ${ip || "Không xác định"}\n`;
     caption += `📍 Quốc gia: ${ipInfo?.country || "?"} (${ipInfo?.country_code || "?"})\n`;
     caption += `🏙️ Thành phố: ${ipInfo?.city || "?"}\n`;
@@ -63,9 +56,8 @@ export async function handleCheckDomainCommand(api, message, aliasCommand) {
       caption += `🏢 Registrar: ${whoisData.registrar || "Không rõ"}\n`;
       caption += `👤 Chủ sở hữu: ${whoisData.registrantName || whoisData.owner || "Không công khai"}\n`;
     }
-
     await sendMessageCompleteRequest(api, message, { caption }, 600000);
   } catch {
-    await sendMessageWarningRequest(api, message, { caption: "❌ Đã xảy ra lỗi, vui lòng thử lại." }, 30000);
+    await sendMessageWarningRequest(api, message, { caption: "❌ Đã xảy ra lỗi. Vui lòng thử lại." }, 30000);
   }
 }
