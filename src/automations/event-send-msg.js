@@ -13,7 +13,9 @@ import { antiMedia } from "../service-hahuyhoang/anti-service/anti-media.js";
 import { antiSticker } from "../service-hahuyhoang/anti-service/anti-sticker.js";
 import { antiLinkKeyword } from "../service-hahuyhoang/anti-service/anti-keyword-link.js";
 import { antiForward } from "../service-hahuyhoang/anti-service/anti-forward.js";
+
 import { handleWordChainMessage } from "../service-hahuyhoang/game-service/mini-game/wordChain.js";
+import { handleGuessNumberGame } from "../service-hahuyhoang/game-service/mini-game/guessNumber.js";
 import { Reactions } from "../api-zalo/index.js";
 import { handleOnChatUser, handleOnReplyFromUser } from "../service-hahuyhoang/service.js";
 import { chatWithSimsimi } from "../service-hahuyhoang/chat-bot/simsimi/simsimi-api.js";
