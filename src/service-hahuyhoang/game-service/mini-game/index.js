@@ -40,7 +40,7 @@ export async function handleChatWithGame(api, message, isCallGame, groupSettings
   }
 }
 
-export async function startGame(api, message, groupSettings, gameType, args, isAdminBox) {
+export async function startGame(api, message, groupSettings, gameType, args) {
   const senderId = message.data.uidFrom;
   const threadId = message.threadId;
   const prefix = getGlobalPrefix();
@@ -58,9 +58,6 @@ export async function startGame(api, message, groupSettings, gameType, args, isA
     }
     return;
   };
-
-  if (!(await checkAdminBoxPermission(api, message, isAdminBox))) return;
-
   switch (gameType) {
     case "guessNumber":
       await handleGuessNumberCommand(api, message, threadId, args);
