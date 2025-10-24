@@ -28,14 +28,14 @@ export async function handleWordChainCommand(api, message) {
       }
     });
 
-    await sendMessageComplete(api, message, "🎮 Phòng chơi nối từ đã mở! Người chơi đầu tiên hãy nhập 2 từ để bắt đầu.", true);
+    await sendMessageComplete(api, message, "Phòng chơi nối từ đã mở! Người chơi đầu tiên hãy nhập 2 từ để bắt đầu.", true);
     return;
   }
 
   if (command === "leave") {
     const activeGames = getActiveGames();
     if (!activeGames.has(threadId) || activeGames.get(threadId).type !== 'wordChain') {
-      await sendMessageWarning(api, message, "⚠️ Không có phòng chơi nối từ nào đang mở.", true);
+      await sendMessageWarning(api, message, "Không có phòng chơi nối từ nào đang mở.", true);
       return;
     }
 
@@ -44,14 +44,14 @@ export async function handleWordChainCommand(api, message) {
 
     if (game.players.has(userId)) {
       game.players.delete(userId);
-      await sendMessageComplete(api, message, "👋 Bạn đã rời khỏi phòng chơi nối từ.", true);
+      await sendMessageComplete(api, message, "Bạn đã rời khỏi phòng chơi nối từ.", true);
       
       if (game.players.size === 0) {
         activeGames.delete(threadId);
-        await sendMessageComplete(api, message, "🏁 Phòng chơi đã đóng vì không còn người chơi nào.", true);
+        await sendMessageComplete(api, message, "Phòng chơi đã đóng vì không còn người chơi nào.", true);
       }
     } else {
-      await sendMessageWarning(api, message, "⚠️ Bạn chưa tham gia phòng chơi này.", true);
+      await sendMessageWarning(api, message, "Bạn chưa tham gia phòng chơi này.", true);
     }
     return;
   }
@@ -85,39 +85,89 @@ export async function handleWordChainMessage(api, message) {
   if (game.waitingForFirstWord) {
     const apiResponse = await validateWord(cleanContentTrim);
     if (!apiResponse.success) {
-      await sendMessageFailed(api, message, "❌ Từ không hợp lệ! Vui lòng nhập 2 từ khác để bắt đầu.", true);
+      await sendMessageFailed(api, message, "Từ không hợp lệ! Vui lòng nhập 2 từ khác để bắt đầu.", true);
       return;
     }
 
     game.lastPhrase = cleanContentTrim;
     game.waitingForFirstWord = false;
-    game.currentPlayerId = userId;
+    game.botTurn = true;
+
+    const botPhrase = await findNextPhrase(game.lastPhrase);
+    
+    if (!botPhrase) {
+      const playersList = Array.from(game.players.entries()).map(([id, data]) => ({
+        name: data.name,
+        uid: id
+      }));
+      
+      const mentions = playersList.map((player, index) => ({
+        pos: "🎉 Chúc mừng các người chơi:\n".length + playersList.slice(0, index).reduce((sum, p) => sum + p.name.length + 2, 0),
+        uid: player.uid,
+        len: player.name.length
+      }));
+
+      await sendMessageTag(api, message, {
+        caption: `🎉 Chúc mừng các người chơi:\n${playersList.map(p => p.name).join(", ")}\nBot không tìm được từ phù hợp. Các bạn thắng!`,
+        mentions: mentions
+      }, 60000);
+      
+      activeGames.delete(threadId);
+      return;
+    }
+
+    const botValidation = await validateWord(botPhrase);
+    if (!botValidation.success) {
+      const playersList = Array.from(game.players.entries()).map(([id, data]) => ({
+        name: data.name,
+        uid: id
+      }));
+      
+      const mentions = playersList.map((player, index) => ({
+        pos: "🎉 Chúc mừng các người chơi:\n".length + playersList.slice(0, index).reduce((sum, p) => sum + p.name.length + 2, 0),
+        uid: player.uid,
+        len: player.name.length
+      }));
+
+      await sendMessageTag(api, message, {
+        caption: `🎉 Chúc mừng các người chơi:\n${playersList.map(p => p.name).join(", ")}\nBot đưa ra từ không hợp lệ. Các bạn thắng!`,
+        mentions: mentions
+      }, 60000);
+      
+      activeGames.delete(threadId);
+      return;
+    }
+
+    game.lastPhrase = botPhrase;
+    game.botTurn = false;
+    game.currentPlayerId = null;
     game.turnStartTime = Date.now();
 
-    await sendMessageComplete(api, message, `✅ Trò chơi bắt đầu với từ: "${cleanContentTrim}"\n👉 Từ tiếp theo phải bắt đầu bằng "${words[words.length - 1]}"`, true);
-    
-    setTimeout(() => checkTimeout(api, threadId, userId), USER_TIMEOUT);
+    const nextWord = botPhrase.split(/\s+/).pop();
+    await sendMessageComplete(api, message, `Từ bắt đầu: "${cleanContentTrim}"\n🤖 Bot: ${botPhrase}\nTừ tiếp theo phải bắt đầu bằng "${nextWord}"`, true);
+
+    setTimeout(() => checkTimeout(api, threadId, null), USER_TIMEOUT);
     return;
   }
 
-  if (game.botTurn || userId === game.currentPlayerId) return;
+  if (game.botTurn) return;
 
   const lastWord = game.lastPhrase.split(/\s+/).pop();
   if (!cleanContentTrim.startsWith(lastWord)) {
-    await handleWrongAttempt(api, message, threadId, userId, `⚠️ Từ không hợp lệ! Từ phải bắt đầu bằng "${lastWord}"`);
+    await handleWrongAttempt(api, message, threadId, userId, `Từ không hợp lệ! Từ phải bắt đầu bằng "${lastWord}"`);
     return;
   }
 
   const apiResponse = await validateWord(cleanContentTrim);
   if (!apiResponse.success) {
-    await handleWrongAttempt(api, message, threadId, userId, "❌ Từ không có nghĩa hoặc không hợp lệ!");
+    await handleWrongAttempt(api, message, threadId, userId, "Từ không có nghĩa hoặc không hợp lệ!");
     return;
   }
 
   game.wrongAttempts.set(userId, 0);
   game.lastPhrase = cleanContentTrim;
-  game.currentPlayerId = null;
   game.botTurn = true;
+  game.currentPlayerId = null;
 
   const botPhrase = await findNextPhrase(game.lastPhrase);
   
@@ -166,13 +216,12 @@ export async function handleWordChainMessage(api, message) {
 
   game.lastPhrase = botPhrase;
   game.botTurn = false;
-  game.currentPlayerId = userId;
   game.turnStartTime = Date.now();
 
   const nextWord = botPhrase.split(/\s+/).pop();
-  await sendMessageComplete(api, message, `🤖 Bot: ${botPhrase}\n👉 Từ tiếp theo phải bắt đầu bằng "${nextWord}"`, true);
+  await sendMessageComplete(api, message, `🤖 Bot: ${botPhrase}\nTừ tiếp theo phải bắt đầu bằng "${nextWord}"`, true);
 
-  setTimeout(() => checkTimeout(api, threadId, userId), USER_TIMEOUT);
+  setTimeout(() => checkTimeout(api, threadId, null), USER_TIMEOUT);
 }
 
 async function handleWrongAttempt(api, message, threadId, userId, errorMsg) {
@@ -181,50 +230,58 @@ async function handleWrongAttempt(api, message, threadId, userId, errorMsg) {
   game.wrongAttempts.set(userId, currentAttempts);
 
   if (currentAttempts >= MAX_WRONG_ATTEMPTS) {
-    await sendMessageFailed(api, message, `${errorMsg}\n💀 Bạn đã sai ${MAX_WRONG_ATTEMPTS} lần và bị loại!`, true);
+    await sendMessageFailed(api, message, `${errorMsg}\nBạn đã sai ${MAX_WRONG_ATTEMPTS} lần và bị loại!`, true);
     
     game.players.delete(userId);
     
     if (game.players.size === 0) {
       getActiveGames().delete(threadId);
-      await sendMessageComplete(api, message, "🏁 Trò chơi kết thúc vì không còn người chơi nào.", true);
+      await sendMessageComplete(api, message, "Trò chơi kết thúc vì không còn người chơi nào.", true);
+    } else {
+      game.botTurn = false;
+      game.turnStartTime = Date.now();
+      setTimeout(() => checkTimeout(api, threadId, null), USER_TIMEOUT);
     }
   } else {
-    await sendMessageWarning(api, message, `${errorMsg}\n⚠️ Cảnh báo: ${currentAttempts}/${MAX_WRONG_ATTEMPTS} lần sai.`, true);
+    await sendMessageWarning(api, message, `${errorMsg}\nCảnh báo: ${currentAttempts}/${MAX_WRONG_ATTEMPTS} lần sai.`, true);
   }
 }
 
-async function checkTimeout(api, threadId, userId) {
+async function checkTimeout(api, threadId, lastUserId) {
   const activeGames = getActiveGames();
   if (!activeGames.has(threadId)) return;
 
   const game = activeGames.get(threadId).game;
-  if (game.currentPlayerId !== userId || game.botTurn) return;
+  if (game.botTurn) return;
 
   const elapsed = Date.now() - game.turnStartTime;
   if (elapsed >= USER_TIMEOUT) {
-    game.players.delete(userId);
+    const playersList = Array.from(game.players.entries()).map(([id, data]) => ({
+      name: data.name,
+      uid: id
+    }));
     
-    const playerData = game.players.get(userId);
-    const playerName = playerData ? playerData.name : "Người chơi";
-    
-    await sendMessageFailed(api, { 
-      threadId, 
-      data: { uidFrom: userId, dName: playerName },
-      type: 1
-    }, `⏱️ ${playerName} đã hết thời gian (30s) và bị loại!`, true);
-
-    if (game.players.size === 0) {
+    if (playersList.length === 0) {
       activeGames.delete(threadId);
-      await sendMessageComplete(api, { 
-        threadId, 
-        data: { uidFrom: userId, dName: playerName },
-        type: 1
-      }, "🏁 Trò chơi kết thúc vì không còn người chơi nào.", true);
-    } else {
-      game.currentPlayerId = null;
-      game.botTurn = false;
+      return;
     }
+
+    const mentions = playersList.map((player, index) => ({
+      pos: "⏱️ Hết thời gian! Tất cả người chơi bị loại:\n".length + playersList.slice(0, index).reduce((sum, p) => sum + p.name.length + 2, 0),
+      uid: player.uid,
+      len: player.name.length
+    }));
+
+    await sendMessageTag(api, {
+      threadId,
+      data: { uidFrom: playersList[0].uid, dName: playersList[0].name },
+      type: 1
+    }, {
+      caption: `⏱️ Hết thời gian! Tất cả người chơi bị loại:\n${playersList.map(p => p.name).join(", ")}\n🤖 Bot thắng!`,
+      mentions: mentions
+    }, 60000);
+
+    activeGames.delete(threadId);
   }
 }
 
@@ -236,7 +293,7 @@ async function validateWord(phrase) {
       success: response.data.success === true
     };
   } catch (error) {
-    console.error("❌ Lỗi khi validate từ:", error.message);
+    console.error("Lỗi khi validate từ:", error.message);
     return { success: false };
   }
 }
@@ -250,7 +307,7 @@ async function findNextPhrase(lastPhrase) {
     }
     return null;
   } catch (error) {
-    console.error("❌ Lỗi khi gọi API nối từ:", error.message);
+    console.error("Lỗi khi gọi API nối từ:", error.message);
     return null;
   }
 }
