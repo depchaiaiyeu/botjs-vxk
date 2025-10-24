@@ -33,13 +33,13 @@ export async function handleWordChainCommand(api, message) {
           getActiveGames().delete(threadId);
           await sendMessageComplete(api, message, "🚫 Trò chơi nối từ đã được hủy bỏ do không còn người chơi.");
         } else {
-          await sendMessageComplete(api, message, "👋 Bạn đã rời khỏi trò chơi nối từ.");
+          await sendMessageComplete(api, message, "Bạn đã rời khỏi trò chơi nối từ.");
         }
       } else {
-        await sendMessageWarning(api, message, "⚠️ Bạn chưa tham gia trò chơi nối từ nào trong nhóm này.");
+        await sendMessageWarning(api, message, "Bạn chưa tham gia trò chơi nối từ nào trong nhóm này.");
       }
     } else {
-      await sendMessageWarning(api, message, "⚠️ Không có trò chơi nối từ nào đang diễn ra để rời khỏi.");
+      await sendMessageWarning(api, message, "Không có trò chơi nối từ nào đang diễn ra để rời khỏi.");
     }
     return;
   }
@@ -48,11 +48,11 @@ export async function handleWordChainCommand(api, message) {
     if (await checkHasActiveGame(api, message, threadId)) {
       const game = getActiveGames().get(threadId).game;
       if (game.players.has(message.data.uidFrom)) {
-        await sendMessageWarning(api, message, "⚠️ Bạn đã tham gia trò chơi nối từ rồi.");
+        await sendMessageWarning(api, message, "Bạn đã tham gia trò chơi nối từ rồi.");
       } else {
         game.players.add(message.data.uidFrom);
         game.incorrectAttempts.set(message.data.uidFrom, 0);
-        await sendMessageComplete(api, message, "✅ Bạn đã tham gia trò chơi nối từ.");
+        await sendMessageComplete(api, message, "Bạn đã tham gia trò chơi nối từ.");
       }
       return;
     }
@@ -97,10 +97,10 @@ export async function handleWordChainMessage(api, message) {
     game.incorrectAttempts.set(senderId, attempts);
 
     if (attempts >= 2) {
-      await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua! Cụm từ của bạn "${cleanContentTrim}" phải có đúng ${game.maxWords} từ.`);
+      await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\nLý do: Cụm từ của bạn "${cleanContentTrim}" phải có đúng ${game.maxWords} từ.`);
       activeGames.delete(threadId);
     } else {
-      await sendMessageWarning(api, message, `Từ "${cleanContentTrim}" không hợp lệ (phải có đúng ${game.maxWords} từ).\nBạn còn ${2 - attempts} lần trước khi bị sút ra khỏi phòng!`);
+      await sendMessageWarning(api, message, `Từ "${cleanContentTrim}" không hợp lệ (phải có đúng ${game.maxWords} từ).\nBạn còn ${2 - attempts} lần đoán sai trước khi bị sút ra khỏi phòng!`);
     }
     return;
   }
@@ -127,14 +127,14 @@ export async function handleWordChainMessage(api, message) {
       if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển hoặc sai nghĩa.`;
       else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
       
-      await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua! ${reason} (2 lần sai)`);
+      await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\n${reason} (2 lần sai)`);
       activeGames.delete(threadId);
     } else {
       let reason = "";
       if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển hoặc sai nghĩa.`;
       else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
       
-      await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần trước khi bị sút ra khỏi phòng!`);
+      await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần đoán sai trước khi bị sút ra khỏi phòng!`);
     }
     return;
   }
@@ -151,7 +151,7 @@ export async function handleWordChainMessage(api, message) {
 
     if (isBotPhraseValid && isBotChainValid) {
       game.lastPhrase = botPhrase;
-      await sendMessageComplete(api, message, `🤖 Bot: ${botPhrase}\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`);
+      await sendMessageComplete(api, message, `🤖 Bot: ${botPhrase}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`);
       game.botTurn = false;
     } else {
       let botReason = "";
