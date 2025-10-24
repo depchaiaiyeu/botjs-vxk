@@ -57,7 +57,7 @@ export async function helpCommand(api, message, groupAdmins) {
       },
       chat: {
         command: `${prefix}download [link]`,
-        description: "Tải xuống media từ các nền tảng mạng xã hội",
+        description: "Tải xuống media từ các platform",
         icon: "▶",
       },
       info: {
@@ -95,7 +95,6 @@ export async function helpCommand(api, message, groupAdmins) {
         description: "Gửi ảnh girl",
         icon: "👧",
       },
-      boy: { command: `${prefix}boy`, description: "Gửi ảnh boy", icon: "👦" },
       image: {
         command: `${prefix}image [tên ảnh]`,
         description: "Tìm ảnh ngẫu nhiên",
@@ -122,11 +121,6 @@ export async function helpCommand(api, message, groupAdmins) {
       manager: {
         command: `${prefix}manager`,
         description: "Xem danh sách lệnh quản lý",
-        icon: "🔧",
-      },
-      detail: {
-        command: `${prefix}detail`,
-        description: "Xem thông tin bot",
         icon: "🔧",
       },
       commandAdmin: {
