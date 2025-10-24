@@ -16,6 +16,7 @@ import { antiForward } from "../service-hahuyhoang/anti-service/anti-forward.js"
 
 import { handleWordChainMessage } from "../service-hahuyhoang/game-service/mini-game/wordChain.js";
 import { handleGuessNumberGame } from "../service-hahuyhoang/game-service/mini-game/guessNumber.js";
+
 import { Reactions } from "../api-zalo/index.js";
 import { handleOnChatUser, handleOnReplyFromUser } from "../service-hahuyhoang/service.js";
 import { chatWithSimsimi } from "../service-hahuyhoang/chat-bot/simsimi/simsimi-api.js";
@@ -225,7 +226,8 @@ export async function messagesUser(api, message) {
         antiNotText(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf),
         antiNude(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf),
         antiForward(api, message, isAdminBox, groupSettings, botIsAdminBox, isSelf),
-        handleWordChainMessage(api, message)
+        handleWordChainMessage(api, message),
+        handleGuessNumberGame(api, message)
       ]);
       break;
     }
