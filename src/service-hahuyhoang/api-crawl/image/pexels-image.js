@@ -7,9 +7,6 @@ import { deleteFile, downloadFile } from "../../../utils/util.js";
 import { removeMention } from "../../../utils/format-util.js";
 import { getGlobalPrefix } from "../../service.js";
 
-// Author : Hà Huy Hoàng
-// Description: Pexels Image code by H H H BOT
-
 const CONFIG = {
   paths: {
     saveDir: tempDir,
