@@ -58,11 +58,27 @@ export async function startGame(api, message, groupSettings, gameType, args, isA
     return;
   };
 
+  const subCommand = args && args.length > 0 ? args[0].toLowerCase() : '';
+
+  if (subCommand === "leave") {
+    switch (gameType) {
+      case "guessNumber":
+        await handleGuessNumberCommand(api, message);
+        return;
+      case "wordChain":
+        await handleWordChainCommand(api, message, args);
+        return;
+      case "wordGuess":
+        await handleWordGuessCommand(api, message, threadId, args);
+        return;
+    }
+  }
+
   if (await checkHasActiveGame(api, message, threadId)) return;
 
   switch (gameType) {
     case "guessNumber":
-      await handleGuessNumberCommand(api, message, threadId, args);
+      await handleGuessNumberCommand(api, message);
       break;
     case "wordChain":
       await handleWordChainCommand(api, message, args);
