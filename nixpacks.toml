@@ -1,2 +1,5 @@
 [phases.setup]
-nixPkgs = ['ffmpeg', 'python3', 'gcc', 'gnumake']
+nixPkgs = ['ffmpeg-full', 'python3']
+
+[variables]
+TZ = 'Asia/Ho_Chi_Minh'
