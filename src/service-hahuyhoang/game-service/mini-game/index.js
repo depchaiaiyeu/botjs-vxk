@@ -4,7 +4,7 @@ import { sendMessageFromSQL } from "../../chat-zalo/chat-style/chat-style.js";
 import { handleGuessNumberCommand, handleGuessNumberGame } from "./guessNumber.js";
 import { handleWordChainCommand, handleWordChainMessage } from "./wordChain.js";
 import { handleWordGuessCommand, handleWordGuessGame } from "./wordGuess.js";
-
+import { getGlobalPrefix } from "../../service.js";
 const activeGames = new Map();
 
 export function getActiveGames() {
@@ -14,6 +14,7 @@ export function getActiveGames() {
 export async function handleChatWithGame(api, message, isCallGame, groupSettings) {
   if (isCallGame) return;
   const threadId = message.threadId;
+  prefix = getGlobalPrefix();
   const activeGame = groupSettings[threadId].activeGame;
   if (activeGame === false) return;
 
@@ -47,8 +48,8 @@ export async function startGame(api, message, groupSettings, gameType, args, isA
   if (activeGame === false) {
     if (isAdmin(senderId, threadId)) {
       const text =
-        "Trò chơi hiện tại Không được bật trong nhóm này.\n\n" +
-        "Quản trị viên hãy dùng lệnh !gameactive để bật tương tác game cho nhóm!";
+        `Trò chơi hiện tại Không được bật trong nhóm này.\n\n` +
+        `Quản trị viên hãy dùng lệnh ${prefix}gameactive để bật tương tác game cho nhóm!`;
       const result = {
         success: false,
         message: text,
