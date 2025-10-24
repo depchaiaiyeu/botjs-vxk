@@ -25,6 +25,7 @@ export async function checkBeforeJoinGame(api, message, groupSettings, checkLogi
 
   const threadId = message.threadId;
   const senderId = message.data.uidFrom;
+  const prefix = getGlobalPrefix();
   const isAdminBot = isAdmin(senderId, threadId);
 
   if (!connection) {
@@ -49,8 +50,8 @@ export async function checkBeforeJoinGame(api, message, groupSettings, checkLogi
       let text = "";
       if (isAdminBot) {
         text =
-          "Trò chơi hiện tại không được kích hoạt trong nhóm này.\n\n" +
-          "Quản trị viên hãy dùng lệnh !gameactive để kích hoạt tương tác game cho nhóm!";
+          `Trò chơi hiện tại không được kích hoạt trong nhóm này.\n\n` +
+          `Quản trị viên hãy dùng lệnh ${prefix}gameactive để kích hoạt tương tác game cho nhóm!`;
         const result = {
           success: false,
           message: text,
