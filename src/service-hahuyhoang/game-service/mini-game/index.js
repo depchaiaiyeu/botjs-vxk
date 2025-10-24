@@ -1,10 +1,10 @@
-import { checkAdminBoxPermission } from "../../../commands/command.js";
 import { isAdmin } from "../../../index.js";
 import { sendMessageFromSQL } from "../../chat-zalo/chat-style/chat-style.js";
 import { handleGuessNumberCommand, handleGuessNumberGame } from "./guessNumber.js";
 import { handleWordChainCommand, handleWordChainMessage } from "./wordChain.js";
 import { handleWordGuessCommand, handleWordGuessGame } from "./wordGuess.js";
 import { getGlobalPrefix } from "../../service.js";
+import { checkHasActiveGame } from "./index.js";
 const activeGames = new Map();
 
 export function getActiveGames() {
@@ -40,7 +40,7 @@ export async function handleChatWithGame(api, message, isCallGame, groupSettings
   }
 }
 
-export async function startGame(api, message, groupSettings, gameType, args) {
+export async function startGame(api, message, groupSettings, gameType, args, isAdminBox) {
   const senderId = message.data.uidFrom;
   const threadId = message.threadId;
   const prefix = getGlobalPrefix();
@@ -58,6 +58,9 @@ export async function startGame(api, message, groupSettings, gameType, args) {
     }
     return;
   };
+
+  if (await checkHasActiveGame(api, message, threadId)) return;
+
   switch (gameType) {
     case "guessNumber":
       await handleGuessNumberCommand(api, message, threadId, args);
@@ -69,18 +72,4 @@ export async function startGame(api, message, groupSettings, gameType, args) {
       await handleWordGuessCommand(api, message, threadId, args);
       break;
   }
-}
-
-export async function checkHasActiveGame(api, message, threadId) {
-  if (activeGames.has(threadId)) {
-    const activeGame = activeGames.get(threadId);
-    const gameName = activeGame.type === "guessNumber" ? "Đoán số" : activeGame.type === "wordChain" ? "Nối từ" : "Đoán từ";
-    const result = {
-      success: false,
-      message: `Trò chơi: ${gameName}\nĐang diễn ra trong nhóm này, hãy kết thúc trò chơi hiện tại trước khi bắt đầu trò chơi mới.`,
-    };
-    await sendMessageFromSQL(api, message, result, true, 30000);
-    return true;
-  }
-  return false;
 }
