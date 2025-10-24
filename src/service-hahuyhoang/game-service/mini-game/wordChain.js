@@ -105,87 +105,77 @@ export async function handleWordChainMessage(api, message) {
   if (!game.players.has(senderId)) return;
 
   const words = cleanContentTrim.split(/\s+/);
-  if (words.length > game.maxWords || words.length === 0) {
+  if (words.length !== game.maxWords) {
     let attempts = game.incorrectAttempts.get(senderId) + 1;
     game.incorrectAttempts.set(senderId, attempts);
 
     if (attempts >= 2) {
       await sendMessageCompleteRequest(api, message, {
-        caption: `🚫 ${message.data.dName} đã thua! Cụm từ của bạn vượt quá ${game.maxWords} từ cho phép hoặc không hợp lệ 2 lần. Số từ của bạn: ${words.length}.`,
+        caption: `🚫 ${message.data.dName} đã thua! Cụm từ của bạn "${cleanContentTrim}" phải có đúng ${game.maxWords} từ.`,
       }, 180000);
       activeGames.delete(threadId);
-      return;
-    } else {
-      await sendMessageWarningRequest(api, message, {
-        caption: `🚫 Từ không hợp lệ! Cụm từ của bạn phải có từ 1 đến ${game.maxWords} từ. (Lượt sai: ${attempts}/2)`,
-      }, 180000);
     }
     return;
   }
 
-  if (!await checkWordValidity(cleanContentTrim)) {
+  let isWordValid = await checkWordValidity(cleanContentTrim);
+  let isChainValid = true;
+
+  if (game.lastPhrase !== "") {
+    const lastWordOfPreviousPhrase = game.lastPhrase.split(/\s+/).pop();
+    if (!cleanContentTrim.startsWith(lastWordOfPreviousPhrase)) {
+      isChainValid = false;
+    }
+  }
+
+  if (!isWordValid || !isChainValid) {
     let attempts = game.incorrectAttempts.get(senderId) + 1;
     game.incorrectAttempts.set(senderId, attempts);
 
     if (attempts >= 2) {
+      let reason = "";
+      if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có nghĩa hoặc không hợp lệ.`;
+      else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
+      
       await sendMessageCompleteRequest(api, message, {
-        caption: `🚫 ${message.data.dName} đã thua! Từ "${cleanContentTrim}" không hợp lệ 2 lần.`,
+        caption: `🚫 ${message.data.dName} đã thua! ${reason} (2 lần sai)`,
       }, 180000);
       activeGames.delete(threadId);
-      return;
-    } else {
-      await sendMessageWarningRequest(api, message, {
-        caption: `🚫 Từ "${cleanContentTrim}" không hợp lệ. Vui lòng nhập từ khác. (Lượt sai: ${attempts}/2)`,
-      }, 180000);
     }
     return;
   }
 
-  if (!game.botTurn) {
-    if (game.lastPhrase === "" || cleanContentTrim.startsWith(game.lastPhrase.split(/\s+/).pop())) {
-      game.lastPhrase = cleanContentTrim;
-      game.incorrectAttempts.set(senderId, 0);
-      game.botTurn = true;
+  game.lastPhrase = cleanContentTrim;
+  game.incorrectAttempts.set(senderId, 0);
+  game.botTurn = true;
 
-      const botPhrase = await findNextPhrase(game.lastPhrase);
-      if (botPhrase) {
-        const isBotPhraseValid = await checkWordValidity(botPhrase);
-        if (isBotPhraseValid) {
-          game.lastPhrase = botPhrase;
-          await sendMessageCompleteRequest(api, message, {
-            caption: `🤖 Bot: ${botPhrase}\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`,
-          }, 180000);
-          game.botTurn = false;
-        } else {
-          await sendMessageCompleteRequest(api, message, {
-            caption: "🎉 Bot không tìm được cụm từ phù hợp hoặc từ của bot không hợp lệ. Bot thua! Bạn thắng!",
-          }, 180000);
-          activeGames.delete(threadId);
-        }
-      } else {
-        await sendMessageCompleteRequest(api, message, {
-          caption: "🎉 Bot không tìm được cụm từ phù hợp. Bạn thắng!",
-        }, 180000);
-        activeGames.delete(threadId);
-      }
+  const botPhrase = await findNextPhrase(game.lastPhrase);
+  if (botPhrase) {
+    const isBotPhraseValid = await checkWordValidity(botPhrase);
+    const lastWordOfUserPhrase = game.lastPhrase.split(/\s+/).pop();
+    const isBotChainValid = botPhrase.startsWith(lastWordOfUserPhrase);
+
+    if (isBotPhraseValid && isBotChainValid) {
+      game.lastPhrase = botPhrase;
+      await sendMessageCompleteRequest(api, message, {
+        caption: `🤖 Bot: ${botPhrase}\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`,
+      }, 180000);
+      game.botTurn = false;
     } else {
-      let attempts = game.incorrectAttempts.get(senderId) + 1;
-      game.incorrectAttempts.set(senderId, attempts);
+      let botReason = "";
+      if (!isBotPhraseValid) botReason = `từ "${botPhrase}" của bot không hợp lệ`;
+      else if (!isBotChainValid) botReason = `từ "${botPhrase}" của bot không bắt đầu bằng "${lastWordOfUserPhrase}"`;
 
-      if (attempts >= 2) {
-        await sendMessageCompleteRequest(api, message, {
-          caption: `🚫 ${message.data.dName} đã thua! Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}" 2 lần.`,
-        }, 180000);
-        activeGames.delete(threadId);
-        return;
-      } else {
-        await sendMessageWarningRequest(api, message, {
-          caption: `⚠️ Cụm từ không hợp lệ! Cụm từ phải bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}". (Lượt sai: ${attempts}/2)`,
-        }, 180000);
-      }
+      await sendMessageCompleteRequest(api, message, {
+        caption: `🎉 Bot không tìm được cụm từ phù hợp hoặc ${botReason}. Bot thua! Bạn thắng!`,
+      }, 180000);
+      activeGames.delete(threadId);
     }
   } else {
-    game.botTurn = false;
+    await sendMessageCompleteRequest(api, message, {
+      caption: "🎉 Bot không tìm được cụm từ phù hợp. Bạn thắng!",
+    }, 180000);
+    activeGames.delete(threadId);
   }
 }
 
@@ -193,12 +183,12 @@ async function findNextPhrase(lastPhrase) {
   try {
     const encodedWord = encodeURIComponent(lastPhrase);
     const response = await axios.get(`https://noitu.pro/answer?word=${encodedWord}`);
-    if (response.data.success) {
+    if (response.data.success && response.data.nextWord && response.data.nextWord.text) {
       return response.data.nextWord.text;
     }
     return null;
   } catch (error) {
-    console.error("🚫 Lỗi khi gọi API nối từ:", error.message);
+    console.error("🚫 Lỗi khi gọi API nối từ để tìm từ tiếp theo:", error.message);
     return null;
   }
 }
