@@ -1426,15 +1426,15 @@ export async function handleCommand(
               break;
 
             case "doanso":
-              await startGame(api, message, groupSettings, "guessNumber", commandParts.slice(1), isAdminBox);
+              await startGame(api, message, groupSettings, "guessNumber", commandParts.slice(1));
               break;
 
             case "noitu":
-              await startGame(api, message, groupSettings, "wordChain", commandParts.slice(1), isAdminBox);
+              await startGame(api, message, groupSettings, "wordChain", commandParts.slice(1));
               break;
 
             case "doantu":
-              await startGame(api, message, groupSettings, "wordGuess", commandParts.slice(1), isAdminBox);
+              await startGame(api, message, groupSettings, "wordGuess", commandParts.slice(1));
               break;
          //     case "noitu":
           //   await handleNoitu(api, message, command, true);
