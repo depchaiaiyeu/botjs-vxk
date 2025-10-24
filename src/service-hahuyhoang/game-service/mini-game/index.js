@@ -14,7 +14,6 @@ export function getActiveGames() {
 export async function handleChatWithGame(api, message, isCallGame, groupSettings) {
   if (isCallGame) return;
   const threadId = message.threadId;
-  prefix = getGlobalPrefix();
   const activeGame = groupSettings[threadId].activeGame;
   if (activeGame === false) return;
 
@@ -44,6 +43,7 @@ export async function handleChatWithGame(api, message, isCallGame, groupSettings
 export async function startGame(api, message, groupSettings, gameType, args, isAdminBox) {
   const senderId = message.data.uidFrom;
   const threadId = message.threadId;
+  const prefix = getGlobalPrefix();
   const activeGame = groupSettings[threadId].activeGame;
   if (activeGame === false) {
     if (isAdmin(senderId, threadId)) {
