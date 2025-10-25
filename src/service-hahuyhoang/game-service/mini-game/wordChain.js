@@ -20,7 +20,7 @@ export async function handleWordChainCommand(api, message) {
   const prefix = getGlobalPrefix();
 
   if (args[0]?.toLowerCase() === `${prefix}noitu` && !args[1]) {
-    await sendMessageComplete(api, message, `Hướng dẫn game nối từ. 🎮\n${prefix}noitu join -> Tham gia trò chơi nối từ với Bot.\n${prefix}noitu leave -> Rời khỏi trò chơi nối từ.`);
+    await sendMessageComplete(api, message, `Hướng dẫn game nối từ. 🎮\n🔗 ${prefix}noitu join: tham gia trò chơi nối từ với Bot.\n🔖 ${prefix}noitu leave: rời khỏi trò chơi nối từ.`);
     return;
   }
 
@@ -124,7 +124,7 @@ export async function handleWordChainMessage(api, message) {
 
     if (attempts >= 2) {
       let reason = "";
-      if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển hoặc sai nghĩa.`;
+      if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển -> sai nghĩa.`;
       else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
       
       await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\n${reason} (2 lần sai)`);
@@ -134,7 +134,7 @@ export async function handleWordChainMessage(api, message) {
       if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển hoặc sai nghĩa.`;
       else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
       
-      await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần đoán sai trước khi bị sút ra khỏi phòng!`);
+      await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần đoán đúng trước khi bị sút ra khỏi phòng!`);
     }
     return;
   }
@@ -156,7 +156,7 @@ export async function handleWordChainMessage(api, message) {
     } else {
       let botReason = "";
       if (!isBotPhraseValid) botReason = `từ "${botPhrase}" của bot không hợp lệ`;
-      else if (!isBotChainValid) botReason = `từ "${botPhrase}" của bot không bắt đầu bằng "${lastWordOfUserPhrase}"`;
+      else if (!isBotChainValid) botReason = `từ "${botPhrase}" của bot nghĩ không bắt đầu bằng "${lastWordOfUserPhrase}"`;
 
       await sendMessageComplete(api, message, `🎉 Bot không tìm được cụm từ phù hợp hoặc ${botReason}.\nBot thua, bạn thắng!`);
       activeGames.delete(threadId);
