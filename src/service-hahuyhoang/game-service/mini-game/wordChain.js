@@ -9,7 +9,7 @@ async function checkWordValidity(word) {
     const response = await axios.get(`https://noitu.pro/answer?word=${encodedWord}`);
     return response.data.success;
   } catch (error) {
-    console.error("🚫 Lỗi khi kiểm tra từ với API nối từ:", error.message);
+    console.error("Lỗi khi kiểm tra từ với API nối từ:", error.message);
     return false;
   }
 }
@@ -20,7 +20,7 @@ export async function handleWordChainCommand(api, message) {
   const prefix = getGlobalPrefix();
 
   if (args[0]?.toLowerCase() === `${prefix}noitu` && !args[1]) {
-    await sendMessageComplete(api, message, `Hướng dẫn game nối từ. 🎮\n🔗 ${prefix}noitu join: tham gia trò chơi nối từ với Bot.\n🔖 ${prefix}noitu leave: rời khỏi trò chơi nối từ.`);
+    await sendMessageComplete(api, message, `🎮 Hướng dẫn game nối từ:\n🔗 ${prefix}noitu join: tham gia trò chơi nối từ với Bot.\n🔖 ${prefix}noitu leave: rời khỏi trò chơi nối từ.`);
     return;
   }
 
@@ -65,6 +65,7 @@ export async function handleWordChainCommand(api, message) {
         botTurn: false,
         maxWords: 2,
         incorrectAttempts: new Map([[message.data.uidFrom, 0]]),
+        lastProcessedMessage: ""
       }
     });
     await sendMessageComplete(api, message, "🎮 Trò chơi nối từ bắt đầu! Hãy nhập một cụm từ (tối đa 2 từ) để bắt đầu.");
@@ -88,6 +89,9 @@ export async function handleWordChainMessage(api, message) {
   if (cleanContent.startsWith(prefix)) return;
   if (!game.players.has(senderId)) return;
 
+  if (game.lastProcessedMessage === cleanContentTrim) return;
+  game.lastProcessedMessage = cleanContentTrim;
+
   const words = cleanContentTrim.split(/\s+/);
   if (words.length !== game.maxWords) {
     if (!game.incorrectAttempts.has(senderId)) {
@@ -108,6 +112,7 @@ export async function handleWordChainMessage(api, message) {
   if (!game.incorrectAttempts.has(senderId)) {
     game.incorrectAttempts.set(senderId, 0);
   }
+  
   let isWordValid = await checkWordValidity(cleanContentTrim);
   let isChainValid = true;
 
@@ -151,12 +156,13 @@ export async function handleWordChainMessage(api, message) {
 
     if (isBotPhraseValid && isBotChainValid) {
       game.lastPhrase = botPhrase;
+      game.lastProcessedMessage = "";
       await sendMessageComplete(api, message, `🤖 Bot: ${botPhrase}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`);
       game.botTurn = false;
     } else {
       let botReason = "";
       if (!isBotPhraseValid) botReason = `từ "${botPhrase}" của bot không hợp lệ`;
-      else if (!isBotChainValid) botReason = `từ "${botPhrase}" của bot nghĩ không bắt đầu bằng "${lastWordOfUserPhrase}"`;
+      else if (!isBotChainValid) botReason = `từ "${botPhrase}" của bot không bắt đầu bằng "${lastWordOfUserPhrase}"`;
 
       await sendMessageComplete(api, message, `🎉 Bot không tìm được cụm từ phù hợp hoặc ${botReason}.\nBot thua, bạn thắng!`);
       activeGames.delete(threadId);
@@ -176,7 +182,7 @@ async function findNextPhrase(lastPhrase) {
     }
     return null;
   } catch (error) {
-    console.error("🚫 Lỗi khi gọi API nối từ để tìm từ tiếp theo:", error.message);
+    console.error("Lỗi khi gọi API nối từ để tìm từ tiếp theo:", error.message);
     return null;
   }
 }
