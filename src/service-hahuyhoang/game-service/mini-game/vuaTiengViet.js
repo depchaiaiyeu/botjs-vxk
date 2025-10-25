@@ -72,7 +72,7 @@ export async function handleVuaTiengVietCommand(api, message) {
   const prefix = getGlobalPrefix();
 
   if (args[0]?.toLowerCase() === `${prefix}vuatiengviet` && !args[1]) {
-    await sendMessageComplete(api, message, `🎮 Hướng dẫn game Vua Tiếng Việt:\n🔗 ${prefix}vuatiengviet join: tham gia trò chơi vua tiếng việt\n🔖 ${prefix}vuatiengviet leave: rời khỏi trò chơi\n📚 Khi đã tham gia, nhắn check nếu cần xem lại từ cần đoán\n🤔 Nếu là admin đã tham gia trò chơi, nhắn result để xem kết quả từ cần đoán);
+    await sendMessageComplete(api, message, `🎮 Hướng dẫn game Vua Tiếng Việt:\n🔗 ${prefix}vuatiengviet join: tham gia trò chơi vua tiếng việt\n🔖 ${prefix}vuatiengviet leave: rời khỏi trò chơi\n📚 Khi đã tham gia, nhắn check nếu cần xem lại từ cần đoán\n🤔 Nếu là admin đã tham gia trò chơi, nhắn result để xem kết quả từ cần đoán`);
     return;
   }
 
