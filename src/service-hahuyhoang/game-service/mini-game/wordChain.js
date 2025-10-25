@@ -58,9 +58,11 @@ export async function handlePVPConfirmation(api, reaction) {
     
     const confirmMsg = {
       threadId: threadId,
+      type: MessageType.GroupMessage,
       data: {
         content: `⚔️ Trận đấu nối từ bắt đầu!\n\n👤 ${challenge.challengerName} vs 👤 ${challenge.opponentName}\n\n🎯 ${challenge.challengerName} hãy nhập cụm từ đầu tiên (2 từ) để bắt đầu!`,
-        uidFrom: userId
+        uidFrom: userId,
+        dName: `${challenge.challengerName}`
       }
     };
     
