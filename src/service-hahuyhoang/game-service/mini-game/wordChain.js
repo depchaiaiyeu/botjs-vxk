@@ -30,41 +30,46 @@ async function getInitialWord() {
 }
 
 export async function handlePVPConfirmation(api, reaction) {
-  const userId = reaction.data.uidFrom;
-  const rType = reaction.data.content.rType;
-  const threadId = reaction.data.idTo;
-  
-  if (rType !== 3 && rType !== 5) return false;
-  
-  const challengeKey = `${threadId}_${userId}`;
-  if (!pendingPVPChallenges.has(challengeKey)) return false;
-  
-  const challenge = pendingPVPChallenges.get(challengeKey);
-  clearTimeout(challenge.timeout);
-  pendingPVPChallenges.delete(challengeKey);
-  
-  getActiveGames().set(threadId, {
-    type: 'wordChainPVP',
-    game: {
-      player1: { id: challenge.challengerId, name: challenge.challengerName, incorrectAttempts: 0 },
-      player2: { id: userId, name: challenge.opponentName, incorrectAttempts: 0 },
-      currentTurn: challenge.challengerId,
-      lastPhrase: "",
-      maxWords: 2,
-      waitingForFirstWord: true
-    }
-  });
-  
-  const confirmMsg = {
-    threadId: threadId,
-    data: {
-      content: `⚔️ Trận đấu nối từ bắt đầu!\n\n👤 ${challenge.challengerName} vs 👤 ${challenge.opponentName}\n\n🎯 ${challenge.challengerName} hãy nhập cụm từ đầu tiên (2 từ) để bắt đầu!`,
-      uidFrom: userId
-    }
-  };
-  
-  await sendMessageComplete(api, confirmMsg, confirmMsg.data.content);
-  return true;
+  try {
+    const userId = reaction.data.uidFrom;
+    const rType = reaction.data.content.rType;
+    const threadId = reaction.data.idTo;
+    
+    if (rType !== 3 && rType !== 5) return false;
+    
+    const challengeKey = `${threadId}_${userId}`;
+    if (!pendingPVPChallenges.has(challengeKey)) return false;
+    
+    const challenge = pendingPVPChallenges.get(challengeKey);
+    clearTimeout(challenge.timeout);
+    pendingPVPChallenges.delete(challengeKey);
+    
+    getActiveGames().set(threadId, {
+      type: 'wordChainPVP',
+      game: {
+        player1: { id: challenge.challengerId, name: challenge.challengerName, incorrectAttempts: 0 },
+        player2: { id: userId, name: challenge.opponentName, incorrectAttempts: 0 },
+        currentTurn: challenge.challengerId,
+        lastPhrase: "",
+        maxWords: 2,
+        waitingForFirstWord: true
+      }
+    });
+    
+    const confirmMsg = {
+      threadId: threadId,
+      data: {
+        content: `⚔️ Trận đấu nối từ bắt đầu!\n\n👤 ${challenge.challengerName} vs 👤 ${challenge.opponentName}\n\n🎯 ${challenge.challengerName} hãy nhập cụm từ đầu tiên (2 từ) để bắt đầu!`,
+        uidFrom: userId
+      }
+    };
+    
+    await sendMessageComplete(api, confirmMsg, confirmMsg.data.content);
+    return true;
+  } catch (error) {
+    console.error("Lỗi xác nhận PVP:", error);
+    return false;
+  }
 }
 
 export async function handleWordChainCommand(api, message) {
@@ -104,17 +109,21 @@ export async function handleWordChainCommand(api, message) {
       return;
     }
 
-    const timeout = setTimeout(() => {
+    const timeout = setTimeout(async () => {
       if (pendingPVPChallenges.has(challengeKey)) {
         pendingPVPChallenges.delete(challengeKey);
-        const cancelMsg = {
-          threadId: threadId,
-          data: {
-            content: `⏰ Lời thách đấu từ ${challengerName} đến ${opponentName} đã hết hạn (30s).`,
-            uidFrom: challengerId
-          }
-        };
-        sendMessageWarning(api, cancelMsg, cancelMsg.data.content);
+        try {
+          const cancelMsg = {
+            threadId: threadId,
+            data: {
+              content: `⏰ Lời thách đấu từ ${challengerName} đến ${opponentName} đã hết hạn (30s).`,
+              uidFrom: challengerId
+            }
+          };
+          await sendMessageWarning(api, cancelMsg, cancelMsg.data.content);
+        } catch (error) {
+          console.error("Lỗi khi hủy thách đấu:", error);
+        }
       }
     }, 30000);
 
@@ -126,7 +135,7 @@ export async function handleWordChainCommand(api, message) {
       timeout
     });
 
-    await sendMessageComplete(api, message, `⚔️ ${challengerName} thách đấu ${opponentName}!\n\n👉 ${opponentName} hãy thả reaction (👍 hoặc ❤️) vào tin nhắn này để chấp nhận!\n⏰ Thời gian: 30 giây`);
+    await sendMessageComplete(api, message, `⚔️ ${challengerName} thách đấu ${opponentName}!\n\n👉 ${opponentName} hãy thả reaction (LIKE hoặc HEART) vào tin nhắn này để chấp nhận!\n⏰ Thời gian: 30 giây`);
     return;
   }
 
@@ -318,8 +327,9 @@ async function handlePVPMessage(api, message, game, threadId) {
   
   if (senderId !== game.player1.id && senderId !== game.player2.id) return;
 
-  const cleanContent = message.data.content.trim().toLowerCase();
-  const cleanContentTrim = cleanContent.replace(/[^\p{L}\p{N}\s]/gu, "").trim();
+  const content = message.data.content || "";
+  const cleanContent = content.toLowerCase();
+  const cleanContentTrim = cleanContent.replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, " ").replace(/^\s+|\s+$/g, "");
 
   if (cleanContent !== cleanContentTrim) return;
   if (cleanContent.startsWith(prefix)) return;
