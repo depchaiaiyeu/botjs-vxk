@@ -18,7 +18,7 @@ async function getInitialWord() {
   try {
     const response = await axios.get(`https://noitu.pro/init`);
     if (response.data && !response.data.error && response.data.chuan) {
-      return response.data.chuan;
+      return { original: response.data.chuan, normalized: response.data.chuan.toLowerCase() };
     }
     return null;
   } catch (error) {
@@ -102,8 +102,8 @@ export async function handleWordChainCommand(api, message) {
       return;
     }
 
-    const initialWord = await getInitialWord();
-    if (!initialWord) {
+    const initialWordData = await getInitialWord();
+    if (!initialWordData) {
       await sendMessageWarning(api, message, "🚫 Không thể khởi tạo trò chơi. Vui lòng thử lại sau.");
       return;
     }
@@ -112,7 +112,7 @@ export async function handleWordChainCommand(api, message) {
       type: 'wordChain',
       game: {
         lastPhraseUser: "",
-        lastPhraseBot: initialWord,
+        lastPhraseBot: initialWordData.normalized,
         players: new Set([message.data.uidFrom]),
         botTurn: false,
         maxWords: 2,
@@ -121,8 +121,8 @@ export async function handleWordChainCommand(api, message) {
       }
     });
 
-    const lastWord = initialWord.split(/\s+/).pop();
-    await sendMessageComplete(api, message, `🎮 Trò chơi nối từ bắt đầu!\n\n🤖 Bot: ${initialWord}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${lastWord}"`);
+    const lastWord = initialWordData.normalized.split(/\s+/).pop();
+    await sendMessageComplete(api, message, `🎮 Trò chơi nối từ bắt đầu!\n\n🤖 Bot: ${initialWordData.original}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${lastWord}"`);
     return;
   }
 }
@@ -150,21 +150,7 @@ export async function handleWordChainMessage(api, message) {
   if (game.processingBot) return;
 
   const words = cleanContentTrim.split(/\s+/);
-  if (words.length !== game.maxWords) {
-    if (!game.incorrectAttempts.has(senderId)) {
-      game.incorrectAttempts.set(senderId, 0);
-    }
-    let attempts = game.incorrectAttempts.get(senderId) + 1;
-    game.incorrectAttempts.set(senderId, attempts);
-
-    if (attempts >= 2) {
-      await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\nLý do: Cụm từ của bạn "${cleanContentTrim}" phải có đúng ${game.maxWords} từ.`);
-      activeGames.delete(threadId);
-    } else {
-      await sendMessageWarning(api, message, `Từ "${cleanContentTrim}" không hợp lệ (phải có đúng ${game.maxWords} từ).\nBạn còn ${2 - attempts} lần đoán sai trước khi bị loại!`);
-    }
-    return;
-  }
+  if (words.length !== game.maxWords) return;
 
   if (!game.incorrectAttempts.has(senderId)) {
     game.incorrectAttempts.set(senderId, 0);
@@ -204,21 +190,21 @@ export async function handleWordChainMessage(api, message) {
   game.incorrectAttempts.set(senderId, 0);
   game.processingBot = true;
 
-  const botPhrase = await findNextPhrase(game.lastPhraseUser);
-  if (botPhrase) {
-    const botResult = await checkWordValidity(botPhrase);
+  const botPhraseData = await findNextPhrase(game.lastPhraseUser);
+  if (botPhraseData) {
+    const botResult = await checkWordValidity(botPhraseData.normalized);
     const isBotPhraseValid = botResult.success;
     const lastWordOfUserPhrase = game.lastPhraseUser.split(/\s+/).pop();
-    const isBotChainValid = botPhrase.startsWith(lastWordOfUserPhrase);
+    const isBotChainValid = botPhraseData.normalized.startsWith(lastWordOfUserPhrase);
 
     if (isBotPhraseValid && isBotChainValid) {
-      game.lastPhraseBot = botPhrase;
-      await sendMessageComplete(api, message, `🤖 Bot: ${botPhrase}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`);
+      game.lastPhraseBot = botPhraseData.normalized;
+      await sendMessageComplete(api, message, `🤖 Bot: ${botPhraseData.original}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhraseData.normalized.split(/\s+/).pop()}"`);
       game.processingBot = false;
     } else {
       let botReason = "";
-      if (!isBotPhraseValid) botReason = `từ "${botPhrase}" của bot không hợp lệ`;
-      else if (!isBotChainValid) botReason = `từ "${botPhrase}" của bot không bắt đầu bằng "${lastWordOfUserPhrase}"`;
+      if (!isBotPhraseValid) botReason = `từ "${botPhraseData.original}" của bot không hợp lệ`;
+      else if (!isBotChainValid) botReason = `từ "${botPhraseData.original}" của bot không bắt đầu bằng "${lastWordOfUserPhrase}"`;
 
       await sendMessageComplete(api, message, `🎉 Bot không tìm được cụm từ phù hợp hoặc ${botReason}.\nBot thua, bạn thắng!`);
       activeGames.delete(threadId);
@@ -234,7 +220,7 @@ async function findNextPhrase(lastPhrase) {
     const encodedWord = encodeURIComponent(lastPhrase);
     const response = await axios.get(`https://noitu.pro/answer?word=${encodedWord}`);
     if (response.data.success && response.data.nextWord && response.data.nextWord.text) {
-      return response.data.nextWord.text;
+      return { original: response.data.nextWord.text, normalized: response.data.nextWord.text.toLowerCase() };
     }
     return null;
   } catch (error) {
