@@ -110,6 +110,7 @@ export async function handleWordChainCommand(api, message) {
         playerDataMap.set(playerKey, {
           incorrectAttempts: 0,
           lastPhrase: "",
+          lastAttempt: "",
           lastMessageTime: Date.now()
         });
         await sendMessageComplete(api, message, "Bạn đã tham gia trò chơi nối từ.");
@@ -131,6 +132,7 @@ export async function handleWordChainCommand(api, message) {
     playerDataMap.set(playerKey, {
       incorrectAttempts: 0,
       lastPhrase: "",
+      lastAttempt: "",
       lastMessageTime: Date.now()
     });
 
@@ -170,7 +172,7 @@ function startTurnTimer(api, message, threadId, playerId) {
     const currentGame = currentGameData.game;
     if (currentGame.currentPlayer !== playerId) return;
     
-    await sendMessageComplete(api, message, `⏰ Hết thời gian! Người chơi không trả lời Bot trong 60 giây.\n🚫 Trò chơi kết thúc!`);
+    await sendMessageComplete(api, message, `⏰ Hết giờ! Người chơi không trả lời trong 60 giây.\n🚫 Game over!`);
     
     getActiveGames().delete(threadId);
     botDataMap.delete(threadId);
@@ -221,9 +223,12 @@ export async function handleWordChainMessage(api, message) {
   
   if (!playerData) return;
   
-  if (playerData.lastPhrase === cleanContentTrim) {
+  if (playerData.lastPhrase === cleanContentTrim || playerData.lastAttempt === cleanContentTrim) {
     return;
   }
+
+  playerData.lastAttempt = cleanContentTrim;
+  playerData.lastMessageTime = Date.now();
 
   const result = await checkWordValidity(cleanContentTrim);
   const isWordValid = result.success;
@@ -266,6 +271,7 @@ export async function handleWordChainMessage(api, message) {
   }
 
   playerData.lastPhrase = cleanContentTrim;
+  playerData.lastAttempt = ""; // Clear last attempt on success
   playerData.incorrectAttempts = 0;
   playerData.lastMessageTime = Date.now();
   game.processingBot = true;
