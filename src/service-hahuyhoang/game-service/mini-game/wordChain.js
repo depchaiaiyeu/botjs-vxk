@@ -31,15 +31,66 @@ export async function handleWordChainCommand(api, message) {
   const threadId = message.threadId;
   const args = message.data.content.split(" ");
   const prefix = getGlobalPrefix();
+  const mentions = message.data.mentions;
 
   if (args[0]?.toLowerCase() === `${prefix}noitu` && !args[1]) {
-    await sendMessageComplete(api, message, `🎮 Hướng dẫn game nối từ:\n🔗 ${prefix}noitu join: tham gia trò chơi nối từ với Bot.\n🔖 ${prefix}noitu leave: rời khỏi trò chơi nối từ.`);
+    await sendMessageComplete(api, message, `🎮 Hướng dẫn game nối từ:\n🔗 ${prefix}noitu join: tham gia trò chơi nối từ với Bot.\n🔖 ${prefix}noitu leave: rời khỏi trò chơi nối từ.\n⚔️ ${prefix}noitu pvp @user: thách đấu 1v1 với người chơi khác.`);
+    return;
+  }
+
+  if (args[1]?.toLowerCase() === "pvp") {
+    if (!mentions || mentions.length === 0) {
+      await sendMessageWarning(api, message, "Vui lòng đề cập (@mention) người chơi bạn muốn thách đấu.");
+      return;
+    }
+
+    const challengerId = message.data.uidFrom;
+    const challengerName = message.data.dName;
+    const opponentId = mentions[0].uid;
+    const opponentName = message.data.content.substring(mentions[0].pos, mentions[0].pos + mentions[0].len).replace("@", "");
+
+    if (challengerId === opponentId) {
+      await sendMessageWarning(api, message, "Bạn không thể thách đấu chính mình!");
+      return;
+    }
+
+    if (await checkHasActiveGame(api, message, threadId)) {
+      return;
+    }
+
+    getActiveGames().set(threadId, {
+      type: 'wordChainPVP',
+      game: {
+        player1: { id: challengerId, name: challengerName, incorrectAttempts: 0 },
+        player2: { id: opponentId, name: opponentName, incorrectAttempts: 0 },
+        currentTurn: challengerId,
+        lastPhrase: "",
+        maxWords: 2,
+        waitingForFirstWord: true
+      }
+    });
+
+    await sendMessageComplete(api, message, `⚔️ Trận đấu nối từ bắt đầu!\n\n👤 ${challengerName} vs 👤 ${opponentName}\n\n🎯 ${challengerName} hãy nhập cụm từ đầu tiên (2 từ) để bắt đầu!`);
     return;
   }
 
   if (args[1]?.toLowerCase() === "leave") {
     if (getActiveGames().has(threadId)) {
-      const game = getActiveGames().get(threadId).game;
+      const gameData = getActiveGames().get(threadId);
+      
+      if (gameData.type === 'wordChainPVP') {
+        const game = gameData.game;
+        if (game.player1.id === message.data.uidFrom || game.player2.id === message.data.uidFrom) {
+          const winnerName = game.player1.id === message.data.uidFrom ? game.player2.name : game.player1.name;
+          await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã rời trận!\n🎉 ${winnerName} thắng!`);
+          getActiveGames().delete(threadId);
+        } else {
+          await sendMessageWarning(api, message, "Bạn không tham gia trận đấu này.");
+        }
+        return;
+      }
+
+      const game = gameData.game;
       if (game.players.has(message.data.uidFrom)) {
         game.players.delete(message.data.uidFrom);
         if (game.players.size === 0) {
@@ -59,7 +110,12 @@ export async function handleWordChainCommand(api, message) {
 
   if (args[1]?.toLowerCase() === "join") {
     if (await checkHasActiveGame(api, message, threadId)) {
-      const game = getActiveGames().get(threadId).game;
+      const gameData = getActiveGames().get(threadId);
+      if (gameData.type === 'wordChainPVP') {
+        await sendMessageWarning(api, message, "Đang có trận PVP, không thể tham gia chế độ Bot.");
+        return;
+      }
+      const game = gameData.game;
       if (game.players.has(message.data.uidFrom)) {
         await sendMessageWarning(api, message, "Bạn đã tham gia trò chơi nối từ rồi.");
       } else {
@@ -100,9 +156,18 @@ export async function handleWordChainMessage(api, message) {
   const prefix = getGlobalPrefix();
   const senderId = message.data.uidFrom;
 
-  if (!activeGames.has(threadId) || activeGames.get(threadId).type !== 'wordChain') return;
+  if (!activeGames.has(threadId)) return;
 
-  const game = activeGames.get(threadId).game;
+  const gameData = activeGames.get(threadId);
+
+  if (gameData.type === 'wordChainPVP') {
+    await handlePVPMessage(api, message, gameData.game, threadId);
+    return;
+  }
+
+  if (gameData.type !== 'wordChain') return;
+
+  const game = gameData.game;
   const cleanContent = message.data.content.trim().toLowerCase();
   const cleanContentTrim = cleanContent.replace(/[^\p{L}\p{N}\s]/gu, "").trim();
 
@@ -192,6 +257,86 @@ export async function handleWordChainMessage(api, message) {
     await sendMessageComplete(api, message, "🎉 Bot không tìm được cụm từ phù hợp. Bạn thắng!");
     activeGames.delete(threadId);
   }
+}
+
+async function handlePVPMessage(api, message, game, threadId) {
+  const senderId = message.data.uidFrom;
+  const prefix = getGlobalPrefix();
+  
+  if (senderId !== game.player1.id && senderId !== game.player2.id) return;
+
+  const cleanContent = message.data.content.trim().toLowerCase();
+  const cleanContentTrim = cleanContent.replace(/[^\p{L}\p{N}\s]/gu, "").trim();
+
+  if (cleanContent !== cleanContentTrim) return;
+  if (cleanContent.startsWith(prefix)) return;
+  if (message.data.mentions && message.data.mentions.length > 0) return;
+
+  const words = cleanContentTrim.split(/\s+/);
+  if (words.length !== game.maxWords) return;
+
+  const currentPlayer = senderId === game.player1.id ? game.player1 : game.player2;
+  const opponent = senderId === game.player1.id ? game.player2 : game.player1;
+
+  if (game.waitingForFirstWord) {
+    if (senderId !== game.currentTurn) return;
+
+    const isWordValid = await checkWordValidity(cleanContentTrim);
+    if (!isWordValid) {
+      currentPlayer.incorrectAttempts++;
+      if (currentPlayer.incorrectAttempts >= 2) {
+        await sendMessageComplete(api, message, `🚫 ${currentPlayer.name} đã thua!\nLý do: Từ "${cleanContentTrim}" không có trong từ điển (2 lần sai)\n\n🎉 ${opponent.name} thắng!`);
+        getActiveGames().delete(threadId);
+      } else {
+        await sendMessageWarning(api, message, `Từ "${cleanContentTrim}" không có trong từ điển.\nBạn còn 1 lần đoán sai!`);
+      }
+      return;
+    }
+
+    game.lastPhrase = cleanContentTrim;
+    game.waitingForFirstWord = false;
+    game.currentTurn = opponent.id;
+    const lastWord = cleanContentTrim.split(/\s+/).pop();
+    await sendMessageComplete(api, message, `✅ ${currentPlayer.name}: ${cleanContentTrim}\n\n👉 ${opponent.name}, cụm từ tiếp theo phải bắt đầu bằng "${lastWord}"`);
+    return;
+  }
+
+  if (senderId !== game.currentTurn) return;
+
+  const isWordValid = await checkWordValidity(cleanContentTrim);
+  let isChainValid = true;
+
+  if (game.lastPhrase !== "") {
+    const lastWordOfPreviousPhrase = game.lastPhrase.split(/\s+/).pop();
+    if (!cleanContentTrim.startsWith(lastWordOfPreviousPhrase)) {
+      isChainValid = false;
+    }
+  }
+
+  if (!isWordValid || !isChainValid) {
+    currentPlayer.incorrectAttempts++;
+    if (currentPlayer.incorrectAttempts >= 2) {
+      let reason = "";
+      if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển`;
+      else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}"`;
+      
+      await sendMessageComplete(api, message, `🚫 ${currentPlayer.name} đã thua!\n${reason} (2 lần sai)\n\n🎉 ${opponent.name} thắng!`);
+      getActiveGames().delete(threadId);
+    } else {
+      let reason = "";
+      if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển`;
+      else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}"`;
+      
+      await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần đoán sai!`);
+    }
+    return;
+  }
+
+  currentPlayer.incorrectAttempts = 0;
+  game.lastPhrase = cleanContentTrim;
+  game.currentTurn = opponent.id;
+  const lastWord = cleanContentTrim.split(/\s+/).pop();
+  await sendMessageComplete(api, message, `✅ ${currentPlayer.name}: ${cleanContentTrim}\n\n👉 ${opponent.name}, cụm từ tiếp theo phải bắt đầu bằng "${lastWord}"`);
 }
 
 async function findNextPhrase(lastPhrase) {
