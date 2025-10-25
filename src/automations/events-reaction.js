@@ -3,7 +3,11 @@ import { handleTikTokReaction } from "../service-hahuyhoang/api-crawl/tiktok/tik
 import { handleAdminReactionDelete } from "../commands/bot-manager/recent-message.js";
 
 export async function reactionEvents(api, reaction) {
-  if (await handleReactionConfirmJoinGroup(api, reaction)) return;
-  if (await handleTikTokReaction(api, reaction)) return;
-  if (await handleAdminReactionDelete(api, reaction)) return;
-)
+  try {
+    if (await handleReactionConfirmJoinGroup(api, reaction)) return;
+    if (await handleTikTokReaction(api, reaction)) return;
+    if (await handleAdminReactionDelete(api, reaction)) return;
+  } catch (error) {
+    console.error("Lỗi sự kiện reaction:", error);
+  }
+}
