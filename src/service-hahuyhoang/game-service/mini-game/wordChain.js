@@ -14,6 +14,19 @@ async function checkWordValidity(word) {
   }
 }
 
+async function getInitialWord() {
+  try {
+    const response = await axios.get(`https://noitu.pro/init`);
+    if (response.data && !response.data.error && response.data.chuan) {
+      return response.data.chuan;
+    }
+    return null;
+  } catch (error) {
+    console.error("Lỗi khi lấy từ khởi tạo:", error.message);
+    return null;
+  }
+}
+
 export async function handleWordChainCommand(api, message) {
   const threadId = message.threadId;
   const args = message.data.content.split(" ");
@@ -57,10 +70,16 @@ export async function handleWordChainCommand(api, message) {
       return;
     }
 
+    const initialWord = await getInitialWord();
+    if (!initialWord) {
+      await sendMessageWarning(api, message, "❌ Không thể khởi tạo trò chơi. Vui lòng thử lại sau.");
+      return;
+    }
+
     getActiveGames().set(threadId, {
       type: 'wordChain',
       game: {
-        lastPhrase: "",
+        lastPhrase: initialWord,
         players: new Set([message.data.uidFrom]),
         botTurn: false,
         maxWords: 2,
@@ -68,7 +87,9 @@ export async function handleWordChainCommand(api, message) {
         lastProcessedMessage: ""
       }
     });
-    await sendMessageComplete(api, message, "🎮 Trò chơi nối từ bắt đầu! Hãy nhập một cụm từ (tối đa 2 từ) để bắt đầu.");
+
+    const lastWord = initialWord.split(/\s+/).pop();
+    await sendMessageComplete(api, message, `🎮 Trò chơi nối từ bắt đầu!\n\n🤖 Bot: ${initialWord}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${lastWord}"`);
     return;
   }
 }
@@ -104,7 +125,7 @@ export async function handleWordChainMessage(api, message) {
       await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\nLý do: Cụm từ của bạn "${cleanContentTrim}" phải có đúng ${game.maxWords} từ.`);
       activeGames.delete(threadId);
     } else {
-      await sendMessageWarning(api, message, `Từ "${cleanContentTrim}" không hợp lệ (phải có đúng ${game.maxWords} từ).\nBạn còn ${2 - attempts} lần đoán sai trước khi bị sút ra khỏi phòng!`);
+      await sendMessageWarning(api, message, `Từ "${cleanContentTrim}" không hợp lệ (phải có đúng ${game.maxWords} từ).\nBạn còn ${2 - attempts} lần đoán sai trước khi bị loại!`);
     }
     return;
   }
@@ -139,7 +160,7 @@ export async function handleWordChainMessage(api, message) {
       if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển hoặc sai nghĩa.`;
       else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
       
-      await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần đoán đúng trước khi bị sút ra khỏi phòng!`);
+      await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần đoán sai trước khi bị loại!`);
     }
     return;
   }
