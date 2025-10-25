@@ -111,7 +111,6 @@ export async function handleWordChainMessage(api, message) {
   if (!game.players.has(senderId)) return;
 
   if (game.lastProcessedMessage === cleanContentTrim) return;
-  game.lastProcessedMessage = cleanContentTrim;
 
   const words = cleanContentTrim.split(/\s+/);
   if (words.length !== game.maxWords) {
@@ -134,7 +133,7 @@ export async function handleWordChainMessage(api, message) {
     game.incorrectAttempts.set(senderId, 0);
   }
   
-  let isWordValid = await checkWordValidity(cleanContentTrim);
+  const isWordValid = await checkWordValidity(cleanContentTrim);
   let isChainValid = true;
 
   if (game.lastPhrase !== "") {
@@ -165,6 +164,7 @@ export async function handleWordChainMessage(api, message) {
     return;
   }
 
+  game.lastProcessedMessage = cleanContentTrim;
   game.lastPhrase = cleanContentTrim;
   game.incorrectAttempts.set(senderId, 0);
   game.botTurn = true;
