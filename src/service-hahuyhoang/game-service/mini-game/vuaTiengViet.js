@@ -60,7 +60,7 @@ function startTimeout(api, message, threadId, game) {
   game.timeoutId = setTimeout(async () => {
     const activeGames = getActiveGames();
     if (activeGames.has(threadId)) {
-      await sendMessageComplete(api, message, `🚫 Hết thời gian! Bạn đã thua!\n\nĐáp án đúng là: ${game.currentWord}`);
+      await sendMessageComplete(api, message, `🚫 Hết thời gian chờ (30s), bạn đã thua!\n\n🌟 Đáp án đúng là: ${game.currentWord}`);
       activeGames.delete(threadId);
     }
   }, 30000);
@@ -72,7 +72,7 @@ export async function handleVuaTiengVietCommand(api, message) {
   const prefix = getGlobalPrefix();
 
   if (args[0]?.toLowerCase() === `${prefix}vuatiengviet` && !args[1]) {
-    await sendMessageComplete(api, message, `🎮 Hướng dẫn game Vua Tiếng Việt:\n${prefix}vuatiengviet join -> Tham gia trò chơi xáo trộn từ\n${prefix}vuatiengviet leave -> Rời khỏi trò chơi\ncheck -> Xem lại từ cần đoán`);
+    await sendMessageComplete(api, message, `🎮 Hướng dẫn game Vua Tiếng Việt:\n🔗 ${prefix}vuatiengviet join: tham gia trò chơi vua tiếng việt\n🔖 ${prefix}vuatiengviet leave: rời khỏi trò chơi\n📚 Khi đã tham gia, nhắn check nếu cần xem lại từ cần đoán\n🤔 Nếu là admin đã tham gia trò chơi, nhắn result để xem kết quả từ cần đoán);
     return;
   }
 
@@ -133,7 +133,7 @@ export async function handleVuaTiengVietCommand(api, message) {
     
     startTimeout(api, message, threadId, game);
     
-    await sendMessageComplete(api, message, `🎮 Trò chơi Vua Tiếng Việt bắt đầu!\n\n🤖 Từ Bot ra là: ${shuffled}\n\nHãy đoán xem từ gốc là gì??? 🤔`);
+    await sendMessageComplete(api, message, `🎮 Trò chơi Vua Tiếng Việt bắt đầu!\n\n🤖 Từ tiếp theo Bot ra là: ${shuffled}\n\n🤔 Hãy đoán xem từ gốc là gì???`);
     return;
   }
 }
@@ -208,5 +208,5 @@ export async function handleVuaTiengVietMessage(api, message) {
 
   startTimeout(api, message, threadId, game);
 
-  await sendMessageComplete(api, message, `✅ Bạn đã đoán đúng!\n\n🤖 Từ Bot ra là: ${game.shuffledWord}\n\nHãy đoán xem từ gốc là gì??? 🤔`);
+  await sendMessageComplete(api, message, `✅ Bạn đã đoán đúng!\n\n🤖 Từ tiếp theo Bot ra là: ${game.shuffledWord}\n\n🤔 Hãy đoán xem từ gốc là gì???`);
 }
