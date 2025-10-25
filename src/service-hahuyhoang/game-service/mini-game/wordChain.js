@@ -225,8 +225,9 @@ export async function handleWordChainMessage(api, message) {
   if (gameData.type !== 'wordChain') return;
 
   const game = gameData.game;
-  const cleanContent = message.data.content.trim().toLowerCase();
-  const cleanContentTrim = cleanContent.replace(/[^\p{L}\p{N}\s]/gu, "").trim();
+  const content = message.data.content || "";
+  const cleanContent = content.toLowerCase();
+  const cleanContentTrim = cleanContent.replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, " ").replace(/^\s+|\s+$/g, "");
 
   if (cleanContent !== cleanContentTrim) return;
   if (cleanContent.startsWith(prefix)) return;
