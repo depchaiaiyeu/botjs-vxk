@@ -3,6 +3,8 @@ import { getGlobalPrefix } from "../../service.js";
 import { getActiveGames, checkHasActiveGame } from "./index.js";
 import { sendMessageComplete, sendMessageWarning } from "../../chat-zalo/chat-style/chat-style.js";
 
+const pendingPVPChallenges = new Map();
+
 async function checkWordValidity(word) {
   try {
     const encodedWord = encodeURIComponent(word);
@@ -25,6 +27,44 @@ async function getInitialWord() {
     console.error("Lỗi khi lấy từ khởi tạo:", error.message);
     return null;
   }
+}
+
+export async function handlePVPConfirmation(api, reaction) {
+  const userId = reaction.data.uidFrom;
+  const rType = reaction.data.content.rType;
+  const threadId = reaction.data.idTo;
+  
+  if (rType !== 3 && rType !== 5) return false;
+  
+  const challengeKey = `${threadId}_${userId}`;
+  if (!pendingPVPChallenges.has(challengeKey)) return false;
+  
+  const challenge = pendingPVPChallenges.get(challengeKey);
+  clearTimeout(challenge.timeout);
+  pendingPVPChallenges.delete(challengeKey);
+  
+  getActiveGames().set(threadId, {
+    type: 'wordChainPVP',
+    game: {
+      player1: { id: challenge.challengerId, name: challenge.challengerName, incorrectAttempts: 0 },
+      player2: { id: userId, name: challenge.opponentName, incorrectAttempts: 0 },
+      currentTurn: challenge.challengerId,
+      lastPhrase: "",
+      maxWords: 2,
+      waitingForFirstWord: true
+    }
+  });
+  
+  const confirmMsg = {
+    threadId: threadId,
+    data: {
+      content: `⚔️ Trận đấu nối từ bắt đầu!\n\n👤 ${challenge.challengerName} vs 👤 ${challenge.opponentName}\n\n🎯 ${challenge.challengerName} hãy nhập cụm từ đầu tiên (2 từ) để bắt đầu!`,
+      uidFrom: userId
+    }
+  };
+  
+  await sendMessageComplete(api, confirmMsg, confirmMsg.data.content);
+  return true;
 }
 
 export async function handleWordChainCommand(api, message) {
@@ -58,19 +98,35 @@ export async function handleWordChainCommand(api, message) {
       return;
     }
 
-    getActiveGames().set(threadId, {
-      type: 'wordChainPVP',
-      game: {
-        player1: { id: challengerId, name: challengerName, incorrectAttempts: 0 },
-        player2: { id: opponentId, name: opponentName, incorrectAttempts: 0 },
-        currentTurn: challengerId,
-        lastPhrase: "",
-        maxWords: 2,
-        waitingForFirstWord: true
+    const challengeKey = `${threadId}_${opponentId}`;
+    if (pendingPVPChallenges.has(challengeKey)) {
+      await sendMessageWarning(api, message, "Người chơi này đã có lời thách đấu đang chờ xác nhận.");
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      if (pendingPVPChallenges.has(challengeKey)) {
+        pendingPVPChallenges.delete(challengeKey);
+        const cancelMsg = {
+          threadId: threadId,
+          data: {
+            content: `⏰ Lời thách đấu từ ${challengerName} đến ${opponentName} đã hết hạn (30s).`,
+            uidFrom: challengerId
+          }
+        };
+        sendMessageWarning(api, cancelMsg, cancelMsg.data.content);
       }
+    }, 30000);
+
+    pendingPVPChallenges.set(challengeKey, {
+      challengerId,
+      challengerName,
+      opponentId,
+      opponentName,
+      timeout
     });
 
-    await sendMessageComplete(api, message, `⚔️ Trận đấu nối từ bắt đầu!\n\n👤 ${challengerName} vs 👤 ${opponentName}\n\n🎯 ${challengerName} hãy nhập cụm từ đầu tiên (2 từ) để bắt đầu!`);
+    await sendMessageComplete(api, message, `⚔️ ${challengerName} thách đấu ${opponentName}!\n\n👉 ${opponentName} hãy thả reaction (👍 hoặc ❤️) vào tin nhắn này để chấp nhận!\n⏰ Thời gian: 30 giây`);
     return;
   }
 
@@ -135,12 +191,13 @@ export async function handleWordChainCommand(api, message) {
     getActiveGames().set(threadId, {
       type: 'wordChain',
       game: {
-        lastPhrase: initialWord,
+        lastPhraseUser: "",
+        lastPhraseBot: initialWord,
         players: new Set([message.data.uidFrom]),
         botTurn: false,
         maxWords: 2,
         incorrectAttempts: new Map([[message.data.uidFrom, 0]]),
-        lastProcessedMessage: ""
+        processingBot: false
       }
     });
 
@@ -174,8 +231,7 @@ export async function handleWordChainMessage(api, message) {
   if (cleanContent !== cleanContentTrim) return;
   if (cleanContent.startsWith(prefix)) return;
   if (!game.players.has(senderId)) return;
-
-  if (game.lastProcessedMessage === cleanContentTrim) return;
+  if (game.processingBot) return;
 
   const words = cleanContentTrim.split(/\s+/);
   if (words.length !== game.maxWords) {
@@ -201,11 +257,9 @@ export async function handleWordChainMessage(api, message) {
   const isWordValid = await checkWordValidity(cleanContentTrim);
   let isChainValid = true;
 
-  if (game.lastPhrase !== "") {
-    const lastWordOfPreviousPhrase = game.lastPhrase.split(/\s+/).pop();
-    if (!cleanContentTrim.startsWith(lastWordOfPreviousPhrase)) {
-      isChainValid = false;
-    }
+  const lastWordOfBot = game.lastPhraseBot.split(/\s+/).pop();
+  if (!cleanContentTrim.startsWith(lastWordOfBot)) {
+    isChainValid = false;
   }
 
   if (!isWordValid || !isChainValid) {
@@ -215,36 +269,34 @@ export async function handleWordChainMessage(api, message) {
     if (attempts >= 2) {
       let reason = "";
       if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển -> sai nghĩa.`;
-      else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
+      else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${lastWordOfBot}".`;
       
       await sendMessageComplete(api, message, `🚫 ${message.data.dName} đã thua!\n${reason} (2 lần sai)`);
       activeGames.delete(threadId);
     } else {
       let reason = "";
       if (!isWordValid) reason = `Từ "${cleanContentTrim}" không có trong từ điển hoặc sai nghĩa.`;
-      else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${game.lastPhrase.split(/\s+/).pop()}".`;
+      else if (!isChainValid) reason = `Cụm từ không bắt đầu bằng "${lastWordOfBot}".`;
       
       await sendMessageWarning(api, message, `${reason}\nBạn còn 1 lần đoán sai trước khi bị loại!`);
     }
     return;
   }
 
-  game.lastProcessedMessage = cleanContentTrim;
-  game.lastPhrase = cleanContentTrim;
+  game.lastPhraseUser = cleanContentTrim;
   game.incorrectAttempts.set(senderId, 0);
-  game.botTurn = true;
+  game.processingBot = true;
 
-  const botPhrase = await findNextPhrase(game.lastPhrase);
+  const botPhrase = await findNextPhrase(game.lastPhraseUser);
   if (botPhrase) {
     const isBotPhraseValid = await checkWordValidity(botPhrase);
-    const lastWordOfUserPhrase = game.lastPhrase.split(/\s+/).pop();
+    const lastWordOfUserPhrase = game.lastPhraseUser.split(/\s+/).pop();
     const isBotChainValid = botPhrase.startsWith(lastWordOfUserPhrase);
 
     if (isBotPhraseValid && isBotChainValid) {
-      game.lastPhrase = botPhrase;
-      game.lastProcessedMessage = "";
+      game.lastPhraseBot = botPhrase;
       await sendMessageComplete(api, message, `🤖 Bot: ${botPhrase}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhrase.split(/\s+/).pop()}"`);
-      game.botTurn = false;
+      game.processingBot = false;
     } else {
       let botReason = "";
       if (!isBotPhraseValid) botReason = `từ "${botPhrase}" của bot không hợp lệ`;
