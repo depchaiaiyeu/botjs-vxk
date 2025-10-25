@@ -148,7 +148,7 @@ export async function handleWordChainCommand(api, message) {
     });
 
     const lastWord = initialWordData.normalized.split(/\s+/).pop();
-    await sendMessageComplete(api, message, `🎮 Trò chơi nối từ bắt đầu!\n\n🤖 Bot: ${initialWordData.original}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${lastWord}"\n⏱️ Bạn có 60 giây để trả lời!`);
+    await sendMessageComplete(api, message, `🎮 Trò chơi nối từ bắt đầu!\n\n🤖 Bot: ${initialWordData.original}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${lastWord}"\n\n⏱️ Bạn có 60 giây để trả lời!`);
     
     startTurnTimer(api, message, threadId, message.data.uidFrom);
     return;
@@ -172,7 +172,7 @@ function startTurnTimer(api, message, threadId, playerId) {
     const currentGame = currentGameData.game;
     if (currentGame.currentPlayer !== playerId) return;
     
-    await sendMessageComplete(api, message, `⏰ Hết giờ! Người chơi không trả lời trong 60 giây.\n🚫 Game over!`);
+    await sendMessageComplete(api, message, `⏰ Hết thời gian! Người chơi không trả lời trong 60 giây.\n🚫 Người chơi đã thua, Bot thắng!`);
     
     getActiveGames().delete(threadId);
     botDataMap.delete(threadId);
@@ -286,7 +286,7 @@ export async function handleWordChainMessage(api, message) {
 
     if (isBotPhraseValid && isBotChainValid) {
       botData.lastPhrase = botPhraseData.normalized;
-      await sendMessageComplete(api, message, `🤖 Bot: ${botPhraseData.original}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhraseData.normalized.split(/\s+/).pop()}"\n⏱️ Bạn có 60 giây để trả lời!`);
+      await sendMessageComplete(api, message, `🤖 Bot: ${botPhraseData.original}\n\n👉 Cụm từ tiếp theo phải bắt đầu bằng "${botPhraseData.normalized.split(/\s+/).pop()}"\n\n⏱️ Bạn có 60 giây để trả lời!`);
       game.processingBot = false;
       startTurnTimer(api, message, threadId, senderId);
     } else {
