@@ -2,6 +2,7 @@ import axios from "axios";
 import { getGlobalPrefix } from "../../service.js";
 import { getActiveGames, checkHasActiveGame } from "./index.js";
 import { sendMessageComplete, sendMessageWarning } from "../../chat-zalo/chat-style/chat-style.js";
+import { admins } from "../../../index.js";
 
 function shuffleWord(word) {
   const chars = word.split('');
@@ -71,7 +72,7 @@ export async function handleVuaTiengVietCommand(api, message) {
   const prefix = getGlobalPrefix();
 
   if (args[0]?.toLowerCase() === `${prefix}vuatiengviet` && !args[1]) {
-    await sendMessageComplete(api, message, `🎮 Hướng dẫn game Vua Tiếng Việt:\n${prefix}vuatiengviet join -> Tham gia trò chơi xáo trộn từ\n${prefix}vuatiengviet leave -> Rời khỏi trò chơi`);
+    await sendMessageComplete(api, message, `🎮 Hướng dẫn game Vua Tiếng Việt:\n${prefix}vuatiengviet join -> Tham gia trò chơi xáo trộn từ\n${prefix}vuatiengviet leave -> Rời khỏi trò chơi\ncheck -> Xem lại từ cần đoán`);
     return;
   }
 
@@ -150,6 +151,17 @@ export async function handleVuaTiengVietMessage(api, message) {
 
   if (cleanContent.startsWith(prefix)) return;
   if (!game.players.has(senderId)) return;
+
+  if (cleanContent.toLowerCase() === "check") {
+    await sendMessageComplete(api, message, `🤖 Từ Bot ra là: ${game.shuffledWord}\n\nHãy đoán xem từ gốc là gì??? 🤔`);
+    return;
+  }
+
+  if (cleanContent.toLowerCase() === "result" && admins.includes(senderId)) {
+    await sendMessageComplete(api, message, `🔍 Kết quả: ${game.currentWord}`);
+    return;
+  }
+
   if (hasSpecialCharacters(cleanContent)) return;
 
   const words = cleanContent.split(/\s+/);
@@ -196,5 +208,5 @@ export async function handleVuaTiengVietMessage(api, message) {
 
   startTimeout(api, message, threadId, game);
 
-  await sendMessageComplete(api, message, `✅ Bạn đã đoán đúng!\n\n🤖 Từ tiếp theo Bot ra là: ${game.shuffledWord}\n\n🤔 Hãy đoán xem từ gốc là gì???`);
+  await sendMessageComplete(api, message, `✅ Bạn đã đoán đúng!\n\n🤖 Từ Bot ra là: ${game.shuffledWord}\n\nHãy đoán xem từ gốc là gì??? 🤔`);
 }
