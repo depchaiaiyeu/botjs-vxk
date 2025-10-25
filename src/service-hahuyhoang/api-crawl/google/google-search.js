@@ -5,11 +5,11 @@ import { getGlobalPrefix } from "../../service.js";
 import { removeMention } from "../../../utils/format-util.js";
 import { sendMessageCompleteRequest, sendMessageWarningRequest } from "../../chat-zalo/chat-style/chat-style.js";
 import path from "path";
-import fs from "fs";
 import { tempDir } from "../../../utils/io-json.js";
 import { deleteFile } from "../../../utils/util.js";
+import fs from "fs";
 
-export async function handleGoogleCommandWithChromium(api, message, aliasCommand) {
+export async function handleGoogleCommand(api, message, aliasCommand) {
   const content = removeMention(message);
   const prefix = getGlobalPrefix();
   const keyword = content.replace(`${prefix}${aliasCommand}`, "").trim();
