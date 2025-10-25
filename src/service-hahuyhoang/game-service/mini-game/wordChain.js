@@ -34,7 +34,7 @@ export async function handleWordChainCommand(api, message) {
   const prefix = getGlobalPrefix();
 
   if (args[0]?.toLowerCase() === `${prefix}noitu` && !args[1]) {
-    await sendMessageComplete(api, message, `🎮 Hướng dẫn game nối từ:\n🔗 ${prefix}noitu join: tham gia trò chơi nối từ với Bot.\n🔖 ${prefix}noitu leave: rời khỏi trò chơi nối từ.\n🔍 ${prefix}noitu tracuu [cụm từ]: tra cứu cụm từ có hợp lệ không.`);
+    await sendMessageComplete(api, message, `🎮 Hướng dẫn game nối từ:\n🔗 ${prefix}noitu join: tham gia trò chơi nối từ với Bot.\n🔖 ${prefix}noitu leave: rời khỏi trò chơi nối từ.\n🔍 ${prefix}noitu tracuu [cụm từ]: tra cứu thông tin từ vựng.`);
     return;
   }
 
